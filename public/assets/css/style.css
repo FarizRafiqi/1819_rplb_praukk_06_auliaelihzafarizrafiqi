@@ -1,0 +1,72 @@
+@font-face {
+    font-family: "OpenSans-Regular";
+    src: url("../fonts/Open_Sans/OpenSans-Regular.ttf");
+}
+@font-face {
+    font-family: "OpenSans-SemiBold";
+    src: url("../fonts/Open_Sans/OpenSans-SemiBold.ttf");
+}
+
+body {
+    font-family: "OpenSans-Regular";
+}
+
+.btn-primary-custom {
+    background: #28b7ca; /*Pacific Blue*/
+    color: #fff;
+}
+
+.btn-secondary-custom {
+    background: #125684; /*USAFA Blue*/
+    color: #fff;
+}
+
+/* || Navbar */
+.navbar {
+    height: 100px;
+    margin: 0px 40px;
+}
+
+.navbar .navbar-nav .nav-item {
+    margin: 0px 5px;
+}
+
+nav .form-inline .btn.btn-primary-custom {
+    border-radius: 24px;
+    width: 80px;
+    height: 36px;
+}
+
+.jumbotron {
+    background-color: #28b7ca;
+    background-image: url("../img/illustrasi/blob.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 690px 0px;
+    color: #fff;
+    height: 350px;
+}
+
+.jumbotron .ilustrasi-mobile-payment {
+    padding-top: 80px;
+    position: relative;
+    top: -70px;
+    right: -110px;
+}
+
+.jumbotron .lead {
+    font-size: 18px;
+}
+
+/* Main Content */
+.container .card-input-no-meteran {
+    margin: -70px 0px 0px;
+    width: 960px;
+}
+.container .card-input-no-meteran label {
+    font-size: 18px;
+}
+
+.card-input-no-meteran form .btn-secondary-custom {
+    width: 140px;
+}
