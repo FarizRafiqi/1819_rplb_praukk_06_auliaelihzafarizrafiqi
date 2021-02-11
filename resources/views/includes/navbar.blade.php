@@ -17,7 +17,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
+            <li class="nav-item {{Route::is('home') ? 'active' : ''}}">
                 <a class="nav-link" href="{{route('home')}}"
                     >Home <span class="sr-only">(current)</span></a
                 >
@@ -30,12 +30,12 @@
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <button class="btn btn-primary-custom my-2 my-sm-0" type="submit">
+            <a href="{{route('register')}}" class="btn btn-primary-custom mx-2 my-2 my-sm-0" type="submit">
                 Register
-            </button>
-            <button class="btn my-2 my-sm-0" type="submit">
+            </a>
+            <a href="{{route('login')}}" class="btn my-2 my-sm-0" type="submit">
                 Login
-            </button>
+            </a>
         </form>
     </div>
 </nav>

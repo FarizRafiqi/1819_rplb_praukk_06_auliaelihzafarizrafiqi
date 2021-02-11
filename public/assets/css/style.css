@@ -42,7 +42,7 @@ nav .form-inline .btn.btn-primary-custom {
     background-image: url("../img/illustrasi/blob.svg");
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 690px 0px;
+    background-position: 690px -70px;
     color: #fff;
     height: 350px;
 }
@@ -54,19 +54,123 @@ nav .form-inline .btn.btn-primary-custom {
     right: -110px;
 }
 
-.jumbotron .lead {
-    font-size: 18px;
-}
-
-/* Main Content */
+/* || Main Content */
 .container .card-input-no-meteran {
     margin: -70px 0px 0px;
     width: 960px;
 }
+
 .container .card-input-no-meteran label {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .card-input-no-meteran form .btn-secondary-custom {
     width: 140px;
+}
+
+/* Postpaid Insctruction */
+.postpaid-instruction {
+    margin-top: 68px;
+    font-size: 16px;
+}
+
+.postpaid-instruction .title,
+.megamendung-benefit .title {
+    font-family: "OpenSans-SemiBold";
+    margin-bottom: 32px;
+}
+
+.megamendung-benefit .title {
+    margin-top: 32px;
+}
+
+.postpaid-instruction .ilustrasi-meteran-listrik {
+    width: 254px;
+    height: 226px;
+}
+
+.postpaid-instruction .search-illustration {
+    width: 277.59px;
+    height: 218.54px;
+}
+
+.postpaid-instruction .ilustrasi-input-id-pelanggan {
+    width: 261px;
+    height: 250.61px;
+}
+
+.postpaid-instruction .ilustrasi-klik-tombol-cek-tagihan {
+    width: 225.73px;
+    height: 229.7px;
+}
+
+.postpaid-instruction .step {
+    padding: 0px 200px 0px;
+}
+
+/* Mega Mendung Benefit */
+.megamendung-benefit {
+    font-size: 16px;
+}
+
+.megamendung-benefit .benefit-item .desc {
+    margin-top: 12px;
+}
+
+/* ||Footer */
+footer {
+    height: 244px;
+    margin-top: 73px;
+}
+
+footer .container {
+    height: 100%;
+}
+
+footer .list-item {
+    margin: 8px 0px;
+}
+
+/* @media only screen (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+} */
+/* || Login */
+
+.navbar-auth {
+    height: 92px;
+}
+
+.wrapper-auth-form {
+    min-height: 100vh;
+}
+
+.auth-form .card {
+    width: 895px;
+    font-size: 16px;
+    /* height: 539px; */
+}
+
+.auth-form form h1 {
+    font-family: "OpenSans-SemiBold";
+    font-size: 32px;
+    margin-bottom: 32px;
+}
+
+.auth-form form strong {
+    font-size: 16px;
+}
+
+.auth-form .form-group input {
+    height: 48px;
+}
+
+.auth-form .btn.btn-primary-custom {
+    height: 48px;
+    background: linear-gradient(to right, #28b7ca 0%, #125684 100%);
+}
+
+.auth-form .btn.btn-primary-custom:hover {
+    color: #fff;
 }
