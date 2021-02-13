@@ -1,4 +1,4 @@
-<footer class="border-top">
+<footer class="border-top border-bottom">
   <div class="container d-flex justify-content-center align-items-center">
     <div class="row">
       <div class="col col-auto help-link">
@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="copyright">
-    © {{date('Y')}} All Right Reserved Mega Mendung
+  <div class="copyright d-flex justify-content-center align-items-center">
+    <span>© {{date('Y')}} All Right Reserved Mega Mendung</span>
   </div>
 </footer>

@@ -32,7 +32,7 @@
               <div class="form-group mb-3">
                 <input type="password" class="form-control" id="exampleFormControlInput3" placeholder="Password">
               </div>
-              <button class="btn btn-primary-custom btn-block" type="submit">Sign Up</button>
+              <button class="btn btn-primary-custom btn-block" type="submit">Daftar</button>
             </div>
             <div class="col col-6 text-center">
               <img src="{{ asset('assets/img/illustrasi/illustration-register@2x.png') }}" class="img-fluid" width="380.84" height="361.78" alt="illustrasi register">

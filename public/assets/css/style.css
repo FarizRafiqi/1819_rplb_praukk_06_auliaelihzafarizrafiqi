@@ -108,6 +108,14 @@ nav .form-inline .btn.btn-primary-custom {
     padding: 0px 200px 0px;
 }
 
+.carousel-control-prev-icon {
+    background-image: url("../img/mm-icon/chevron-left@2x.png");
+}
+
+.carousel-control-next-icon {
+    background-image: url("../img/mm-icon/chevron-right@2x.png");
+}
+
 /* Mega Mendung Benefit */
 .megamendung-benefit {
     font-size: 16px;
@@ -131,11 +139,15 @@ footer .list-item {
     margin: 8px 0px;
 }
 
-/* @media only screen (max-width: 768px) {
-    body {
-        font-size: 14px;
+footer .copyright {
+    height: 36px;
+}
+
+@media (max-width: 992px) {
+    .navbar {
+        height: 100%;
     }
-} */
+}
 /* || Login */
 
 .navbar-auth {
@@ -173,4 +185,28 @@ footer .list-item {
 
 .auth-form .btn.btn-primary-custom:hover {
     color: #fff;
+}
+
+/* || Dashboard */
+
+.navbar-dashboard .navbar-nav .active > .nav-link {
+    color: #28b7ca;
+    font-family: "OpenSans-SemiBold";
+}
+
+.card-overview {
+    height: 160px;
+}
+
+.admin-footer {
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    .container-dashboard .row .col-12 {
+        padding: 0px 12px 0px;
+    }
 }

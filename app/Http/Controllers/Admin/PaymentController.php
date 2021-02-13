@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 class PaymentController extends Controller
 {
@@ -14,7 +15,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**

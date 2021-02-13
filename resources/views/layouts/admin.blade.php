@@ -8,11 +8,13 @@
   @stack('prepend-style')
   @include('includes.admin.style')
   @stack('addon-style')
+  <!-- fontawesome -->
+  <script src="{{asset('assets/plugin/fontawesome/all.js')}}"></script>
 </head>
 <body>
   @include('includes.admin.navbar')
   <!-- @include('includes.admin.sidebar') -->
-  <div class="container">
+  <div class="container-dashboard mt-5">
     @yield('content')
   </div>
   @include('includes.admin.footer')
