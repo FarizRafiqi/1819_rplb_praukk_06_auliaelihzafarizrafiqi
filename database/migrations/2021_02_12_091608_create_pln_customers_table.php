@@ -18,7 +18,7 @@ class CreatePlnCustomersTable extends Migration
             $table->string('nama_pelanggan', 100);
             $table->char('nomor_meter', 12);
             $table->text('alamat');
-            $table->foreignId('tariff_id')->constrained();
+            $table->foreignId('id_tarif')->constrained('tariffs');
             $table->timestamps();
             $table->softDeletes();
         });

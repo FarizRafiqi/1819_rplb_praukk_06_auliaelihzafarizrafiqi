@@ -8,4 +8,39 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_customer');
+    }
+
+    public function plnCustomer()
+    {
+        return $this->belongsTo(PlnCustomer::class, 'id_pelanggan_pln');
+    }
+
+    public function bill()
+    {
+        return $this->belongsTo(Bill::class, "id_tagihan");
+    }
+
+    public function getFormattedBiayaAdminAttribute()
+    {
+        $biayaAdmin = number_format($this->biaya_admin, 2, ',', '.');
+        return "Rp $biayaAdmin";
+    }
+
+    public function getFormattedDendaAttribute()
+    {
+        $denda = number_format($this->denda, 2, ',', '.');
+        return "Rp $denda";
+    }
+
+    public function getFormattedTotalBayarAttribute()
+    {
+        $totalBayar = number_format($this->total_bayar, 2, ',', '.');
+        return "Rp $totalBayar";
+    }
 }

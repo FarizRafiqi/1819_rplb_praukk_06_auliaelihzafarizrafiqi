@@ -11,8 +11,8 @@
         @csrf
         <div class="form-row">
           <div class="form-group">
-            <label for="selectGolonganTarif">ID Pelanggan</label>
-            <select name="tariff_id" class="form-control" id="selectGolonganTarif">
+            <label for="selectPlnCustomer">ID Pelanggan</label>
+            <select name="pln_customer_id" class="form-control selectpicker" id="selectPlnCustomer">
               <option selected>Pilih Golongan Tarif</option>
               
               <option value=""></option>

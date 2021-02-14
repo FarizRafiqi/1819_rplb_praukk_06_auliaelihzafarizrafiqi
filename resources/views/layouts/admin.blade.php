@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +11,7 @@
   <!-- fontawesome -->
   <script src="{{asset('assets/plugin/fontawesome/all.js')}}"></script>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
   @include('includes.admin.navbar')
   <!-- @include('includes.admin.sidebar') -->
   <div class="container-dashboard mt-5">
@@ -21,6 +21,7 @@
 
   @stack('prepend-script')
   @include('includes.admin.script')
+  @include('sweetalert::alert')
   @stack('addon-script')
 </body>
 </html>

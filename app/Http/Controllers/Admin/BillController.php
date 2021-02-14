@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bill;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class BillController extends Controller
 {
@@ -12,9 +14,21 @@ class BillController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if($request->ajax()){
+            $bills = Bill::get();
+            return DataTables::of($bills)
+                    ->addColumn('action', function($customers){
+                        $button = '<a href='. route("admin.pln-customers.edit", $customers->id).' class="btn btn-success btn-sm">edit</a>';
+                        $button .= '<a href='. route("admin.pln-customers.show", $customers->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
+                        $button .= '<a href='. route("admin.pln-customers.destroy", $customers->id).' class="btn btn-danger btn-sm">delete</a>';
+                        return $button;
+                    })
+                    ->toJson();
+        }
+
+        return view('pages.admin.bill.index');
     }
 
     /**
@@ -41,10 +55,10 @@ class BillController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Bill  $bill
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Bill $bill)
     {
         //
     }
@@ -52,10 +66,10 @@ class BillController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Bill  $bill
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Bill $bill)
     {
         //
     }
@@ -64,10 +78,10 @@ class BillController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Bill  $bill
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Bill $bill)
     {
         //
     }
@@ -75,10 +89,10 @@ class BillController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Bill  $bill
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Bill $bill)
     {
         //
     }

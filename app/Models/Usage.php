@@ -13,4 +13,14 @@ class Usage extends Model
     {
         return $this->belongsTo(PlnCustomer::class);
     }
+
+    public function getMeterAwalAttribute($value)
+    {
+        return sprintf("%08d", $value);
+    }
+
+    public function getMeterAkhirAttribute($value)
+    {
+        return sprintf("%08d", $value);
+    }
 }

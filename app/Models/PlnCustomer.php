@@ -17,17 +17,17 @@ class PlnCustomer extends Model
         'nama_pelanggan',
         'nomor_meter',
         'alamat',
-        'tariff_id',
+        'id_tarif',
     ];
 
     public function tariff()
     {
-        return $this->belongsTo(Tariff::class);
+        return $this->belongsTo(Tariff::class, 'id_tarif');
     }
 
     public function usages()
     {
-        return $this->hasMany(Usage::class);
+        return $this->hasMany(Usage::class, 'id_pelanggan_pln');
     }
 
     // public function getFormattedTariffAttribute()

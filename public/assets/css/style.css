@@ -139,10 +139,6 @@ footer .list-item {
     margin: 8px 0px;
 }
 
-footer .copyright {
-    height: 36px;
-}
-
 @media (max-width: 992px) {
     .navbar {
         height: 100%;
@@ -199,10 +195,7 @@ footer .copyright {
 }
 
 .admin-footer {
-    position: fixed;
-    bottom: 0;
     height: 60px;
-    width: 100%;
 }
 
 @media (max-width: 992px) {

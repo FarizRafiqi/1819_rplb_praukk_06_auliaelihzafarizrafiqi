@@ -11,17 +11,18 @@ class Tariff extends Model
 
     public function customers()
     {
-        return $this->hasMany(PlnCustomer::class);
+        return $this->hasMany(PlnCustomer::class, 'id_tarif');
     }
 
-    public function getTarifPerKwhAttribute($value)
+    public function getFormattedTarifPerKwhAttribute()
     {
-        $tarifPerKwh = number_format($value, 2, ',', '.');
+        $tarifPerKwh = number_format($this->tarif_per_kwh, 2, ',', '.');
         return "Rp $tarifPerKwh";
     }
 
-    public function getDayaAttribute($value)
+    public function getFormattedDayaAttribute()
     {
-        return ($value < 1000) ? $value . " VA" : $value/1000 . " KVA";
+        $daya = number_format($this->daya, 0, ",", ".") . " VA";
+        return $daya;
     }
 }

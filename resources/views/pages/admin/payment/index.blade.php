@@ -1,41 +1,62 @@
 @extends('layouts.admin')
 
-@section('title', 'Pelanggan PLN')
+@section('title', 'Pembayaran')
 
-@push('addon-style')
-<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
-@endpush
 @section('content')
-<div class="container">
-  <table class="table table-striped table-bordered" style="width:100%" id="payments">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>ID Pelanggan</th>
-        <th>ID Tagihan</th>
-        <th>Tanggal Bayar</th>
-        <th>Biaya Admin</th>
-        <th>Denda</th>
-        <th>Total Bayar</th>
-        <th>ID Admin</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-  </table>
+<div class="container mb-3">
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <h3 class="mb-4">Pembayaran</h3>
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-striped table-bordered w-100" id="payments">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama Customer</th>
+            <th>Nama Pelanggan PLN</th>
+            <th>ID Tagihan</th>
+            <th>Tanggal Bayar</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
 </div>
 @endsection
 
 @push('addon-script')
   <script>
     $('#payments').DataTable({
+        responsive: true,
         serverSide: true,
         ajax: "",
         columns: [
             {data: 'id'},
-            {data: 'nama_pelanggan'},
-            {data: 'nomor_meter'},
-            {data: 'alamat'},
-            {data: 'tariff_id'},
+            {data: 'user.nama'},
+            {data: 'pln_customer.nama_pelanggan'},
+            {data: 'id_tagihan'},
+            {data: 'tanggal_bayar'},
+            {data: 'status',
+              render: function(data, type, row){
+                let state;
+                if(data == 'success'){
+                  state = 'success';
+                }else if(data == 'pending'){
+                  state = 'warning';
+                }else{
+                  state = 'danger';
+                }
+                return `<span class='badge badge-pill 
+                        badge-${state}'>${data}</span>`;
+              }
+            },
             {data: 'action', searchable: false, orderable: false},
         ]
     });

@@ -2,20 +2,28 @@
 
 @section('title', 'Pelanggan PLN')
 
-@push('addon-style')
-<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
-@endpush
 @section('content')
-<div class="container">
-  <table class="table table-striped table-bordered" style="width:100%" id="levels">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nama Level</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-  </table>
+<div class="container mb-3">
+  <div class="d-flex justify-content-between mb-4"> 
+    <h3>Level</h3>
+    <a href="{{route('admin.level.create')}}" class="btn btn-primary-custom">
+      <i class="fas fa-plus"></i>
+      Tambah
+    </a>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-striped table-bordered w-100"  id="levels">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama Level</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
 </div>
 @endsection
 

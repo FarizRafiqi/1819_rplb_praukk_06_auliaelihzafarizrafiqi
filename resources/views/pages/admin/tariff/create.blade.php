@@ -30,9 +30,3 @@
     </div>
   </div>
 @endsection
-
-@push('addon-script')
-<script>
-
-</script>
-@endpush
