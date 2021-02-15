@@ -15,7 +15,9 @@ class CreateBillsTable extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_penggunaan')->constrained('usages')->onUpdate('cascade');
+            $table->foreignId('id_penggunaan')->nullable()
+                    ->constrained('usages')
+                    ->onUpdate('cascade');
             $table->string('bulan', 10);
             $table->year('tahun', 4);
             $table->integer('jumlah_kwh');

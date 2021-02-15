@@ -10,13 +10,7 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="d-flex justify-content-between mb-4">
-    <h3>Tagihan Listrik</h3>
-    <a href="{{route('admin.usage.create')}}" class="btn btn-primary-custom">
-      <i class="fas fa-plus"></i>
-      Tambah
-    </a>
-  </div>
+  <h3 class="mb-4">Tagihan Listrik</h3>
   <div class="card">
     <div class="card-body">
       <table class="table table-striped table-bordered w-100"  id="bills">

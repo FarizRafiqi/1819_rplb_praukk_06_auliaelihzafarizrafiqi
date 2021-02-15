@@ -1,5 +1,5 @@
 <?php 
 
 return [
-  'payment_status' => ['success', 'failed', 'pending']
+  'payment_status' => ['success', 'failed', 'pending'],
 ];

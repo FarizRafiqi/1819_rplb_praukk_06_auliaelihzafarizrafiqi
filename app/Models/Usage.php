@@ -9,9 +9,14 @@ class Usage extends Model
 {
     use HasFactory;
 
-    public function customer()
+    public function bill()
     {
-        return $this->belongsTo(PlnCustomer::class);
+        return $this->hasMany(Bill::class, 'id_penggunaan');
+    }
+
+    public function plnCustomer()
+    {
+        return $this->belongsTo(PlnCustomer::class, 'id_pelanggan_pln');
     }
 
     public function getMeterAwalAttribute($value)

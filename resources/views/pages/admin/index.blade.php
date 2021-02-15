@@ -14,8 +14,8 @@
               <img src="{{ asset('assets/img/mm-icon/revenue-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
             </div>
             <div class="col-9">
-              <h4 class="font-weight-bold">Rp 123.456</h4>
-              Pendapatan bulan ini
+              <h4 class="font-weight-bold">{{$totalPendapatan}}</h4>
+              Pendapatan
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
               <img src="{{ asset('assets/img/mm-icon/payment-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
             </div>
             <div class="col-9">
-              <h4 class="font-weight-bold">123</h4>
+              <h4 class="font-weight-bold">{{$payments->count()}}</h4>
               Total pembayaran
             </div>
           </div>
@@ -50,7 +50,7 @@
               <img src="{{ asset('assets/img/mm-icon/bill-paid-off-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
             </div>
             <div class="col-9">
-              <h4 class="font-weight-bold">456</h4>
+              <h4 class="font-weight-bold">{{$bills->where('status', 'LUNAS')->count()}}</h4>
               Tagihan listrik lunas
             </div>
           </div>
@@ -68,7 +68,7 @@
               <img src="{{ asset('assets/img/mm-icon/bill-not-paid-off-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
             </div>
             <div class="col-9">
-              <h4 class="font-weight-bold">567</h4>
+              <h4 class="font-weight-bold">{{$bills->where('status', 'BELUM LUNAS')->count()}}</h4>
               Tagihan listrik belum lunas
             </div>
           </div>

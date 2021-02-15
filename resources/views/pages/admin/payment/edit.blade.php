@@ -3,7 +3,7 @@
 @section('title', 'Edit Pembayaran')
 
 @section('content')
-  <div class="container" style="max-width:400px;">
+  <div class="container w-50">
     <h3 class="mb-4">Edit Pembayaran</h3>
     <div class="card">
       <div class="card-body">

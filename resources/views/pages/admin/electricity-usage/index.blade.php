@@ -53,5 +53,31 @@
             {data: 'action', searchable: false, orderable: false},
         ]
     });
+
+    $("#usages").on("click.dt", function(e){
+      /*cek apakah yang diklik adalah tombol delete, 
+      jika true maka tampilkan alert konfirmasi*/
+      if($(e.target).hasClass('btn-delete')){
+        e.preventDefault();
+        Swal.fire({
+          title: 'Apakah kamu yakin?',
+          text: "Data tagihan dari penggunaan ini akan dihapus juga!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus itu!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $(e.target).parent().submit();
+            Swal.fire(
+              'Dihapus!',
+              'Data ini berhasil dihapus!.',
+              'success'
+            )
+          }
+        })
+      }
+    });
   </script>
 @endpush

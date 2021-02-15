@@ -89,7 +89,7 @@ class PaymentController extends Controller
             'status' => 'required|in:success,failed,pending'
         ]);
         $payment->update($request->only('status'));
-        return back()->with('success', 'Data pembayaran berhasil diubah!');
+        return redirect()->route('admin.payment.index')->with('success', 'Data pembayaran berhasil diubah!');
     }
 
     /**

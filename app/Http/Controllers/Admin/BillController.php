@@ -19,10 +19,8 @@ class BillController extends Controller
         if($request->ajax()){
             $bills = Bill::get();
             return DataTables::of($bills)
-                    ->addColumn('action', function($customers){
-                        $button = '<a href='. route("admin.pln-customers.edit", $customers->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.pln-customers.show", $customers->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '<a href='. route("admin.pln-customers.destroy", $customers->id).' class="btn btn-danger btn-sm">delete</a>';
+                    ->addColumn('action', function($bills){
+                        $button = '<a href="#" class="btn btn-primary-custom btn-sm"><i class="fa fa-money-bill-alt mr-1"></i>Bayar</a>';
                         return $button;
                     })
                     ->toJson();

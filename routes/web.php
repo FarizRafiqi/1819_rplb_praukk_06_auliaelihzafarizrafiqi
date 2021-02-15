@@ -26,7 +26,7 @@ Route::get('/register', function(){
 Route::group(["as" => 'admin.', 'prefix' => 'admin'], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
-
+  Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
   Route::resources([
     'payment' => PaymentController::class,
     'bill' => BillController::class,

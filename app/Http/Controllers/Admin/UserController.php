@@ -21,9 +21,9 @@ class UserController extends Controller
             $users = User::with('level')->get();
             return DataTables::of($users)
                     ->addColumn('action', function($users){
-                        $button = '<a href='. route("admin.pln-customers.edit", $users->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.pln-customers.show", $users->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '<a href='. route("admin.pln-customers.destroy", $users->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button = '<a href='. route("admin.users.edit", $users->id).' class="btn btn-success btn-sm">edit</a>';
+                        $button .= '<a href='. route("admin.users.show", $users->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
+                        $button .= '<a href='. route("admin.users.destroy", $users->id).' class="btn btn-danger btn-sm">delete</a>';
                         return $button;
                     })
                     ->toJson();
@@ -50,51 +50,58 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string',
+            
+        ]);
+        User::create($request->except('_token'));
+        return redirect()->route('admin.users.index')->withSuccess('Data user berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return view('pages.admin.user.show', compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('pages.admin.user.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->update($request->except(['_method', '_token']));
+        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil diubah!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil dihapus!');
     }
 }

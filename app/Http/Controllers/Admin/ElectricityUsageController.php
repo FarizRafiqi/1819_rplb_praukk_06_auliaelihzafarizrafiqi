@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bill;
+use App\Models\PlnCustomer;
 use App\Models\Usage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,7 +25,13 @@ class ElectricityUsageController extends Controller
                     ->addColumn('action', function($usage){
                         $button = '<a href='. route("admin.usage.edit", $usage->id).' class="btn btn-success btn-sm">edit</a>';
                         $button .= '<a href='. route("admin.usage.show", $usage->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '<a href='. route("admin.usage.destroy", $usage->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button .= '
+                            <form action='.route("admin.usage.destroy", $usage->id).' method="POST" class="d-inline-block form-delete">
+                                '. csrf_field() .'
+                                '. method_field("DELETE") .'
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
+                            </form>
+                        ';
                         return $button;
                     })
                     ->toJson();
@@ -37,7 +46,8 @@ class ElectricityUsageController extends Controller
      */
     public function create()
     {
-        return view('pages.admin.electricity-usage.create');
+        $customers = PlnCustomer::get();
+        return view('pages.admin.electricity-usage.create', compact('customers'));
     }
 
     /**
@@ -48,51 +58,58 @@ class ElectricityUsageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Usage::create($request->except('_token'));
+        return redirect()->route('admin.usage.index')->withSuccess('Data berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Usage  $usage
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Usage $usage)
     {
-        //
+        return view('pages.admin.electricity-usage.show', compact('usage'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Usage  $usage
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Usage $usage)
     {
-        //
+        $customers = PlnCustomer::get();
+        return view('pages.admin.electricity-usage.edit', compact('usage', 'customers'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Usage  $usage
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Usage $usage)
     {
-        //
+        $usage->update($request->except(['_token', 'method']));
+        return redirect()->route('admin.usage.index')->withSuccess('Data penggunaan berhasil diubah!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Usage  $usage
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Usage $usage)
     {
-        //
+        $bill = Bill::where('id_penggunaan', $usage->id)->first();
+        $bill->usage()->dissociate();
+        $bill->save();
+        $usage->delete();
+        return redirect()->route('admin.usage.index')->withSuccess('Data penggunaan berhasil dihapus!');
     }
 }

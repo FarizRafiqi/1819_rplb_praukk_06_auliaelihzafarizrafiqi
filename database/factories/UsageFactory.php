@@ -26,7 +26,7 @@ class UsageFactory extends Factory
         return [
             'id_pelanggan_pln' => rand(1,10),
             'bulan' => $bulan[rand(0,11)],
-            'tahun' => $this->faker->year(),
+            'tahun' => date('Y'),
             'meter_awal' => rand(00000000, 10000000),
             'meter_akhir' => rand(00000000, 10000000),
         ];

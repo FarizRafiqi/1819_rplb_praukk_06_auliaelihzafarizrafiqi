@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="copyright d-flex justify-content-center align-items-center">
+  <div class="copyright d-flex justify-content-center align-items-center p-3">
     <span>© {{date('Y')}} All Right Reserved Mega Mendung</span>
   </div>
 </footer>

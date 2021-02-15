@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah User')
+@section('title', 'Edit User')
 @push('addon-style')
   <link rel="stylesheet" href="{{asset('assets/plugin/bootstrap-select-1.13.9/css/bootstrap-select.min.css')}}">
 @endpush
 @section('content')
   <div class="container">
-    <h3 class="mb-4">Tambah User</h3>
+    <h3 class="mb-4">Edit User</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.users.store')}}" method="POST">
+      <form action="{{route('admin.users.update', $user->id)}}" method="POST">
         @csrf
         <div class="form-row">
           <div class="form-group col-md-6">
@@ -33,9 +33,7 @@
           <label for="selectGolonganTarif">Level</label>
           <select name="tariff_id" class="form-control" id="selectGolonganTarif">
             <option selected>Pilih Level</option>
-            @foreach($levels as $level)
-              <option value="{{$level->id}}">{{$level->level}}</option>
-            @endforeach
+            <option value=""></option>
           </select>
         </div>
         <a href="{{route('admin.users.index')}}" class="btn btn-danger">Batal</a>
