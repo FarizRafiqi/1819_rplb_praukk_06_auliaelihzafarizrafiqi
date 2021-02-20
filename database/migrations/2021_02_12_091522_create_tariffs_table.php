@@ -17,7 +17,7 @@ class CreateTariffsTable extends Migration
             $table->id();
             $table->string('golongan_tarif');
             $table->integer('daya');
-            $table->decimal('tarif_per_kwh', 10, 3);
+            $table->decimal('tarif_per_kwh', 10, 2);
             $table->timestamps();
         });
     }

@@ -19,7 +19,7 @@
   </div>
   <div class="card">
     <div class="card-body">
-      <table class="table table-striped table-bordered w-100"  id="tariffs">
+      <table class="table table-striped table-bordered w-100" id="tariffs">
         <thead>
           <tr class="text-center">
             <th>ID</th>
@@ -54,6 +54,26 @@
             },
             {data: 'action', searchable: false, orderable: false},
         ]
+    });
+
+    $("#tariffs").on("click.dt", function(e){
+      /*cek apakah yang diklik adalah tombol delete, 
+      jika true maka tampilkan alert konfirmasi*/
+      if($(e.target).hasClass('btn-delete')){
+        e.preventDefault();
+        Swal.fire({
+          title: 'Apakah kamu yakin?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $(e.target).parent().submit();
+          }
+        })
+      }
     });
   </script>
 @endpush

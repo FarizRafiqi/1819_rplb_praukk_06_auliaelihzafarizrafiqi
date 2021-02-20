@@ -1,12 +1,8 @@
 <!-- Bootstrap v4.6 -->
 <script src="{{ asset('js/app.js') }}"></script>
 
-<!-- DataTables v.1.10.23 -->
-<script src="{{ asset('assets/plugin/DataTables-1.10.23/js/datatables.min.js') }}"></script>
-<script src="{{ asset('assets/plugin/DataTables-1.10.23/js/dataTables.bootstrap4.min.js') }}"></script>
-
-<!-- DataTables Extension -->
-<script src="{{ asset('assets/plugin/Responsive-2.2.7/js/responsive.bootstrap4.min.js') }}"></script>
+<!-- DataTables v.1.10.23 + Responsive v.2.2.7 + Button v.1.6.5 (BS v.4.1 Integration)-->
+<script src="{{ asset('assets/plugin/DataTables-1.10.23/datatables.min.js') }}"></script>
 
 <!-- Bootstrap 4 Datepicker -->
 <script src="{{ asset('assets/plugin/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>

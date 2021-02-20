@@ -1,15 +1,13 @@
 @extends('layouts.admin')
 
 @section('title', 'Tambah Level')
-@push('addon-style')
-  <link rel="stylesheet" href="{{asset('assets/plugin/bootstrap-select-1.13.9/css/bootstrap-select.min.css')}}">
-@endpush
 @section('content')
-  <div class="container">
+  <div class="container w-50">
     <h3 class="mb-4">Tambah Level</h3>
     <div class="card">
       <div class="card-body">
-      <form>
+      <form action="{{route('admin.level.store')}}" method="POST">
+        @csrf
         <div class="form-group">
           <label for="level">Level</label>
           <input type="level" name="level" class="form-control" id="level" placeholder="Masukkan level"></input>
@@ -21,7 +19,3 @@
     </div>
   </div>
 @endsection
-
-@push('addon-script')
-  <script src="{{asset('assets/plugin/bootstrap-select-1.13.9/js/bootstrap-select.min.js')}}"></script>
-@endpush

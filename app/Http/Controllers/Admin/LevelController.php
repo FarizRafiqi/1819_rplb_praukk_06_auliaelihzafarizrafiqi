@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LevelRequest;
 use App\Models\Level;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -20,8 +21,14 @@ class LevelController extends Controller
             $levels = Level::get();
             return DataTables::of($levels)
                     ->addColumn('action', function($levels){
-                        $button = '<a href='. route("admin.level.edit", $levels->id).' class="btn btn-success btn-sm mr-3">edit</a>';
-                        $button .= '<a href='. route("admin.level.destroy", $levels->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button = '<a href='. route("admin.level.edit", $levels->id).' class="btn btn-success btn-sm mr-2">edit</a>';
+                        $button .= '
+                            <form action='.route("admin.level.destroy", $levels->id).' method="POST" class="d-inline-block form-delete">
+                                '. csrf_field() .'
+                                '. method_field("DELETE") .'
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
+                            </form>
+                        ';
                         return $button;
                     })
                     ->toJson();
@@ -37,27 +44,28 @@ class LevelController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.admin.level.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\LevelRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LevelRequest $request)
     {
-        //
+        Level::create($request->all());
+        return redirect()->route('admin.level.index')->withSuccess('Level berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Level $level)
     {
         //
     }
@@ -65,34 +73,36 @@ class LevelController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Level $level)
     {
-        //
+        return view('pages.admin.level.edit', compact('level'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\LevelRequest  $request
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LevelRequest $request, Level $level)
     {
-        //
+        $level->update();
+        return redirect()->route('admin.level.index')->withSuccess('Level berhasil diubah!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Level $level)
     {
-        //
+        $level->delete();
+        return redirect()->route('admin.level.index')->withSuccess('Level berhasil dihapus!');
     }
 }

@@ -8,15 +8,15 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <div class="row">
-      <div class="col col-lg-6 left-side">
-        <img src="{{ asset('assets/img/illustrasi/mobile-payment-illustration@2x.png') }}" class="ilustrasi-mobile-payment" alt="mobile-payment-illustration" width="300px">
+      <div class="col-lg-6 left-side">
+        <img src="{{ asset('assets/img/illustrasi/mobile-payment-illustration@2x.png') }}" class="ilustrasi-mobile-payment" alt="Mobile Payment Illustration" width="300px">
       </div>
-      <div class="col col-lg-6 right-side">
-        <h1 class="display-5">Penuhi Kebutuhan Listrik Kamu</h1>
+      <div class="col-lg-6 right-side">
+        <h1 class="jumbotron-header">Penuhi Kebutuhan Listrik Kamu</h1>
         <p class="lead">
-        Kini cek dan bayar tagihan listrik PLN tidak perlu keluar <br>
-        rumah. Kamu bisa melakukan itu dengan mudah di <br>
-        website MegaMendung.
+          Kini cek dan bayar tagihan listrik PLN tidak perlu keluar <br>
+          rumah. Kamu bisa melakukan itu dengan mudah di <br>
+          website MegaMendung.
         </p>
         <img src="{{ asset('assets/img/icopln.png') }}" alt="ICON PLN" width="43" height="63">
       </div>
@@ -49,7 +49,7 @@
 
   <section class="postpaid-instruction">
     <h3 class="title text-center">Bagaimana Cara Bayar Tagihan Listrik di Mega Mendung</h3>
-    <div id="carouselExampleControls" class="carousel slide d-flex" data-ride="carousel">
+    <div id="carousel" class="carousel slide d-flex" data-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item step step-one active">
           <div class="row">
@@ -103,11 +103,11 @@
           </div>
         </div>
       </div>
-      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon p-4"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
         <span class="carousel-control-next-icon p-4"></span>
         <span class="sr-only">Next</span>
       </a>
@@ -126,14 +126,14 @@
         </p>
       </div>
       <div class="col col-4 benefit-item second-benefit text-center">
-        <img src="{{asset('assets/img/mm-icon/money-icon@2x.png')}}" alt="Money Icon" class="mx-auto" width="80" height="56.3">
+        <img src="{{asset('assets/img/mm-icon/money-icon@2x.png')}}" alt="Money Icon" class="mx-auto" width="80" height="60">
         <p class="desc">
           Dapatkan cashback/bonus <br>
           tiap transaksi
         </p>
       </div>
       <div class="col col-4 benefit-item third-benefit text-center">
-        <img src="{{asset('assets/img/mm-icon/wallet-icon@2x.png')}}" alt="Wallet Icon" class="mx-auto" width="61" height="53">
+        <img src="{{asset('assets/img/mm-icon/wallet-icon@2x.png')}}" alt="Wallet Icon" class="mx-auto" width="61" height="60">
         <p class="desc">
           Tersedia berbagai metode <br>
           pembayaran

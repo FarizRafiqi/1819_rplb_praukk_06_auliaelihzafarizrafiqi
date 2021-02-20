@@ -3,82 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \Agent;
+use App\Models\Payment;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Untuk menampilkan halaman home
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        if(Agent::isMobile()){
+            return view('pages.index-mobile');
+        }
         return view('pages.index');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Untuk menampilkan halaman about us
      *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function aboutUs()
     {
-        //
+        return view('pages.about-us');
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * Untuk menampilkan halaman riwayat transaksi pelanggan.
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function riwayatTransaksi(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $userPayments = $request->user()->payments()->get();
+        return view('pages.riwayat-transaksi', compact('userPayments'));
     }
 }

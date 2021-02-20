@@ -1,9 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Tambah User')
-@push('addon-style')
-  <link rel="stylesheet" href="{{asset('assets/plugin/bootstrap-select-1.13.9/css/bootstrap-select.min.css')}}">
-@endpush
+
 @section('content')
   <div class="container">
     <h3 class="mb-4">Tambah User</h3>
@@ -14,29 +12,54 @@
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="inputNama">Nama</label>
-            <input type="text" name="nama" class="form-control" id="inputNama" placeholder="Masukkan nama">
+            <input type="text" name="nama" class="form-control @error('nama')
+                is-invalid
+            @enderror" id="inputNama" placeholder="Masukkan nama">
+            @error('nama')
+              <span class="text-danger">{{$message}}</span>
+            @enderror
           </div>
           <div class="form-group col-md-6">
             <label for="username">Username</label>
-            <input type="text" name="username" class="form-control" id="username" placeholder="Masukkan username">
+            <input type="text" name="username" class="form-control @error('username')
+                is-invalid
+            @enderror" id="username" placeholder="Masukkan username">
+            @error('username')
+              <span class="text-danger">{{$message}}</span>
+            @enderror
           </div>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" name="password" class="form-control" id="password" placeholder="Masukkan password"></input>
+          <input type="password" name="password" class="form-control @error('password')
+              is-invalid
+          @enderror" id="password" placeholder="Masukkan password">
+          @error('password')
+            <span class="text-danger">{{$message}}</span>
+          @enderror
         </div>
         <div class="form-group">
-          <label for="passwordConfirm">Konfirmasi Password</label>
-          <input type="passwordConfirm" name="password" class="form-control" id="password" placeholder="Konfirmasi password"></input>
+          <label for="passwordConfirmation">Konfirmasi Password</label>
+          <input type="password" name="password_confirmation" class="form-control @error('password_confirmation')
+              is-invalid
+          @enderror" id="passwordConfirmation" placeholder="Konfirmasi password">
+          @error('password_confirmation')
+            <span class="text-danger">{{$message}}</span>
+          @enderror
         </div>
         <div class="form-group">
           <label for="selectGolonganTarif">Level</label>
-          <select name="tariff_id" class="form-control" id="selectGolonganTarif">
+          <select name="id_level" class="form-control @error('id_level')
+              is-invalid
+          @enderror" id="selectGolonganTarif">
             <option selected>Pilih Level</option>
             @foreach($levels as $level)
               <option value="{{$level->id}}">{{$level->level}}</option>
             @endforeach
           </select>
+          @error('id_level')
+            <span class="text-danger">{{$message}}</span>
+          @enderror
         </div>
         <a href="{{route('admin.users.index')}}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -45,7 +68,3 @@
     </div>
   </div>
 @endsection
-
-@push('addon-script')
-  <script src="{{asset('assets/plugin/bootstrap-select-1.13.9/js/bootstrap-select.min.js')}}"></script>
-@endpush

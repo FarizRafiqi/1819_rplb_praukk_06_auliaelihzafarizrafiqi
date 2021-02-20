@@ -14,9 +14,11 @@
 <body class="d-flex flex-column h-100">
   @include('includes.admin.navbar')
   <!-- @include('includes.admin.sidebar') -->
-  <div class="container-dashboard mt-5">
-    @yield('content')
-  </div>
+  <main class="flex-shrink-0">
+    <div class="container-dashboard mt-5">
+      @yield('content')
+    </div>
+  </main>
   @include('includes.admin.footer')
 
   @stack('prepend-script')

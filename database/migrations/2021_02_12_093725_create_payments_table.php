@@ -19,9 +19,9 @@ class CreatePaymentsTable extends Migration
             $table->foreignId('id_pelanggan_pln')->constrained('pln_customers')->onUpdate('cascade');
             $table->foreignId('id_tagihan')->constrained('bills')->onUpdate('cascade');
             $table->dateTime('tanggal_bayar', 0);
-            $table->decimal('biaya_admin', 10, 3);
-            $table->decimal('denda', 10, 3);
-            $table->decimal('total_bayar', 10, 3);
+            $table->decimal('biaya_admin', 10, 2);
+            $table->decimal('denda', 10, 2);
+            $table->decimal('total_bayar', 10, 2);
             $table->foreignId('id_admin')->constrained('users')->onUpdate('cascade');
             $table->enum('status', ['success', 'failed', 'pending'])->default(null);
             $table->timestamps();

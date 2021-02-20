@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
@@ -17,11 +18,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'nama',
         'username',
         'email',
         'password',
-        'level_id'
+        'id_level'
     ];
 
     /**
@@ -46,5 +47,10 @@ class User extends Authenticatable
     public function level()
     {
         return $this->belongsTo(Level::class, 'id_level');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'id_customer');
     }
 }

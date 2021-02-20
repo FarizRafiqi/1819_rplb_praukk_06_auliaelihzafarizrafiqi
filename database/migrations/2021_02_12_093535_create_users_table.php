@@ -21,7 +21,9 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->foreignId('id_level')->constrained('levels')->onUpdate('cascade');
+            $table->foreignId('id_level')->default(3) //3 merupakan id pelanggan
+                    ->constrained('levels')
+                    ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

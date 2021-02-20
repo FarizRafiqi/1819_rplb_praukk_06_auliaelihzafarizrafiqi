@@ -23,56 +23,73 @@ body {
 
 /* || Navbar */
 .navbar {
-    height: 100px;
-    margin: 0px 40px;
+    /* height: 100px; */
+    padding-right: 0px;
+    padding-left: 0px;
+    margin: 0px 14px;
 }
 
 .navbar .navbar-nav .nav-item {
     margin: 0px 5px;
 }
 
-nav .form-inline .btn.btn-primary-custom {
+nav .btn.btn-primary-custom {
     border-radius: 24px;
     width: 80px;
     height: 36px;
 }
 
+header .dropdown-toggle {
+    padding: 8px 0px;
+}
+
 .jumbotron {
     background-color: #28b7ca;
-    background-image: url("../img/illustrasi/blob.svg");
-    background-size: cover;
+    background-image: url("../img/illustrasi/blob-2.svg");
+    background-size: 280px 260px;
     background-repeat: no-repeat;
-    background-position: 690px -70px;
+    background-position: 100px -40px;
     color: #fff;
-    height: 350px;
+    height: 240px;
 }
 
-.jumbotron .ilustrasi-mobile-payment {
-    padding-top: 80px;
+.jumbotron-header {
+    font-size: 32px;
+}
+
+.jumbotron h4 {
     position: relative;
-    top: -70px;
-    right: -110px;
+    z-index: 99;
 }
 
+.jumbotron .container .ilustrasi-payment-bill-time {
+    position: relative;
+    top: -50px;
+    right: -100px;
+    z-index: 0;
+}
+
+.jumbotron .container .icon-pln {
+    position: relative;
+    top: -30px;
+    right: 0;
+    z-index: 0;
+}
 /* || Main Content */
 .container .card-input-no-meteran {
-    margin: -70px 0px 0px;
-    width: 960px;
+    position: relative;
+    top: -55px;
 }
 
 .container .card-input-no-meteran label {
     font-size: 16px;
 }
 
-.card-input-no-meteran form .btn-secondary-custom {
-    width: 140px;
+.container .card-input-no-meteran .btn:hover {
+    color: #28b7ca;
 }
 
-/* Postpaid Insctruction */
-.postpaid-instruction {
-    margin-top: 68px;
-    font-size: 16px;
-}
+/* || Postpaid Insctruction */
 
 .postpaid-instruction .title,
 .megamendung-benefit .title {
@@ -84,28 +101,15 @@ nav .form-inline .btn.btn-primary-custom {
     margin-top: 32px;
 }
 
-.postpaid-instruction .ilustrasi-meteran-listrik {
-    width: 254px;
-    height: 226px;
+.postpaid-instruction .carousel {
+    height: 160px;
 }
 
-.postpaid-instruction .search-illustration {
-    width: 277.59px;
-    height: 218.54px;
-}
-
-.postpaid-instruction .ilustrasi-input-id-pelanggan {
-    width: 261px;
-    height: 250.61px;
-}
-
+.postpaid-instruction .ilustrasi-meteran-listrik,
+.postpaid-instruction .search-illustration,
+.postpaid-instruction .ilustrasi-input-id-pelanggan,
 .postpaid-instruction .ilustrasi-klik-tombol-cek-tagihan {
-    width: 225.73px;
-    height: 229.7px;
-}
-
-.postpaid-instruction .step {
-    padding: 0px 200px 0px;
+    width: 160px;
 }
 
 .carousel-control-prev-icon {
@@ -127,7 +131,6 @@ nav .form-inline .btn.btn-primary-custom {
 
 /* ||Footer */
 footer {
-    height: 244px;
     margin-top: 73px;
 }
 
@@ -139,11 +142,11 @@ footer .list-item {
     margin: 8px 0px;
 }
 
-@media (max-width: 992px) {
+/* @media (max-width: 992px) {
     .navbar {
         height: 100%;
     }
-}
+} */
 /* || Login */
 
 .navbar-auth {
@@ -151,7 +154,7 @@ footer .list-item {
 }
 
 .wrapper-auth-form {
-    min-height: 100vh;
+    min-height: 80vh;
 }
 
 .auth-form .card {
@@ -198,8 +201,84 @@ footer .list-item {
     height: 60px;
 }
 
-@media (max-width: 992px) {
-    .container-dashboard .row .col-12 {
-        padding: 0px 12px 0px;
+/* Profile */
+
+.card-profile {
+    width: 240px;
+    height: 320px;
+}
+
+.card-profile .bi.bi-pencil-square {
+    top: 100px;
+    right: 60px;
+}
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+    .navbar {
+        /* height: 100px; */
+        margin: 0px 40px;
     }
+
+    .jumbotron {
+        background-image: url("../img/illustrasi/blob.svg");
+        background-position: 690px -70px;
+        background-size: cover;
+        height: 350px;
+    }
+
+    .jumbotron .ilustrasi-mobile-payment {
+        padding-top: 80px;
+        position: relative;
+        top: -70px;
+        right: -110px;
+    }
+
+    .postpaid-instruction .carousel {
+        height: 250px;
+    }
+
+    .postpaid-instruction .ilustrasi-meteran-listrik,
+    .postpaid-instruction .search-illustration,
+    .postpaid-instruction .ilustrasi-input-id-pelanggan,
+    .postpaid-instruction .ilustrasi-klik-tombol-cek-tagihan {
+        width: 250px;
+    }
+
+    .container .card-input-no-meteran {
+        position: none;
+        top: 0;
+        margin: -90px 0px 0px;
+        width: 960px;
+    }
+
+    .card-input-no-meteran form .btn-secondary-custom {
+        width: 140px;
+    }
+
+    /* Postpaid Instruction */
+    .postpaid-instruction {
+        margin-top: 68px;
+        font-size: 16px;
+    }
+
+    .postpaid-instruction .step {
+        padding: 0px 200px 0px;
+    }
+
+    /* || Footer */
+    footer {
+        height: 244px;
+    }
+}
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+}
+
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
 }

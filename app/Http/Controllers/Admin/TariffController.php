@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TariffRequest;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -21,7 +22,13 @@ class TariffController extends Controller
             return DataTables::of($tariffs)
                     ->addColumn('action', function($tariffs){
                         $button = '<a href='. route("admin.tariff.edit", $tariffs->id).' class="btn btn-success btn-sm mr-2">edit</a>';
-                        $button .= '<a href='. route("admin.tariff.destroy", $tariffs->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button .= '
+                            <form action='.route("admin.tariff.destroy", $tariffs->id).' method="POST" class="d-inline-block form-delete">
+                                '. csrf_field() .'
+                                '. method_field("DELETE") .'
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
+                            </form>
+                        ';
                         return $button;
                     })
                     ->toJson();
@@ -45,18 +52,19 @@ class TariffController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TariffRequest $request)
     {
-        //
+        Tariff::create($request->all());
+        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Tariff  $tariff
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Tariff $tariff)
     {
         //
     }
@@ -64,34 +72,36 @@ class TariffController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Tariff  $tariff
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Tariff $tariff)
     {
-        //
+        return view('pages.admin.tariff.edit', compact('tariff'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\TariffRequest  $request
+     * @param  \App\Models\Tariff  $tariff
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TariffRequest $request, Tariff $tariff)
     {
-        //
+        $tariff->update($request->validated());
+        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil diubah!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Tariff  $tariff
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tariff $tariff)
     {
-        //
+        $tariff->delete();
+        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil dihapus!');
     }
 }

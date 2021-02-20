@@ -9,6 +9,8 @@ class Tariff extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+    
     public function customers()
     {
         return $this->hasMany(PlnCustomer::class, 'id_tarif');

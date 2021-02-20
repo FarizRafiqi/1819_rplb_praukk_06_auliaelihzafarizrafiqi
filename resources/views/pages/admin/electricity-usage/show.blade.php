@@ -26,6 +26,12 @@
 
               <dt class="col-sm-4">Tahun</dt>
               <dd class="col-sm-8">{{$usage->tahun}}</dd>
+
+              <dt class="col-sm-4">Meter Awal</dt>
+              <dd class="col-sm-8">{{$usage->meter_awal}}</dd>
+
+              <dt class="col-sm-4">Meter Akhir</dt>
+              <dd class="col-sm-8">{{$usage->meter_akhir}}</dd>
             </dl>
           </div>
         </div>
