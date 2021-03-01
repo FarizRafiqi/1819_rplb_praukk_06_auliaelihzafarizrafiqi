@@ -274,6 +274,11 @@ footer .list-item {
     footer {
         height: 244px;
     }
+
+    /* User */
+    .container-edit-user {
+        width: 50%;
+    }
 }
 /*Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) {

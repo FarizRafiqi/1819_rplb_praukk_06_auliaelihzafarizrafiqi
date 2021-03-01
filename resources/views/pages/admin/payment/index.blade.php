@@ -39,7 +39,7 @@
         ajax: "",
         columns: [
             {data: 'id'},
-            {data: 'user.nama'},
+            {data: 'customer.nama'},
             {data: 'pln_customer.nama_pelanggan'},
             {data: 'id_tagihan'},
             {data: 'tanggal_bayar'},

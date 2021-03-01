@@ -12,7 +12,7 @@
   </div>
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Tarif</h3>
-    <a href="{{route('admin.tariff.create')}}" class="btn btn-primary-custom">
+    <a href="{{route('admin.tariffs.create')}}" class="btn btn-primary-custom">
       <i class="fas fa-plus"></i>
       Tambah
     </a>

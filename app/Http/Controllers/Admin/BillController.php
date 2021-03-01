@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
 class BillController extends Controller
@@ -16,14 +17,12 @@ class BillController extends Controller
      */
     public function index(Request $request)
     {
+        if(!Gate::allows('bill_access')){
+            abort(403);
+        }
         if($request->ajax()){
             $bills = Bill::get();
-            return DataTables::of($bills)
-                    ->addColumn('action', function($bills){
-                        $button = '<a href="#" class="btn btn-primary-custom btn-sm"><i class="fa fa-money-bill-alt mr-1"></i>Bayar</a>';
-                        return $button;
-                    })
-                    ->toJson();
+            return DataTables::of($bills)->toJson();
         }
 
         return view('pages.admin.bill.index');

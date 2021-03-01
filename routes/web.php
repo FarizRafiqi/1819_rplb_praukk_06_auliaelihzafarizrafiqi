@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\ReportController,
     App\Http\Controllers\Admin\LevelController,
     App\Http\Controllers\Admin\TariffController,
-    App\Http\Controllers\Admin\UserProfileController;
+    App\Http\Controllers\Admin\UserProfileController,
+    App\Http\Controllers\Admin\ActivityLogController,
+    App\Http\Controllers\Admin\PermissionController;
 
 Route::get('/', [HomeController::class, "index"])->name("home");
+Route::post('/', [HomeController::class, "checkBill"])->name("tagihan");
 Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about-us");
-Route::get('/riwayat-transaksi', [HomeController::class, "riwayatTransaksi"])->name("riwayat-transaksi");
+Route::get('/transaction-history', [HomeController::class, "transactionHistory"])->name("transaction-history");
 
 // Auth
 Route::get('/login', [LoginController::class, "index"])->name('login');
@@ -27,7 +30,7 @@ Route::get('/register', [RegisterController::class, "index"])->name('register');
 Route::post('/register', [RegisterController::class, "register"])->name('auth.register');
 
 // Admin Panel
-Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth']], function(){
+Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
 
@@ -36,14 +39,16 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth']], 
   Route::get('profile/edit', [UserProfileController::class, "edit"])->name('profile.edit');
   Route::put('profile/update', [UserProfileController::class, "update"])->name('profile.update');
 
-  // Master Data
+  // Data Master
+  Route::resource('activity-logs', ActivityLogController::class)->except('create', 'store', 'edit', 'update', 'destroy');
   Route::resources([
-    'payment' => PaymentController::class,
-    'bill' => BillController::class,
-    'level' => LevelController::class,
-    'usage' => ElectricityUsageController::class,
-    'tariff' => TariffController::class,
+    'payments' => PaymentController::class,
+    'bills' => BillController::class,
+    'levels' => LevelController::class,
+    'usages' => ElectricityUsageController::class,
+    'tariffs' => TariffController::class,
     'pln-customers' => PLNCustomerController::class,
     'users' => UserController::class,
+    'permissions' => PermissionController::class,
   ]);
 });

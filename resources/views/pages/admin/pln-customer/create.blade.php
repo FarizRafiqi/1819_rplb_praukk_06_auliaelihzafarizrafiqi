@@ -7,7 +7,8 @@
     <h3 class="mb-4">Tambah Pelanggan</h3>
     <div class="card">
       <div class="card-body">
-      <form>
+      <form action="{{route('admin.pln-customers.store')}}" method="POST">
+        @csrf
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="inputNama">Nama Pelanggan</label>
@@ -24,7 +25,7 @@
         </div>
         <div class="form-group">
           <label for="selectGolonganTarif">Golongan Tarif</label>
-          <select name="tariff_id" class="form-control" id="selectGolonganTarif">
+          <select name="id_tarif" class="form-control" id="selectGolonganTarif">
             <option selected>Pilih Golongan Tarif</option>
             @foreach($tariffs as $tariff)
               <option value="{{$tariff->id}}">{{$tariff->golongan_tarif}}</option>

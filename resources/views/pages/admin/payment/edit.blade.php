@@ -9,7 +9,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-12">
-            <form action="{{route('admin.payment.update', $payment->id)}}" method="POST">
+            <form action="{{route('admin.payments.update', $payment->id)}}" method="POST">
               @csrf
               @method('PUT')
               <div class="form-group">
@@ -21,7 +21,7 @@
                   @endforeach
                 </select>
               </div>
-              <a href="{{route('admin.payment.index')}}" class="btn btn-danger">Batal</a>
+              <a href="{{route('admin.payments.index')}}" class="btn btn-danger">Batal</a>
               <button type="submit" class="btn btn-primary">Submit</button>
             </form>
           </div>

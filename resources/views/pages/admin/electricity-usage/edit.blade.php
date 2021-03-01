@@ -7,12 +7,12 @@
     <h3 class="mb-4">Edit Penggunaan</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.usage.update', $usage->id)}}" method="POST">
+      <form action="{{route('admin.usages.update', $usage->id)}}" method="POST">
         @csrf
         @method('PUT')
         <div class="form-group">
           <label for="selectPlnCustomer">ID Pelanggan</label>
-          <select name="pln_customer_id" class="form-control selectpicker" data-live-search="true" id="selectPlnCustomer">
+          <select name="id_pelanggan_pln" class="form-control selectpicker" data-live-search="true" id="selectPlnCustomer">
             <option selected>Pilih Pelanggan PLN</option>
             @foreach($customers as $customer)
               <option value="{{$customer->id}}" {{($customer->id == $usage->plnCustomer->id) ? 'selected' : ''}}>{{$customer->id . '. ' . $customer->nama_pelanggan}}</option>
@@ -24,7 +24,7 @@
           <input type="text" name="meter_awal" class="form-control" id="inputMeterAwal"  value="{{$usage->meter_awal}}" placeholder="Masukkan meter awal"></input>
         </div>
         <div class="form-group">
-          <label for="inputMeterAkhir">Meter Awal</label>
+          <label for="inputMeterAkhir">Meter Akhir</label>
           <input type="text" name="meter_akhir" class="form-control" id="inputMeterAkhir"  value="{{$usage->meter_akhir}}" placeholder="Masukkan meter akhir"></input>
         </div>
         
@@ -38,7 +38,7 @@
           <input type="text" class="form-control" id="inputTahun" value="{{$usage->tahun}}">
         </div>
         
-        <a href="{{route('admin.tariff.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{route('admin.tariffs.index')}}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>

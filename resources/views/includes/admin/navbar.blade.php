@@ -20,27 +20,44 @@
 					Dashboard <span class="sr-only">(current)</span>
 				</a>
 			</li>
-			<li class="nav-item {{Route::is('admin.payment.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{route('admin.payment.index')}}">Pembayaran</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.usage.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{route('admin.usage.index')}}">Penggunaan</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.bill.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{route('admin.bill.index')}}">Tagihan</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.users.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{ route('admin.users.index') }}">Users</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.pln-customers.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{route('admin.pln-customers.index')}}">Pelanggan</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.tariff.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{route('admin.tariff.index')}}">Tarif</a>
-			</li>
-			<li class="nav-item {{Route::is('admin.level.*') ? 'active' : ''}}">
-				<a class="nav-link" href="{{ route('admin.level.index') }}">Level</a>
-			</li>
+			@can('payment_access')
+				<li class="nav-item {{Route::is('admin.payments.*') ? 'active' : ''}}">
+					<a class="nav-link" href="{{route('admin.payments.index')}}">Pembayaran</a>
+				</li>
+			@endcan
+			@can('usage_access')
+				<li class="nav-item {{Route::is('admin.usages.*') ? 'active' : ''}}">
+					<a class="nav-link" href="{{route('admin.usages.index')}}">Penggunaan</a>
+				</li>
+			@endcan
+			@can('bill_access')
+				<li class="nav-item {{Route::is('admin.bills.*') ? 'active' : ''}}">
+					<a class="nav-link" href="{{route('admin.bills.index')}}">Tagihan</a>
+				</li>
+			@endcan
+			@can('user_management_access')
+				<li class="nav-item dropdown {{Route::is('admin.users.*') || Route::is('admin.levels.*') || Route::is('admin.activity-logs.*') || Route::is('admin.permissions.*') ? 'active' : ''}}">
+					<a class="nav-link dropdown-toggle" href="{{ route('admin.users.index') }}" id="navbarDropdown" data-toggle="dropdown">
+						Manajemen User
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item {{Route::is('admin.users.*') ? 'active' : ''}}" href="{{route('admin.users.index')}}">User</a>
+						<a class="dropdown-item {{Route::is('admin.permissions.*') ? 'active' : ''}}" href="{{route('admin.permissions.index')}}">Hak Akses</a>
+						<a class="dropdown-item {{Route::is('admin.levels.*') ? 'active' : ''}}" href="{{route('admin.levels.index')}}">Level</a>
+						<a class="dropdown-item {{Route::is('admin.activity-logs.*') ? 'active' : ''}}" href="{{route('admin.activity-logs.index')}}">Log Aktivitas</a>
+					</div>
+				</li>
+			@endcan
+			@can('pln_customer_access')
+				<li class="nav-item {{Route::is('admin.pln-customers.*') ? 'active' : ''}}">
+					<a class="nav-link" href="{{route('admin.pln-customers.index')}}">Pelanggan</a>
+				</li>
+			@endcan
+			@can('tariff_access')
+				<li class="nav-item {{Route::is('admin.tariffs.*') ? 'active' : ''}}">
+					<a class="nav-link" href="{{route('admin.tariffs.index')}}">Tarif</a>
+				</li>
+			@endcan
 			<li class="nav-item">
 				<a class="nav-link" href="{{route('admin.reports')}}">Laporan</a>
 			</li>

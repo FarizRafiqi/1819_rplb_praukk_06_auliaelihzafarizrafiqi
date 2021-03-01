@@ -53,4 +53,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class, 'id_customer');
     }
+
+    public function isAdmin()
+    {
+        return ($this->id_level === 1 ? true : false);
+    }
+
+    public function isBank()
+    {
+        return ($this->id_level === 3 ? true : false);
+    }
 }

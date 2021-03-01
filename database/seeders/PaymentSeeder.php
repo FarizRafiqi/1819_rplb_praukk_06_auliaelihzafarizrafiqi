@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PaymentSeeder extends Seeder
@@ -14,6 +15,7 @@ class PaymentSeeder extends Seeder
      */
     public function run()
     {
-        Payment::factory(60)->create();
+        $user = User::firstWhere('id_level', 3);
+        Payment::factory(60)->for($user, 'bank')->create();
     }
 }

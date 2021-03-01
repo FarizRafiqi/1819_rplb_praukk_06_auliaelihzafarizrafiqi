@@ -18,21 +18,21 @@ class RegisterController extends Controller
     {
         $request->validate(
             [
-                'nama' => 'required|string|alpha|min:3',
+                'nama' => 'required|string|min:3',
                 'username' => 'required|string',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6|confirmed'
+                'password' => 'required|min:6|confirmed',
             ],
             [
                 'nama.required' => 'Nama tidak boleh kosong',
                 'nama.string' => 'Nama harus berupa karakter',
-                'nama.alpha' => 'Nama harus berupa alfa numerik',
                 'nama.min' => 'Nama tidak boleh kurang dari 3 huruf',
                 'username.required' => 'Username tidak boleh kosong',
                 'username.string' => 'Username harus berupa karakter',
                 'email.required' => 'Email tidak boleh kosong',
                 'email.email' => 'Email tidak valid',
                 'password.required' => 'Password tidak boleh kosong',
+                'password.min' => 'Password tidak boleh kurang dari 6 karakter',
             ]
         );
 
@@ -41,7 +41,9 @@ class RegisterController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'id_level' => 2 // id pelanggan
         ]);
+
         alert('Registrasi Berhasil!', '', 'success');
         Auth::login($user, true);
         return redirect()->route('login');

@@ -4,16 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    public function user()
+    public function customer()
     {
         return $this->belongsTo(User::class, 'id_customer');
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo(User::class, 'id_bank');
     }
 
     public function plnCustomer()

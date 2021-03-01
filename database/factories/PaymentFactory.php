@@ -30,8 +30,7 @@ class PaymentFactory extends Factory
             'denda' => 0,
             'biaya_admin' => 2500,
             'total_bayar' => rand(10000, 10000000),
-            'status' => $status[rand(0,2)],
-            'id_admin' => 1
+            'status' => $status[rand(0,2)]
         ];
     }
 }

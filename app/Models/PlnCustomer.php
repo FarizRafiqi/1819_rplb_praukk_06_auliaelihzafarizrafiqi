@@ -29,7 +29,7 @@ class PlnCustomer extends Model
     {
         return $this->hasMany(Usage::class, 'id_pelanggan_pln');
     }
-
+    
     // public function getFormattedTariffAttribute()
     // {
     //     $tarifPerKwh = number_format($this->tariff->tarif_per_kwh, 2, ',', '.');

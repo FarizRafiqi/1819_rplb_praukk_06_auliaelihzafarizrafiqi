@@ -6,7 +6,7 @@
 <div class="container w-50 mb-3">
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Level</h3>
-    <a href="{{route('admin.level.create')}}" class="btn btn-primary-custom">
+    <a href="{{route('admin.levels.create')}}" class="btn btn-primary-custom">
       <i class="fas fa-plus"></i>
       Tambah
     </a>

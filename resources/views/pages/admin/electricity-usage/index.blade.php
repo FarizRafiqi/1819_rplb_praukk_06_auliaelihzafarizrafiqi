@@ -12,7 +12,7 @@
   </div>
   <div class="d-flex justify-content-between mb-4">
     <h3>Penggunaan Listrik</h3>
-    <a href="{{route('admin.usage.create')}}" class="btn btn-primary-custom">
+    <a href="{{route('admin.usages.create')}}" class="btn btn-primary-custom">
       <i class="fas fa-plus"></i>
       Tambah
     </a>
@@ -45,7 +45,7 @@
         ajax: "",
         columns: [
             {data: 'id'},
-            {data: 'id_pelanggan_pln'},
+            {data: 'pln_customer.nama_pelanggan'},
             {data: 'bulan'},
             {data: 'tahun'},
             {data: 'meter_awal'},
@@ -70,11 +70,6 @@
         }).then((result) => {
           if (result.isConfirmed) {
             $(e.target).parent().submit();
-            Swal.fire(
-              'Dihapus!',
-              'Data ini berhasil dihapus!.',
-              'success'
-            )
           }
         })
       }

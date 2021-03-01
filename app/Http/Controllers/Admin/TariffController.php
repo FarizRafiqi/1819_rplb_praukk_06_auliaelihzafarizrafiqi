@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TariffRequest;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Resource controller untuk model Tariff
+ */
 class TariffController extends Controller
 {
     /**
@@ -17,13 +21,17 @@ class TariffController extends Controller
      */
     public function index(Request $request)
     {
+        if(!Gate::allows('tariff_access')){
+            abort(403);
+        }
+
         if($request->ajax()){
             $tariffs = Tariff::with('customers')->get();
             return DataTables::of($tariffs)
                     ->addColumn('action', function($tariffs){
-                        $button = '<a href='. route("admin.tariff.edit", $tariffs->id).' class="btn btn-success btn-sm mr-2">edit</a>';
+                        $button = '<a href='. route("admin.tariffs.edit", $tariffs->id).' class="btn btn-success btn-sm mr-2">edit</a>';
                         $button .= '
-                            <form action='.route("admin.tariff.destroy", $tariffs->id).' method="POST" class="d-inline-block form-delete">
+                            <form action='.route("admin.tariffs.destroy", $tariffs->id).' method="POST" class="d-inline-block form-delete">
                                 '. csrf_field() .'
                                 '. method_field("DELETE") .'
                                 <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
@@ -43,6 +51,9 @@ class TariffController extends Controller
      */
     public function create()
     {
+        if(!Gate::allows('tariff_create')){
+            abort(403);
+        }
         return view('pages.admin.tariff.create');
     }
 
@@ -55,7 +66,7 @@ class TariffController extends Controller
     public function store(TariffRequest $request)
     {
         Tariff::create($request->all());
-        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil ditambahkan!');
+        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil ditambahkan!');
     }
 
     /**
@@ -77,6 +88,9 @@ class TariffController extends Controller
      */
     public function edit(Tariff $tariff)
     {
+        if(!Gate::allows('tariff_edit')){
+            abort(403);
+        }
         return view('pages.admin.tariff.edit', compact('tariff'));
     }
 
@@ -89,8 +103,11 @@ class TariffController extends Controller
      */
     public function update(TariffRequest $request, Tariff $tariff)
     {
+        if(!Gate::allows('tariff_update')){
+            abort(403);
+        }
         $tariff->update($request->validated());
-        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil diubah!');
+        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil diubah!');
     }
 
     /**
@@ -101,7 +118,10 @@ class TariffController extends Controller
      */
     public function destroy(Tariff $tariff)
     {
+        if(!Gate::allows('tariff_delete')){
+            abort(403);
+        }
         $tariff->delete();
-        return redirect()->route('admin.tariff.index')->withSuccess('Tarif berhasil dihapus!');
+        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil dihapus!');
     }
 }

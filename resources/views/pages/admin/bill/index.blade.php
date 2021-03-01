@@ -22,7 +22,6 @@
           <th>Tahun</th>
           <th>Jumlah Kwh</th>
           <th>Status</th>
-          <th>Action</th>
         </tr>
       </thead>
     </table>
@@ -47,8 +46,7 @@
               render: function(data, type, row){
                 return `<span class='badge badge-pill 
                         badge-${(data == 'BELUM LUNAS') ? 'danger' : 'success'}'>${data}</span>`;
-            }},
-            {data: 'action', searchable: false, orderable: false},
+            }}
         ]
     });
   </script>

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\Level;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -17,6 +20,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if(!Gate::allows('user_access')){
+            abort(403);
+        }
         if($request->ajax()){
             $users = User::with('level')->get();
             return DataTables::of($users)
@@ -38,6 +44,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        if(!Gate::allows('user_create')){
+            abort(403);
+        }
         $levels = Level::get();
         return view('pages.admin.user.create', compact('levels'));
     }
@@ -45,16 +54,13 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'nama' => 'required|string',
-            
-        ]);
-        User::create($request->except('_token'));
+        $request['password'] = bcrypt($request->password);
+        User::create($request->all());
         return redirect()->route('admin.users.index')->withSuccess('Data user berhasil ditambahkan!');
     }
 
@@ -66,6 +72,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        if(!Gate::allows('user_show')){
+            abort(403);
+        }
         return view('pages.admin.user.show', compact('user'));
     }
 
@@ -77,6 +86,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if(!Gate::allows('user_edit')){
+            abort(403);
+        }
         $levels = Level::get();
         return view('pages.admin.user.edit', compact('user', 'levels'));
     }
@@ -84,13 +96,16 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UserRequest  $request
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
-        $user->update($request->except(['_method', '_token']));
+        if(!Gate::allows('user_update')){
+            abort(403);
+        }
+        $user->update($request->all());
         return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil diubah!');
     }
 
@@ -102,6 +117,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if(!Gate::allows('user_delete')){
+            abort(403);
+        }
         $user->delete();
         return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil dihapus!');
     }

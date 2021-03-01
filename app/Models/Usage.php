@@ -4,14 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Usage extends Model
 {
     use HasFactory;
+    protected $with = ['bill', 'plnCustomer'];
+    protected $withCount = ['bill', 'plnCustomer'];
+    protected $guarded = [];
 
     public function bill()
     {
-        return $this->hasMany(Bill::class, 'id_penggunaan');
+        return $this->hasOne(Bill::class, 'id_penggunaan');
     }
 
     public function plnCustomer()

@@ -21,7 +21,7 @@
               <dd class="col-md-8">{{$payment->bill->id}}</dd>
 
               <dt class="col-md-4">Nama Customer</dt>
-              <dd class="col-md-8">{{$payment->user->nama}}</dd>
+              <dd class="col-md-8">{{$payment->customer->nama}}</dd>
 
               <dt class="col-md-4">Nama Pelanggan PLN</dt>
               <dd class="col-md-8">{{$payment->plnCustomer->nama_pelanggan}}</dd>

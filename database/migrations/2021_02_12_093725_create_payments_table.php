@@ -22,7 +22,7 @@ class CreatePaymentsTable extends Migration
             $table->decimal('biaya_admin', 10, 2);
             $table->decimal('denda', 10, 2);
             $table->decimal('total_bayar', 10, 2);
-            $table->foreignId('id_admin')->constrained('users')->onUpdate('cascade');
+            $table->foreignId('id_bank')->constrained('users')->onUpdate('cascade');
             $table->enum('status', ['success', 'failed', 'pending'])->default(null);
             $table->timestamps();
             $table->softDeletes();

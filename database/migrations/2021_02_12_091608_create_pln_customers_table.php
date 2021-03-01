@@ -16,9 +16,9 @@ class CreatePlnCustomersTable extends Migration
         Schema::create('pln_customers', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pelanggan', 100);
-            $table->char('nomor_meter', 12);
+            $table->char('nomor_meter', 12)->unique();
             $table->text('alamat');
-            $table->foreignId('id_tarif')->constrained('tariffs');
+            $table->foreignId('id_tarif')->default(null)->constrained('tariffs');
             $table->timestamps();
             $table->softDeletes();
         });

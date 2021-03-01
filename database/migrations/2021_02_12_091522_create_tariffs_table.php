@@ -19,6 +19,7 @@ class CreateTariffsTable extends Migration
             $table->integer('daya');
             $table->decimal('tarif_per_kwh', 10, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

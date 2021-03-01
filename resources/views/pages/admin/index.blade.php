@@ -1,11 +1,10 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
-
 @section('content')
 <div class="container-fluid">
-  <div class="row">
-    <!-- Revenue Overview -->
+  <div class="row justify-content-center mx-3">
+    <!-- Total Revenue Overview -->
     <div class="col-12 col-md-6 col-lg-3 mb-3 mb-md-3 m-lg-0">
       <div class="card card-overview">
         <div class="card-body">
@@ -15,13 +14,14 @@
             </div>
             <div class="col-9">
               <h4 class="font-weight-bold">{{$totalPendapatan}}</h4>
-              Pendapatan
+              <h6 class="text-success font-weight-bold">+ {{$monthEarnings}} Bulan ini</h6>
+              Total Pendapatan
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- End of Revenue Overview -->
+    <!-- End of Total Revenue Overview -->
 
     <!-- Total Payment Overview -->
     <div class="col-12 col-md-6 col-lg-3 mb-3 mb-md-3 m-lg-0">
@@ -76,6 +76,69 @@
       </div>
     </div>
     <!-- End of Bill Not Paid Off Overview -->
+    <div class="col-12 col-md-10">
+      <h2 class="text-center mt-5">Histori Pembayaran</h2>
+      <div class="card my-5 ">
+        <div class="card-body">
+          <table class="table table-striped table-responsive table-bordered w-100" id="paymentHistories">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nama Customer</th>
+                <th>Nama Pelanggan PLN</th>
+                <th>ID Tagihan</th>
+                <th>Tanggal Bayar</th>
+                <th>Biaya Admin</th>
+                <th>Denda</th>
+                <th>Total Bayar</th>
+                <th>Metode Pembayaran</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 @endsection
+@push('addon-script')
+  <script>
+    $('#paymentHistories').DataTable({
+        responsive: true,
+        serverSide: true,
+        ajax: "",
+        columns: [
+            {data: 'id'},
+            {data: 'nama'},
+            {data: 'nama_pelanggan'},
+            {data: 'id_tagihan'},
+            {data: 'tanggal_bayar'},
+            {data: 'biaya_admin',
+             render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+            },
+            {data: 'denda',
+             render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+            },
+            {data: 'total_bayar',
+             render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+            },
+            {data: 'metode_pembayaran', defaultContent: '-'},
+            {data: 'status',
+              render: function(data, type, row){
+                let state;
+                if(data == 'success'){
+                  state = 'success';
+                }else if(data == 'pending'){
+                  state = 'warning';
+                }else{
+                  state = 'danger';
+                }
+                return `<span class='badge badge-pill 
+                        badge-${state}'>${data}</span>`;
+              }
+            },
+        ]
+    });
+  </script>
+@endpush

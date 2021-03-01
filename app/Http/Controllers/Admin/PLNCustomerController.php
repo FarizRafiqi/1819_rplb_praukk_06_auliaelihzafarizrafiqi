@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PlnCustomerRequest;
 use App\Models\PlnCustomer;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\Response;
 
 class PLNCustomerController extends Controller
 {
@@ -17,13 +20,21 @@ class PLNCustomerController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('pln_customer_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if($request->ajax()){   
-            $customers = PlnCustomer::with('tariff')->get();
+            $customers = PlnCustomer::with('tariff', 'usages')->get();
             return DataTables::of($customers)
                     ->addColumn('action', function($customers){
                         $button = '<a href='. route("admin.pln-customers.edit", $customers->id).' class="btn btn-success btn-sm">edit</a>';
                         $button .= '<a href='. route("admin.pln-customers.show", $customers->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '<a href='. route("admin.pln-customers.destroy", $customers->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button .= '
+                            <form action='.route("admin.pln-customers.destroy", $customers->id).' method="POST" class="d-inline-block form-delete">
+                                '. csrf_field() .'
+                                '. method_field("DELETE") .'
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
+                            </form>
+                        ';
                         return $button;
                     })
                     ->toJson();
@@ -38,6 +49,7 @@ class PLNCustomerController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('pln_customer_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $tariffs = Tariff::get();
         return view('pages.admin.pln-customer.create', compact('tariffs'));
     }
@@ -45,13 +57,13 @@ class PLNCustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PlnCustomerRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PlnCustomerRequest $request)
     {
         PlnCustomer::create($request->all());
-        return redirect()->route('pages.admin.pln-customer.index')->with('success', 'Data berhasil ditambahkan!');
+        return redirect()->route('admin.pln-customers.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
     /**
@@ -62,6 +74,7 @@ class PLNCustomerController extends Controller
      */
     public function show(PlnCustomer $plnCustomer)
     {
+        abort_if(Gate::denies('pln_customer_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('pages.admin.pln-customer.show', compact('plnCustomer'));
     }
 
@@ -73,6 +86,7 @@ class PLNCustomerController extends Controller
      */
     public function edit(PlnCustomer $plnCustomer)
     {
+        abort_if(Gate::denies('pln_customer_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $tariffs = Tariff::get();
         return view('pages.admin.pln-customer.edit', compact('plnCustomer', 'tariffs'));
     }
@@ -80,12 +94,13 @@ class PLNCustomerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PlnCustomerRequest  $request
      * @param  \App\Models\PlnCustomer  $plnCustomer
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, PlnCustomer $plnCustomer)
     {
+        abort_if(Gate::denies('pln_customer_update'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $plnCustomer->update($request->all());
         return back()->with("success", "Pelanggan Berhasil Diubah!");
     }
@@ -98,8 +113,8 @@ class PLNCustomerController extends Controller
      */
     public function destroy(PlnCustomer $plnCustomer)
     {
+        abort_if(Gate::denies('pln_customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $plnCustomer->delete();
-
         return back()->with("Pelanggan Berhasil Dihapus!");
     }
 }

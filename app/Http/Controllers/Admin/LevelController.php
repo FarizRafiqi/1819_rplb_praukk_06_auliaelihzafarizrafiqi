@@ -21,9 +21,9 @@ class LevelController extends Controller
             $levels = Level::get();
             return DataTables::of($levels)
                     ->addColumn('action', function($levels){
-                        $button = '<a href='. route("admin.level.edit", $levels->id).' class="btn btn-success btn-sm mr-2">edit</a>';
+                        $button = '<a href='. route("admin.levels.edit", $levels->id).' class="btn btn-success btn-sm mr-2">edit</a>';
                         $button .= '
-                            <form action='.route("admin.level.destroy", $levels->id).' method="POST" class="d-inline-block form-delete">
+                            <form action='.route("admin.levels.destroy", $levels->id).' method="POST" class="d-inline-block form-delete">
                                 '. csrf_field() .'
                                 '. method_field("DELETE") .'
                                 <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>

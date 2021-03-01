@@ -7,7 +7,7 @@
     <h3 class="mb-4">Edit Tarif</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.tariff.update', $tariff->id)}}" method="POST">
+      <form action="{{route('admin.tariffs.update', $tariff->id)}}" method="POST">
         @csrf
         @method("PUT")
         <div class="form-row">
@@ -33,7 +33,7 @@
             <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
-        <a href="{{route('admin.tariff.index')}}" class="btn btn-danger mr-1">Batal</a>
+        <a href="{{route('admin.tariffs.index')}}" class="btn btn-danger mr-1">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>

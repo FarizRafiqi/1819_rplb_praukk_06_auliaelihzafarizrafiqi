@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Resource Controller untuk model Payment
+ */
 class PaymentController extends Controller
 {
     /**
@@ -16,14 +20,17 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
+        if(!Gate::allows('payment_access')){
+            abort(403);
+        }
+
         if($request->ajax()){
-            $payments = Payment::with(['plnCustomer', 'user'])->get();
-       
+            $payments = Payment::with(['plnCustomer', 'customer'])->get();
             return Datatables::of($payments)
                     ->addColumn('action', function($payments){
-                        $button = '<a href="'. route("admin.payment.edit", $payments->id).'" class="btn btn-success btn-sm">edit</a>';
+                        $button = '<a href="'. route("admin.payments.edit", $payments->id).'" class="btn btn-success btn-sm">edit</a>';
 
-                        $button .= '<a href="'. route("admin.payment.show", $payments->id).'" class="btn btn-primary btn-sm mx-2">detail</a>';
+                        $button .= '<a href="'. route("admin.payments.show", $payments->id).'" class="btn btn-primary btn-sm mx-2">detail</a>';
                         return $button;
                     })
                     ->toJson();
@@ -60,6 +67,10 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
+        if(!Gate::allows('payment_show')){
+            abort(403);
+        }
+
         $totalBayar = $payment->total_bayar+$payment->denda+$payment->biaya_admin;
         $totalBayar = number_format($totalBayar, 2, ",", ".");
         return view('pages.admin.payment.show', compact('payment', 'totalBayar'));
@@ -73,6 +84,10 @@ class PaymentController extends Controller
      */
     public function edit(Payment $payment)
     {
+        if(!Gate::allows('payment_edit')){
+            abort(403);
+        }
+
         return view('pages.admin.payment.edit', compact('payment'));
     }
 
@@ -85,11 +100,15 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
+        if(!Gate::allows('payment_update')){
+            abort(403);
+        }
+
         $request->validate([
             'status' => 'required|in:success,failed,pending'
         ]);
         $payment->update($request->only('status'));
-        return redirect()->route('admin.payment.index')->with('success', 'Data pembayaran berhasil diubah!');
+        return redirect()->route('admin.payments.index')->with('success', 'Data pembayaran berhasil diubah!');
     }
 
     /**

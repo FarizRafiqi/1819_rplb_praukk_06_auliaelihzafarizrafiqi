@@ -15,7 +15,8 @@ class CreateBillsTable extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_penggunaan')->nullable()
+            $table->foreignId('id_penggunaan')
+                    ->nullable()
                     ->constrained('usages')
                     ->onUpdate('cascade');
             $table->string('bulan', 10);
@@ -23,6 +24,7 @@ class CreateBillsTable extends Migration
             $table->integer('jumlah_kwh');
             $table->enum('status', ['BELUM LUNAS', 'LUNAS']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
