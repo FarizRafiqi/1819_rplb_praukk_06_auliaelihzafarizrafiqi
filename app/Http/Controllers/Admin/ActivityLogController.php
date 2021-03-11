@@ -16,11 +16,11 @@ class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('activity_log_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies("activity_log_access"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($request->ajax()){
-            $activityLogs = ActivityLog::query()->select(sprintf('%s.*', (new ActivityLog)->getTable()));
+            $activityLogs = ActivityLog::get();
             return DataTables::of($activityLogs)->toJson();
         }
-        return view('pages.admin.activity-log');
+        return view("pages.admin.activity-log");
     }
 }

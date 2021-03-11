@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Customer\BillRequest;
-use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use App\Models\PlnCustomer;
 use App\Models\Usage;
 use Exception;
 use Midtrans\Config;
@@ -23,8 +23,8 @@ class TransactionController extends Controller
     {
         $paymentMethods = PaymentMethod::all();
         $totalBill = $payment->details()->first()->bill->jumlah_kwh * $payment->plnCustomer->tariff->tarif_per_kwh;
-        $total = $totalBill + config('const.biaya_admin');
-        return view('pages.pelanggan.payments', compact('payment', 'paymentMethods', 'totalBill', 'total'));
+        $total = $totalBill + config("const.biaya_admin");
+        return view("pages.pelanggan.payments", compact("payment", "paymentMethods", "totalBill", "total"));
     }
 
     /**
@@ -33,21 +33,25 @@ class TransactionController extends Controller
     public function checkBill(BillRequest $request)
     {
         if($request->ajax()){
-            $userBill = Usage::where('id_pelanggan_pln', $request->id_pelanggan)
-                                ->where('bulan', now()->locale('id')->monthName)
-                                ->where('tahun', now()->year)->firstOrFail();
+            $plnCustomer = PlnCustomer::where("nomor_meter", $request->id_pelanggan)->firstOrFail();
+            $userBill = $plnCustomer->usages()
+                                    ->where("bulan", now()->locale("id")->monthName)
+                                    ->where("tahun", now()->year)
+                                    ->firstOrFail();
+                                
             if($userBill->bill_count > 0){
+                $biayaAdmin = config("const.biaya_admin");
                 $bill = $userBill->bill->jumlah_kwh * $userBill->plnCustomer->tariff->tarif_per_kwh;
-                $total = $bill + config('const.biaya_admin');
+                $total = $bill + $biayaAdmin;
                 $data = [
-                    'userBill' => $userBill, 
-                    'bill' => 'Rp '. number_format($bill,2, ',', '.'), 
-                    'total' => 'Rp '. number_format($total,2, ',', '.'), 
-                    'biayaAdmin' => 'Rp '. number_format(config('const.biaya_admin'),2, ',', '.')
+                    "userBill" => $userBill, 
+                    "bill" => "Rp ". number_format($bill,2, ",", "."), 
+                    "total" => "Rp ". number_format($total,2, ",", "."), 
+                    "biayaAdmin" => "Rp ". number_format($biayaAdmin,2, ",", ".")
                 ];
                 return response()->json($data);
             }
-            // return response()->json(['message' => 'Tagihan tidak ditemukan'], 404);
+            // return response()->json(["message" => "Tagihan tidak ditemukan"], 404);
         }
     }
 
@@ -57,42 +61,44 @@ class TransactionController extends Controller
      */
     public function create(Request $request)
     {
-        $userBill = Usage::where('id_pelanggan_pln', $request->id_pelanggan)
-                            ->where('bulan', now()->locale('id')->monthName)
-                            ->where('tahun', now()->year)->firstOrFail();
+        $plnCustomer = PlnCustomer::where("nomor_meter", $request->id_pelanggan)->firstOrFail();
+        $userBill = $plnCustomer->usages()
+                                ->where("bulan", now()->locale("id")->monthName)
+                                ->where("tahun", now()->year)
+                                ->firstOrFail();
 
         //hitung total pembayaran
-        $biayaAdmin = config('const.biaya_admin');
+        $biayaAdmin = config("const.biaya_admin");
         $bill = $userBill->bill->jumlah_kwh * $userBill->plnCustomer->tariff->tarif_per_kwh;
         $total = $bill + $biayaAdmin;
 
         //Buat pembayaran jika belum ada, atau update tanggal_bayar nya jika ada
-        $waktuSaatIni = now()->format('Y-m-d H:i:s');
+        $waktuSaatIni = now()->format("Y-m-d H:i:s");
         $payment = Payment::updateOrCreate([
-            'id_customer' => auth()->user()->id,
-            'id_pelanggan_pln' => $request->id_pelanggan,
-            'biaya_admin' => $biayaAdmin,
-            'total_bayar' => $total,
-            'id_bank' => null,     //id bank diisi pada saat bank memverifikasi dan validasi
-            'status' => 'pending'  //Pending itu sama dengan menunggu pembayaran
-        ], ['tanggal_bayar' => $waktuSaatIni]);
+            "id_customer" => auth()->user()->id,
+            "id_pelanggan_pln" => $plnCustomer->id,
+            "biaya_admin" => $biayaAdmin,
+            "total_bayar" => $total,
+            "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
+            "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
+        ], ["tanggal_bayar" => $waktuSaatIni]);
         
         $payment->details()->updateOrCreate([
-            'id_pembayaran' => $payment->id,
-            'id_tagihan' => $userBill->bill->id,
-            'denda' => 0, // Untuk denda blm saya atur tiap bulannya berapa jika pelanggan telat bayar
-        ], ['updated_at' => $waktuSaatIni]);
+            "id_pembayaran" => $payment->id,
+            "id_tagihan" => $userBill->bill->id,
+            "denda" => 0, // Untuk denda blm saya atur tiap bulannya berapa jika pelanggan telat bayar
+        ], ["updated_at" => $waktuSaatIni]);
 
-        return redirect()->route('payment.index', $payment->id);
+        return redirect()->route("payment.index", $payment->id);
     }
 
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
         //Konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.serverKey');
-        Config::$isProduction = config('midtrans.isProduction');
-        Config::$isSanitized = config('midtrans.isSanitized');
-        Config::$is3ds = config('midtrans.is3ds');
+        Config::$serverKey = config("midtrans.serverKey");
+        Config::$isProduction = config("midtrans.isProduction");
+        Config::$isSanitized = config("midtrans.isSanitized");
+        Config::$is3ds = config("midtrans.is3ds");
 
         $midtransParams = [
             "payment_type" => "bank_transfer",
@@ -101,8 +107,8 @@ class TransactionController extends Controller
                 "gross_amount" => $payment->total_bayar,
             ],
             "customer_details" => [
-                'email' => $payment->customer->email,
-                'first_name' => $payment->customer->nama,
+                "email" => $payment->customer->email,
+                "first_name" => $payment->customer->nama,
             ],
         ];
 
@@ -118,7 +124,7 @@ class TransactionController extends Controller
                 $midtransParams["echannel"]["bill_info3"] = "Nama:";
                 $midtransParams["echannel"]["bill_info4"] = $payment->customer->nama;
                 $midtransParams["echannel"]["bill_info5"] = "tanggal";
-                $midtransParams["echannel"]["bill_info6"] = $payment->tanggal_bayar->format('d-m-Y H:i:s');
+                $midtransParams["echannel"]["bill_info6"] = $payment->tanggal_bayar->format("d-m-Y H:i:s");
                 $midtransParams["echannel"]["bill_info7"] = "ID:";
                 $midtransParams["echannel"]["bill_info8"] = $payment->id;
                 break;
@@ -129,21 +135,13 @@ class TransactionController extends Controller
         
         try {
             //cek apakah id pembayaran ini sudah ada sebelumnya
-            $response = MidtransTransaction::status('PLN-'.$payment->id);
-            if($response->transaction_status == "pending"){
-                return redirect()->route('payment.confirm', [
-                        'payment_method' => $paymentMethod->slug, 
-                        'payment' => $payment->id
+            
+            $response = CoreApi::charge($midtransParams);
+            if($response){
+                return redirect()->route("payment.confirm", [
+                        "payment_method" => $paymentMethod->slug, 
+                        "payment" => $payment->id
                     ]);
-            //Jika belum ada maka lakukan pembayaran
-            }else{
-                $response = CoreApi::charge($midtransParams);
-                if($response){
-                    return redirect()->route('payment.confirm', [
-                            'payment_method' => $paymentMethod->slug, 
-                            'payment' => $payment->id
-                        ]);
-                }
             }
         } catch (Exception $e) {
             echo $e->getMessage();
@@ -153,14 +151,15 @@ class TransactionController extends Controller
 
     public function confirm(Request $request, PaymentMethod $paymentMethod, Payment $payment){
         //Konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.serverKey');
-        Config::$isProduction = config('midtrans.isProduction');
-        Config::$isSanitized = config('midtrans.isSanitized');
-        Config::$is3ds = config('midtrans.is3ds');
+        Config::$serverKey = config("midtrans.serverKey");
+        Config::$isProduction = config("midtrans.isProduction");
+        Config::$isSanitized = config("midtrans.isSanitized");
+        Config::$is3ds = config("midtrans.is3ds");
 
-        $response = MidtransTransaction::status('PLN-'.$payment->id);
+        $response = MidtransTransaction::status("PLN-".$payment->id);
+   
         if(!empty($response) && $response->transaction_status == "pending"){
-            return view('pages.pelanggan.payment-confirm', compact('paymentMethod', 'response', 'payment'));
+            return view("pages.pelanggan.payment-confirm", compact("paymentMethod", "response", "payment"));
         }
     }
     /**
@@ -169,6 +168,6 @@ class TransactionController extends Controller
     public function transactionHistory(Request $request)
     {
         $userPayments = $request->user()->payments()->get();
-        return view('pages.pelanggan.riwayat-transaksi', compact('userPayments'));
+        return view("pages.pelanggan.riwayat-transaksi", compact("userPayments"));
     }
 }

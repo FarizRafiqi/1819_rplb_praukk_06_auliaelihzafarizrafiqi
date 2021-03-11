@@ -24,7 +24,7 @@ class BillRequest extends FormRequest
     public function rules()
     {
         return [
-                'id_pelanggan' => 'nullable|numeric|exists:pln_customers,id'
+                'id_pelanggan' => 'nullable|numeric|exists:pln_customers,nomor_meter'
         ];
     }
     public function messages()

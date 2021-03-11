@@ -36,17 +36,17 @@
 
 				@auth
 					@if(auth()->user()->isAdmin() || auth()->user()->isBank())
-						<form action="{{route('admin.dashboard')}}">
-							<button type="submit" class="btn my-0 my-md-2 px-1 px-md-2">
+						<li class="nav-item">
+							<a href="{{route('admin.dashboard')}}" class="nav-link">
 								Dashboard
-							</button>
-						</form>
+							</a>
+						</li>
 					@endif
-					<form action="{{route('logout')}}">
-						<button type="submit" class="btn btn-primary-custom my-2 my-sm-0">
-							Logout
-						</button>
-					</form>
+						<li class="nav-item">
+							<a href="{{route('logout')}}" class="nav-link btn btn-primary-custom">
+								Logout
+							</a>
+						</li>
 				@endauth
 				</ul>
 		</div>

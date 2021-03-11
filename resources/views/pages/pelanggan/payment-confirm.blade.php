@@ -29,8 +29,22 @@
                   @endif
                 </p>
                 <div class="va-number-number d-flex align-items-center justify-content-between">
-                  <p class="font-weight-bold m-0">{{$response->bill_key}}</p>
-                  <span class="clipboard-copy" data-clipboard-text="{{$response->bill_key}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
+                  <p class="font-weight-bold m-0">
+                    @if ($paymentMethod->nama == 'VA Mandiri')
+                      {{$response->bill_key}}
+                    @elseif($paymentMethod->nama == 'VA BCA')
+                      {{$response->va_numbers[0]->va_number}}
+                    @else
+                      {{$response->va_numbers[0]->va_number}}
+                    @endif
+                  </p>
+                  @if ($paymentMethod->nama == 'VA Mandiri')
+                    <span class="clipboard-copy" data-clipboard-text="{{$response->bill_key}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
+                  @elseif($paymentMethod->nama == 'VA BCA')
+                    <span class="clipboard-copy" data-clipboard-text="{{$response->va_numbers[0]->va_number}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
+                  @else
+                    <span class="clipboard-copy" data-clipboard-text="{{$response->va_numbers[0]->va_number}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
+                  @endif
                 </div>
               </div>
               <div class="total-payment font-weight-bold">
@@ -58,7 +72,17 @@
                     <li>Pilih <strong>Lainnya</strong></li>
                     <li>Pilih <strong>Multi Payment</strong></li>
                     <li>Masukkan <strong>{{$response->biller_code}}</strong> (kode perusahaan Midtrans) lalu tekan <strong>Benar.</strong></li>
-                    <li>Masukkan <strong>Kode Pembayaran</strong> Anda yaitu <strong>{{$response->bill_key}}</strong> lalu tekan <strong>Benar</strong></li>
+                    <li>Masukkan <strong>Kode Pembayaran</strong> Anda yaitu 
+                      <strong>
+                      @if ($paymentMethod->nama == 'VA Mandiri')
+                        {{$response->bill_key}}
+                      @elseif($paymentMethod->nama == 'VA BCA')
+                        {{$response->va_numbers[0]->va_number}}
+                      @else
+                        {{$response->va_numbers[0]->va_number}}
+                      @endif
+                      </strong> lalu tekan <strong>Benar</strong>
+                    </li>
                     <li>Pada halaman konfirmasi akan muncul detail pembayaran Anda. Jika informasi telah sesuai tekan <strong>Ya</strong>.</li>
                   </ol>
                   @elseif($paymentMethod->nama == 'VA BCA')
@@ -100,26 +124,23 @@
                 <div class="card-body py-2 px-2">
                 @if($paymentMethod->nama == 'VA BNI')
                   <ol>
-                    <li>Akses <strong>BNI Mobile Banking</strong> dari handphone kemudian masukkan User ID dan password</li>
+                    <li>Buka aplikasi BNI Mobile Banking dan login</li>
                     <li>Pilih menu<strong>Transfer</strong></li>
-                    <li>Pilih menu<strong>Virtual Account Billing</strong> kemudian pilih <strong>Rekening Debet</strong></li>
-                    <li>Masukkan nomor Virtual Account Anda <strong>7001 4501 0242 6284</strong> pada menu <strong>Input Baru</strong></li>
-                    <li>Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi</li>
-                    <li>Konfirmasi transaksi dan masukkan Password Transaksi</li>
-                    <li>Pembayaran Anda Telah Berhasil</li>
+                    <li>Pilih menu<strong>Virtual Account Billing</strong> kemudian pilih <strong>Rekening Debit</strong></li>
+                    <li>Pilih menu Input Baru dan masukkan 16 digit nomor Virtual Account</li>
+                    <li>Informasi tagihan akan muncul pada halaman validasi</li>
+                    <li>Jika informasi telah sesuai, masukkan Password Transaksi dan klik Lanjut</li>
+                    <li>Transaksi Anda akan diproses</li>
                   </ol>
                 @elseif($paymentMethod->nama == 'VA BCA')
                   <ol>
-                    <li>Login <strong>Mobile Banking</strong></li>
-                    <li>Pilih <strong>m-Transfer</strong></li>
-                    <li>Pilih <strong>BCA Virtual Account</strong></li>
-                    <li>Input <strong>Nomor Virtual Account</strong>, yaitu <strong>3947 1001 1078 4374 sebagai No. Virtual Account</strong></li>
-                    <li>Klik <strong>Send</strong></li>
-                    <li><strong>Informasi Virtual Account</strong> akan ditampilkan</li>
-                    <li>Klik <strong>OK</strong></li>
-                    <li>Input <strong>PIN</strong> Mobile Banking</li>
-                    <li><strong>Bukti Bayar</strong> ditampilkan</li>
-                    <li>Selesai</li>
+                    <li>Lakukan log in pada aplikasi <strong>BCA Mobile</strong>.</li>
+                    <li>Pilih menu <strong>m-BCA</strong>, kemudian masukkan kode akses <strong>m-BCA</strong>.</li>
+                    <li>Pilih <strong>m-Transfer > BCA Virtual Account</strong>.</li>
+                    <li>Pilih dari <strong>Daftar Transfer</strong>, atau masukkan <strong>Nomor Virtual Account</strong> tujuan.</li>
+                    <li>Masukkan <strong>jumlah yang ingin dibayarkan</strong>.</li>
+                    <li>Masukkan <strong>pin m-BCA</strong>.</li>
+                    <li>Pembayaran selesai. Simpan notifikasi yang muncul sebagai bukti pembayaran.</li>
                   </ol>
                 @else
                   Tidak ada instruksi pembayaran untuk metode mobile banking
@@ -163,7 +184,7 @@
                     <li>Login <strong>Internet Banking</strong></li>
                     <li>Pilih <strong>Transfer Dana</strong></li>
                     <li>Pilih <strong>Transfer ke BCA Virtual Account</strong></li>
-                    <li>Input <strong>Virtual Account Number</strong>, yaitu <strong>7001 4501 0242 6284</strong> sebagai <strong>No. Virtual Account</strong></li>
+                    <li>Input <strong>Virtual Account Number</strong>, yaitu <strong>{{$response->va_numbers[0]->va_number}}</strong> sebagai <strong>No. Virtual Account</strong></li>
                     <li>Klik <strong>Lanjutkan</strong></li>
                     <li>Input <strong>Respon KeyBCA Appli 1</strong></li>
                     <li>Klik <strong>Kirim</strong></li>
@@ -208,71 +229,52 @@
               {{-- End of SMS Banking Instruction --}}
             @endif
           </div>
-          <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" data-toggle="modal" data-target="#modalUbahMetodePembayaran" type="button">UBAH METODE PEMBAYARAN</button>
+          <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" type="button" id="btnChangePaymentMethod">UBAH METODE PEMBAYARAN</button>
         </div>
-        <div class="col-md-4 mb-3 col-order-detail ml-auto p-0 order-1 order-md-2">
-          <div class="card">
-            <div class="card-header">
-              <h5>Detail Tagihan</h5>
+        <div class="col-md-4 mb-3 col-order-detail ml-auto order-1 order-md-2">
+          <div class="accordion" id="billDetail">
+            <div class="card">
+              <div class="card-header">
+                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne">
+                  Detail Tagihan
+                </button>
+              </div>
+              <div class="collapse show" id="collapseOne" data-parent="#billDetail">
+                <div class="card-body">
+                  <dl class="row">
+                    <dt class="col-12">Nama</dt>
+                    <dd class="col-12">{{$payment->plnCustomer->nama_pelanggan}}</dd>
+                  
+                    <dt class="col-12">No. Meter / ID Pelanggan</dt>
+                    <dd class="col-12">
+                      {{$payment->plnCustomer->nomor_meter}}
+                    </dd>
+                  
+                    <dt class="col-12">Tarif / Daya</dt>
+                    <dd class="col-12">{{$payment->plnCustomer->tariff->golongan_tarif . ' / ' . $payment->plnCustomer->tariff->daya . ' VA'}}</dd>
+                  
+                    <dt class="col-12">Bulan/Tahun</dt>
+                    <dd class="col-12">{{$payment->details->first()->bill->bulan . ' / ' . $payment->details->first()->bill->tahun}}</dd>
+                  
+                    <dt class="col-12">Stand Meter</dt>
+                    <dd class="col-12">
+                      {{$payment->details->first()->bill->usage->meter_akhir . '-' . 
+                      $payment->details->first()->bill->usage->meter_awal}}
+                    </dd>
+      
+                    <dt class="col-12">Biaya Admin</dt>
+                    <dd class="col-12">
+                      @rupiah(config('const.biaya_admin'))
+                    </dd>
+      
+                    <dt class="col-12">Total Bayar</dt>
+                    <dd class="col-12">
+                      <span class="pacific-blue font-weight-bold">@rupiah($response->gross_amount)</span>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <dl class="row">
-                <dt class="col-12">Nama</dt>
-                <dd class="col-12">{{$payment->plnCustomer->nama_pelanggan}}</dd>
-              
-                <dt class="col-12">No. Meter / ID Pelanggan</dt>
-                <dd class="col-12">
-                  {{$payment->plnCustomer->nomor_meter}}
-                </dd>
-              
-                <dt class="col-12">Tarif / Daya</dt>
-                <dd class="col-12">{{$payment->plnCustomer->tariff->golongan_tarif . ' / ' . $payment->plnCustomer->tariff->daya . ' VA'}}</dd>
-              
-                <dt class="col-12">Bulan/Tahun</dt>
-                <dd class="col-12">{{$payment->details->first()->bill->bulan . ' / ' . $payment->details->first()->bill->tahun}}</dd>
-              
-                <dt class="col-12">Stand Meter</dt>
-                <dd class="col-12">
-                  {{$payment->details->first()->bill->usage->meter_akhir . '-' . 
-                  $payment->details->first()->bill->usage->meter_awal}}
-                </dd>
-  
-                <dt class="col-12">Total Tagihan</dt>
-                <dd class="col-12">
-                  @rupiah($payment->total_bayar)
-                </dd>
-  
-                <dt class="col-12">Biaya Admin</dt>
-                <dd class="col-12">
-                  @rupiah(config('const.biaya_admin'))
-                </dd>
-  
-                <dt class="col-12">Total Bayar</dt>
-                <dd class="col-12">
-                  <span class="pacific-blue font-weight-bold">@rupiah($total)</span>
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal ubah metode pembayaran -->
-    <div class="modal fade" id="modalUbahMetodePembayaran">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Peringatan</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Dengan mengganti metode pembayaran, pembayaran ini akan dibatalkan. Lanjutkan?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-light rounded-pill">YA</button>
-            <button type="button" class="btn btn-primary btn-cta" data-dismiss="modal">TIDAK</button>
           </div>
         </div>
       </div>
@@ -296,6 +298,22 @@
           timer:3000,
           title: copyMessage
         })
+      });
+
+      $("#btnChangePaymentMethod").on("click", function(){
+        Swal.fire({
+          title: "Peringatan",
+          icon: "warning",
+          text: "Dengan mengganti metode pembayaran, pembayaran ini akan dibatalkan. Lanjutkan?",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            
+          }
+        });
       });
     </script>
 @endpush

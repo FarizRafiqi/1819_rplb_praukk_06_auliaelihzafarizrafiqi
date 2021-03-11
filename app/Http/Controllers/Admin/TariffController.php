@@ -8,6 +8,7 @@ use App\Models\Tariff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Resource controller untuk model Tariff
@@ -21,14 +22,12 @@ class TariffController extends Controller
      */
     public function index(Request $request)
     {
-        if(!Gate::allows('tariff_access')){
-            abort(403);
-        }
+        abort_if(Gate::denies("tariff_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
         if($request->ajax()){
-            $tariffs = Tariff::with('plnCustomers')->get();
+            $tariffs = Tariff::with("plnCustomers")->get();
             return DataTables::of($tariffs)
-                    ->addColumn('action', function($tariffs){
+                    ->addColumn("action", function($tariffs){
                         $button = '<a href='. route("admin.tariffs.edit", $tariffs->id).' class="btn btn-success btn-sm mr-2">edit</a>';
                         $button .= '
                             <form action='.route("admin.tariffs.destroy", $tariffs->id).' method="POST" class="d-inline-block form-delete">
@@ -41,7 +40,7 @@ class TariffController extends Controller
                     })
                     ->toJson();
         }
-        return view('pages.admin.tariff.index');
+        return view("pages.admin.tariff.index");
     }
 
     /**
@@ -51,10 +50,8 @@ class TariffController extends Controller
      */
     public function create()
     {
-        if(!Gate::allows('tariff_create')){
-            abort(403);
-        }
-        return view('pages.admin.tariff.create');
+        abort_if(Gate::denies("tariff_create"), Response::HTTP_FORBIDDEN, "Forbidden");
+        return view("pages.admin.tariff.create");
     }
 
     /**
@@ -66,7 +63,7 @@ class TariffController extends Controller
     public function store(TariffRequest $request)
     {
         Tariff::create($request->all());
-        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil ditambahkan!');
+        return redirect()->route("admin.tariffs.index")->withSuccess("Tarif berhasil ditambahkan!");
     }
 
     /**
@@ -88,10 +85,8 @@ class TariffController extends Controller
      */
     public function edit(Tariff $tariff)
     {
-        if(!Gate::allows('tariff_edit')){
-            abort(403);
-        }
-        return view('pages.admin.tariff.edit', compact('tariff'));
+        abort_if(Gate::denies("tariff_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
+        return view("pages.admin.tariff.edit", compact("tariff"));
     }
 
     /**
@@ -103,11 +98,9 @@ class TariffController extends Controller
      */
     public function update(TariffRequest $request, Tariff $tariff)
     {
-        if(!Gate::allows('tariff_update')){
-            abort(403);
-        }
+        abort_if(Gate::denies("tariff_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $tariff->update($request->validated());
-        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil diubah!');
+        return redirect()->route("admin.tariffs.index")->withSuccess("Tarif berhasil diubah!");
     }
 
     /**
@@ -118,14 +111,13 @@ class TariffController extends Controller
      */
     public function destroy(Tariff $tariff)
     {
-        if(!Gate::allows('tariff_delete')){
-            abort(403);
-        }
+        abort_if(Gate::denies("tariff_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($tariff->plnCustomers()->count() > 0){
-            alert()->error('Tarif tidak bisa dihapus, karena mempunyai relasi dengan data pelanggan');
+            alert()->error("Tarif tidak bisa dihapus, karena mempunyai relasi dengan data pelanggan");
             return back();
         }
+        
         $tariff->delete();
-        return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil dihapus!');
+        return redirect()->route("admin.tariffs.index")->withSuccess("Tarif berhasil dihapus!");
     }
 }

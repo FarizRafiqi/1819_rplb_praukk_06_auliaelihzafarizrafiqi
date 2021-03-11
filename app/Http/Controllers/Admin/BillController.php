@@ -8,6 +8,7 @@ use App\Models\Usage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\Response;
 
 class BillController extends Controller
 {
@@ -18,9 +19,7 @@ class BillController extends Controller
      */
     public function index(Request $request)
     {
-        if(!Gate::allows('bill_access')){
-            abort(403);
-        }
+        abort_if(Gate::denies("bill_access"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($request->ajax()){
             $bills = Bill::get();
             return DataTables::of($bills)
