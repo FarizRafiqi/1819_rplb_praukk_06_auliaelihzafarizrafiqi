@@ -14,7 +14,7 @@
           <select name="id_pelanggan_pln" class="form-control selectpicker @error('id_pelanggan_pln')
               is-invalid
           @enderror" data-live-search="true" id="selectPlnCustomer">
-            <option selected>Pilih Pelanggan PLN</option>
+            <option selected disabled>Pilih Pelanggan PLN</option>
             @foreach($customers as $customer)
               <option value="{{$customer->id}}" {{old('id_pelanggan_pln') == $customer->id ? 'selected' : ''}}>
                 {{$customer->id . '. ' . $customer->nama_pelanggan}}
@@ -90,6 +90,21 @@
     startView: 2,
     minViewMode: 2,
     maxViewMode: 2
+  });
+
+  $("#selectPlnCustomer").on("change", function(){
+    let idPelanggan = $(this).val();
+    $.ajax({
+      url: "",
+      data: {id_pelanggan: idPelanggan},
+      dataType: "json",
+      success: function(data){
+        $("#inputMeterAwal").val(data);
+      },
+      error: function(xhr){
+        console.log(xhr.responseJSON);
+      }
+    });
   });
 </script>
 @endpush

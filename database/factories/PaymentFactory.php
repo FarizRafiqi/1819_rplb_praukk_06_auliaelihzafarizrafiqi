@@ -25,11 +25,10 @@ class PaymentFactory extends Factory
         return [
             'id_customer' => rand(1,10),
             'id_pelanggan_pln' => rand(1,10),
-            'id_tagihan' => rand(1,100),
             'tanggal_bayar' => $this->faker->dateTimeThisMonth,
-            'denda' => 0,
-            'biaya_admin' => 2500,
+            'biaya_admin' => config('const.biaya_admin'),
             'total_bayar' => rand(10000, 10000000),
+            'id_metode_pembayaran' => 1,
             'status' => $status[rand(0,2)]
         ];
     }

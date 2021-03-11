@@ -26,7 +26,6 @@ class ElectricityUsageController extends Controller
      */
     public function index(Request $request)
     {
-        // dd(activity()->log('Look mum, I logged something'));
         abort_if(Gate::denies('usage_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if($request->ajax()){
@@ -54,10 +53,15 @@ class ElectricityUsageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         abort_if(Gate::denies('usage_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $customers = PlnCustomer::get();
+
+        if($request->ajax()){
+            $usage = Usage::where('id_pelanggan_pln', $request->id_pelanggan)->max('meter_akhir');
+            return response()->json($usage);
+        }
         return view('pages.admin.electricity-usage.create', compact('customers'));
     }
 
@@ -123,17 +127,12 @@ class ElectricityUsageController extends Controller
         abort_if(Gate::denies('usage_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         /**
-         * jika penggunaan ini memiliki relasi dengan tagihan, 
-         * dan penggunaan ini memiliki relasi dengan pelanggan PLN, 
+         * jika penggunaan ini memiliki relasi dengan tagihan,
          * maka soft deletes.
          */
-        if($usage->bill_count > 0 && $usage->pln_customer_count > 0){
+        if($usage->bill_count > 0){
             $bill = Bill::firstWhere('id_penggunaan', $usage->id);
-            $bill->usage()->dissociate();
-            $bill->save();
-
-            $usage->plnCustomer()->dissociate();
-            $usage->save();
+            $bill->usage()->delete();
         }
 
         $usage->delete();

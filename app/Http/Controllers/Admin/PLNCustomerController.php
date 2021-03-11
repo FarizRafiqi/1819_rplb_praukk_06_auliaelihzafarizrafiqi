@@ -102,7 +102,7 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies('pln_customer_update'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $plnCustomer->update($request->all());
-        return back()->with("success", "Pelanggan Berhasil Diubah!");
+        return redirect()->back()->with("success", "Pelanggan Berhasil Diubah!");
     }
 
     /**
@@ -114,6 +114,11 @@ class PLNCustomerController extends Controller
     public function destroy(PlnCustomer $plnCustomer)
     {
         abort_if(Gate::denies('pln_customer_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        if(count($plnCustomer->usages) > 0){
+            alert()->error('Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan');
+            return back();
+        }
+        
         $plnCustomer->delete();
         return back()->with("Pelanggan Berhasil Dihapus!");
     }

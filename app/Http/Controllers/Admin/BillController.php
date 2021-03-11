@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bill;
+use App\Models\Usage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
@@ -22,7 +23,12 @@ class BillController extends Controller
         }
         if($request->ajax()){
             $bills = Bill::get();
-            return DataTables::of($bills)->toJson();
+            return DataTables::of($bills)
+                    ->editColumn('id_penggunaan', function($bill){
+                        return '<a href='. route("admin.usages.show", $bill->usage->id).' class="text-decoration-none">'.$bill->usage->id.'</a>';
+                    })
+                    ->rawColumns(['id_penggunaan'])
+                    ->toJson();
         }
 
         return view('pages.admin.bill.index');

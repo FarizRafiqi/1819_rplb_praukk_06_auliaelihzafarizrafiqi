@@ -17,6 +17,8 @@
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
+        "livewire/livewire": "^2.4",
+        "midtrans/midtrans-php": "^2.3",
         "realrashid/sweet-alert": "^3.2",
         "snapappointments/bootstrap-select": "^1.13",
         "spatie/laravel-activitylog": "^3.16",
@@ -57,7 +59,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan vendor:publish --force --tag=livewire:assets --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

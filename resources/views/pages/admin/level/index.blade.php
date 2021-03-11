@@ -3,7 +3,7 @@
 @section('title', 'Pelanggan PLN')
 
 @section('content')
-<div class="container w-50 mb-3">
+<div class="container {{Cookie::get('enable_sidebar') ? '' : 'w-50'}} mb-3">
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Level</h3>
     <a href="{{route('admin.levels.create')}}" class="btn btn-primary-custom">

@@ -27,7 +27,7 @@ class PlnCustomerRequest extends FormRequest
             'nama_pelanggan' => 'required|string',
             'nomor_meter' => 'required|numeric|unique:pln_customers',
             'alamat' => 'required|string|nullable',
-            'id_tarif' => 'required|numeric|exists:tariffs'
+            'id_tarif' => 'required|numeric|exists:tariffs,id'
         ];
     }
 

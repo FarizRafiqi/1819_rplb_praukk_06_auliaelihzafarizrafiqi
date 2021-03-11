@@ -43,7 +43,7 @@ class UsageRequest extends FormRequest
                     return $query->where('id_pelanggan_pln', $idPelanggan)
                                  ->where('bulan', $bulan)
                                  ->where('tahun', $tahun);
-                })
+                })->ignore($this->id)
             ],
             'tahun' => 'required|date_format:Y|date_equals:'.now()->year,
             'meter_awal' => 'required|numeric',

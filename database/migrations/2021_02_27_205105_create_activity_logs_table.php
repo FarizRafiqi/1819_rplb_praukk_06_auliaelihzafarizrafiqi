@@ -19,9 +19,9 @@ class CreateActivityLogsTable extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user')->constrained('users'); //User mana yang melakukan suatu event
+            $table->unsignedBigInteger('id_user')->nullable(); //User mana yang melakukan suatu event
             $table->string('tabel_referensi'); //Tabel mana yang sedang di track aktivitasnya
-            $table->unsignedBigInteger('id_referensi'); //Record (baris) mana dari tabel yang di referensikan
+            $table->unsignedBigInteger('id_referensi')->nullable(); //Record (baris) mana dari tabel yang di referensikan
             $table->text('deskripsi'); // Apa yang dilakukan oleh mereka
             $table->timestamps();
         });

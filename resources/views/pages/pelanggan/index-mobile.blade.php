@@ -18,10 +18,11 @@
 <!-- End of Jumbotron -->
 
 <!-- Main Content -->
-<div class="container">
+<main class="container">
   <!-- Input ID Pelanggan -->
   <div class="card card-input-no-meteran p-1">
-    <form action="{{route('tagihan')}}">
+    <form action="{{route('payment.create')}}" method="POST" id="formTagihan">
+      @csrf
       <div class="form-row">
         <div class="col-9">
           <input class="form-control @error('id_pelanggan')
@@ -29,13 +30,52 @@
           @enderror" name="id_pelanggan" id="inputIDPelanggan" type="text" placeholder="ID Pelanggan" autocomplete="off" autofocus>
         </div>
         <div class="col-3">
-          <button class="btn btn-secondary-custom w-100" type="submit">Cek</button>
+          <button class="btn btn-secondary-custom w-100" type="submit" id="btnBayar" disabled>Bayar</button>
         </div>
-        <div class="col-12">
-            <span class="text-danger" style="font-size: 16px;"></span>
-        </div>
+        <span class="col-12" id="validation-errors"></span>
       </div>
     </form>
+    <div class="modal" tabindex="-1" id="modalTagihan">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Tagihan Pelanggan</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <dl class="row">
+              <dt class="col-12">Nama Lengkap</dt>
+              <dd class="col-12" id="namaLengkap">A description list is perfect for defining terms.</dd>
+            
+              <dt class="col-12">Jumlah Periode</dt>
+              <dd class="col-12" id="jumlahPeriode"></dd>
+            
+              <dt class="col-12">Periode</dt>
+              <dd class="col-12" id="periode"></dd>
+            
+              <dt class="col-12 text-truncate">Tagihan</dt>
+              <dd class="col-12" id="tagihan">This can be useful when space is tight. Adds an ellipsis at the end.</dd>
+            
+              <dt class="col-12">Biaya Admin</dt>
+              <dd class="col-12" id="biayaAdmin"></dd>
+
+              <dt class="col-12">Total</dt>
+              <dd class="col-12 font-weight-bold" id="total"></dd>
+            </dl>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            <form action="{{route('payment.create')}}" method="POST">
+              @csrf
+              <input type="hidden" name="id_pelanggan">
+              <button type="submit" class="btn btn-primary">Bayar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- End of Input ID Pelanggan -->
 
@@ -142,7 +182,89 @@
       </div>
     </div>
   </section>
-</div>
+</main>
 
 <!-- End of Main Content -->
 @endsection
+@push('addon-script')
+  <script>
+    $(".btn-bayar").prop("disabled", true);
+    $("#inputIDPelanggan").on("keyup", delay(function(){
+      let idPelanggan = $(this).val();
+      $("#modalTagihan input[name='id_pelanggan']").val(idPelanggan);
+      checkBill(idPelanggan);
+    }, 500));
+
+    function checkBill(idPelanggan){
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+
+      $.ajax({
+        url: "{{route('check-bill')}}",
+        type: "post",
+        dataType: "json",
+        data: {id_pelanggan: idPelanggan},
+        success: function(data){
+            $("#btnBayar").attr("disabled", false); //aktifkan tombol bayar
+
+            //hilangkan pesan error dan spinnernya jika data berhasil di ambil
+            $('#validation-errors').children().remove();
+            $("#btnBayar .spinner-border").remove();
+
+            //Jika data tagihan ditemukan, maka cek apakah statusnya sudah terbayar atau belum
+            //jika sudah terbayar maka tampilkan pesan
+            if(data.userBill.bill.status == 'LUNAS'){
+              $("#btnBayar").prop("disabled", true); //nonaktifkan tombol bayar
+              Swal.fire({
+                title: 'Tagihan Sudah Terbayar',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+              })
+            }else{
+              $('#modalTagihan').modal('show');
+              $("#btnBayar").prop("disabled", false); //aktifkan tombol bayar
+              //cek apakah data tagihan user ada
+              if(data.userBill !== null){
+                $("#namaLengkap").html(data.userBill.pln_customer.nama_pelanggan);
+                $("#periode").html(data.userBill.bulan + " " + data.userBill.tahun);
+                $("#jumlahPeriode").html(data.userBill.bill_count);
+              }
+              $("#tagihan").html(data.bill);
+              $("#biayaAdmin").html(data.biayaAdmin);
+              $("#total").html(data.total);
+            }
+        },
+        error: function(xhr){
+          $('#validation-errors').children().remove();
+          $("#btnBayar .spinner-border").remove();
+          $("#btnBayar").prop("disabled", true); //nonaktifkan tombol Bayar
+          $('#modalTagihan').modal('hide');
+
+          // if(xhr.status === 404){
+          //   $('#validation-errors').html('<span class="text-danger mt-2">Tagihan tidak ditemukan!</span>').fadeIn(30);
+          // }
+
+          if(xhr.responseJSON !== undefined){
+            $.each(xhr.responseJSON.errors, function(key,value) {
+                $('#validation-errors').append('<span class="text-danger mt-2">'+value+'</span>').fadeIn(30);
+            }); 
+          }
+        }
+      });
+    }
+
+    function delay(callback, ms){
+      let timer = 0;
+      return function(){
+        let context = this, args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function(){
+          callback.apply(context, args);
+        }, ms || 0);
+      }
+    }
+  </script>
+@endpush

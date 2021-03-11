@@ -26,7 +26,7 @@ class TariffController extends Controller
         }
 
         if($request->ajax()){
-            $tariffs = Tariff::with('customers')->get();
+            $tariffs = Tariff::with('plnCustomers')->get();
             return DataTables::of($tariffs)
                     ->addColumn('action', function($tariffs){
                         $button = '<a href='. route("admin.tariffs.edit", $tariffs->id).' class="btn btn-success btn-sm mr-2">edit</a>';
@@ -120,6 +120,10 @@ class TariffController extends Controller
     {
         if(!Gate::allows('tariff_delete')){
             abort(403);
+        }
+        if($tariff->plnCustomers()->count() > 0){
+            alert()->error('Tarif tidak bisa dihapus, karena mempunyai relasi dengan data pelanggan');
+            return back();
         }
         $tariff->delete();
         return redirect()->route('admin.tariffs.index')->withSuccess('Tarif berhasil dihapus!');

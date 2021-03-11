@@ -9,7 +9,7 @@
         <div class="card mb-4">
           <div class="card-header">
             <h5 class="card-title">
-              Detail Pembayaran 
+              Pembayaran 
             </h5>
           </div>
           <div class="card-body">
@@ -17,68 +17,40 @@
               <dt class="col-md-4">ID Pembayaran</dt>
               <dd class="col-md-8">{{$payment->id}}</dd>
 
-              <dt class="col-md-4">ID Tagihan</dt>
-              <dd class="col-md-8">{{$payment->bill->id}}</dd>
-
               <dt class="col-md-4">Nama Customer</dt>
               <dd class="col-md-8">{{$payment->customer->nama}}</dd>
 
               <dt class="col-md-4">Nama Pelanggan PLN</dt>
               <dd class="col-md-8">{{$payment->plnCustomer->nama_pelanggan}}</dd>
 
-              <dt class="col-md-4">BL/TH</dt>
-              <dd class="col-md-8">{{$payment->bill->bulan . "/" . $payment->bill->tahun}}</dd>
-
               <dt class="col-md-4">Tanggal Bayar</dt>
               <dd class="col-md-8">{{$payment->tanggal_bayar}}</dd>
 
-              <dt class="col-md-4">Stand Meter</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->meter_akhir . "-" . $payment->bill->usage->meter_awal}}</dd>
-
               <dt class="col-md-4">Biaya Admin</dt>
-              <dd class="col-md-8">{{$payment->formatted_biaya_admin}}</dd>
-
-              <dt class="col-md-4">Denda</dt>
-              <dd class="col-md-8">{{$payment->formatted_denda}}</dd>
+              <dd class="col-md-8">@rupiah($payment->biaya_admin)</dd>
 
               <dt class="col-md-4">Total Bayar</dt>
-              <dd class="col-md-8">Rp {{$totalBayar}}</dd>
+              <dd class="col-md-8">@rupiah($payment->total_bayar)</dd>
 
               <dt class="col-md-4">Metode Pembayaran</dt>
-              <dd class="col-md-8">-</dd>
+              <dd class="col-md-8">{{$payment->paymentMethod->nama}}</dd>
 
               <dt class="col-md-4">Status</dt>
               <dd class="col-md-8">
-                <span class="badge pill-badge badge-success p-1">{{$payment->status}}</span>
+                @switch($payment->status)
+                    @case('success')
+                        <span class="badge pill-badge badge-success p-1">{{$payment->status}}</span>
+                        @break
+                    @case('pending')
+                        <span class="badge pill-badge badge-warning p-1">{{$payment->status}}</span>
+                        @break
+                    @case('failed')
+                        <span class="badge pill-badge badge-danger p-1">{{$payment->status}}</span>
+                        @break
+                    @default
+                        
+                @endswitch
               </dd>
-            </dl>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">
-              Detail Tagihan
-            </h5>
-          </div>
-          <div class="card-body">
-            <dl class="row">
-              <dt class="col-md-4">ID Tagihan</dt>
-              <dd class="col-md-8">{{$payment->bill->id}}</dd>
-
-              <dt class="col-md-4">ID Penggunaan</dt>
-              <dd class="col-md-8">{{$payment->bill->id}}</dd>
-
-              <dt class="col-md-4">Bulan</dt>
-              <dd class="col-md-8">{{$payment->bill->bulan}}</dd>
-
-              <dt class="col-md-4">Tahun</dt>
-              <dd class="col-md-8">{{$payment->bill->tahun}}</dd>
-
-              <dt class="col-md-4">Jumlah KwH</dt>
-              <dd class="col-md-8">{{$payment->bill->jumlah_kwh}}</dd>
-
-              <dt class="col-md-4">Status</dt>
-              <dd class="col-md-8">{{$payment->bill->status}}</dd>
             </dl>
           </div>
         </div>
@@ -112,32 +84,25 @@
             </dl>
           </div>
         </div>
+      </div>
+      <div class="col-12">
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">
-              Detail Penggunaan
+              Detail Pembayaran 
             </h5>
           </div>
           <div class="card-body">
-            <dl class="row">
-              <dt class="col-md-4">ID Penggunaan</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->id}}</dd>
-
-              <dt class="col-md-4">ID Pelanggan PLN</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->id_pelanggan_pln}}</dd>
-
-              <dt class="col-md-4">Bulan</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->bulan}}</dd>
-
-              <dt class="col-md-4">Tahun</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->tahun}}</dd>
-
-              <dt class="col-md-4">Meter Awal</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->meter_awal}}</dd>
-
-              <dt class="col-md-4">Meter Akhir</dt>
-              <dd class="col-md-8">{{$payment->bill->usage->meter_akhir}}</dd>
-            </dl>
+            <table class="table table-stripped table-bordered w-100" id="paymentDetails">
+              <thead>
+                <tr>
+                  <td>ID</td>
+                  <td>ID Pembayaran</td>
+                  <td>ID Tagihan</td>
+                  <td>Denda</td>
+                </tr>
+              </thead>
+            </table>
           </div>
         </div>
       </div>
@@ -146,4 +111,19 @@
 @endsection
 
 @push('addon-script')
+<script>
+  $('#paymentDetails').DataTable({
+      responsive: true,
+      serverSide: true,
+      ajax: "",
+      columns: [
+          {data: 'id'},
+          {data: 'id_pembayaran'},
+          {data: 'id_tagihan'},
+          {data: 'denda',
+           render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+          }
+      ]
+  });
+</script>
 @endpush

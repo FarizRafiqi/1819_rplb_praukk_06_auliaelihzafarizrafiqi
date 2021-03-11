@@ -11,6 +11,12 @@ class Payment extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+    protected $with = ['details'];
+    
+    protected $casts = [
+        'tanggal_bayar' => 'datetime:d-m-Y',
+        'created_at' => 'datetime:d-m-Y',
+    ];
 
     public function customer()
     {
@@ -27,26 +33,13 @@ class Payment extends Model
         return $this->belongsTo(PlnCustomer::class, 'id_pelanggan_pln');
     }
 
-    public function bill()
+    public function details()
     {
-        return $this->belongsTo(Bill::class, "id_tagihan");
+        return $this->hasMany(PaymentDetail::class, "id_pembayaran");
     }
 
-    public function getFormattedBiayaAdminAttribute()
+    public function paymentMethod()
     {
-        $biayaAdmin = number_format($this->biaya_admin, 2, ',', '.');
-        return "Rp $biayaAdmin";
-    }
-
-    public function getFormattedDendaAttribute()
-    {
-        $denda = number_format($this->denda, 2, ',', '.');
-        return "Rp $denda";
-    }
-
-    public function getFormattedTotalBayarAttribute()
-    {
-        $totalBayar = number_format($this->total_bayar, 2, ',', '.');
-        return "Rp $totalBayar";
+        return $this->belongsTo(PaymentMethod::class, "id_metode_pembayaran");
     }
 }

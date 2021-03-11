@@ -10,35 +10,61 @@
       <form action="{{route('admin.usages.update', $usage->id)}}" method="POST">
         @csrf
         @method('PUT')
+        <input type="hidden" name="id" value="{{$usage->id}}">
         <div class="form-group">
           <label for="selectPlnCustomer">ID Pelanggan</label>
-          <select name="id_pelanggan_pln" class="form-control selectpicker" data-live-search="true" id="selectPlnCustomer">
+          <select name="id_pelanggan_pln" class="form-control selectpicker @error('id_pelanggan_pln')
+              is-invalid
+          @enderror" data-live-search="true" id="selectPlnCustomer">
             <option selected>Pilih Pelanggan PLN</option>
             @foreach($customers as $customer)
               <option value="{{$customer->id}}" {{($customer->id == $usage->plnCustomer->id) ? 'selected' : ''}}>{{$customer->id . '. ' . $customer->nama_pelanggan}}</option>
             @endforeach
           </select>
+          @error('id_pelanggan_pln')
+              <span class="invalid-feedback">{{$message}}</span>
+          @enderror
         </div>
         <div class="form-group">
           <label for="inputMeterAwal">Meter Awal</label>
-          <input type="text" name="meter_awal" class="form-control" id="inputMeterAwal"  value="{{$usage->meter_awal}}" placeholder="Masukkan meter awal"></input>
+          <input type="text" name="meter_awal" class="form-control @error('meter_awal')
+              is-invalid
+          @enderror" id="inputMeterAwal" value="{{$usage->meter_awal}}" placeholder="Masukkan meter awal">
+          @error('meter_awal')
+            <span class="invalid-feedback">{{$message}}</span>
+          @enderror
         </div>
         <div class="form-group">
           <label for="inputMeterAkhir">Meter Akhir</label>
-          <input type="text" name="meter_akhir" class="form-control" id="inputMeterAkhir"  value="{{$usage->meter_akhir}}" placeholder="Masukkan meter akhir"></input>
+          <input type="text" name="meter_akhir" class="form-control @error('meter_akhir')
+            is-invalid    
+          @enderror" id="inputMeterAkhir"  value="{{$usage->meter_akhir}}" placeholder="Masukkan meter akhir">
+          @error('meter_akhir')
+            <span class="invalid-feedback">{{$message}}</span>
+          @enderror
         </div>
         
         <div class="form-group">
           <label for="inputBulan">Bulan</label>
-          <input type="text" class="form-control" id="inputBulan" value="{{$usage->bulan}}">
+          <input type="text" name="bulan" class="form-control @error('bulan')
+            is-invalid   
+          @enderror" id="inputBulan" value="{{$usage->bulan}}">
+          @error('bulan')
+            <span class="invalid-feedback">{{$message}}</span>
+          @enderror
         </div>
 
         <div class="form-group">
           <label for="inputTahun">Tahun</label>
-          <input type="text" class="form-control" id="inputTahun" value="{{$usage->tahun}}">
+          <input type="text" name="tahun" class="form-control @error('tahun')
+            is-invalid   
+          @enderror" id="inputTahun" value="{{$usage->tahun}}">
+          @error('tahun')
+            <span class="invalid-feedback">{{$message}}</span>
+          @enderror
         </div>
         
-        <a href="{{route('admin.tariffs.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{route('admin.usages.index')}}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>

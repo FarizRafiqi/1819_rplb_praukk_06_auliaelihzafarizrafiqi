@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Usage extends Model
 {
@@ -31,5 +30,11 @@ class Usage extends Model
     public function getMeterAkhirAttribute($value)
     {
         return sprintf("%08d", $value);
+    }
+
+    public function getStandMeter()
+    {
+        $standMeter = sprintf("%08d", $this->meter_akhir) . '-' . sprintf("%08d", $this->meter_akhir);
+        return $standMeter; 
     }
 }

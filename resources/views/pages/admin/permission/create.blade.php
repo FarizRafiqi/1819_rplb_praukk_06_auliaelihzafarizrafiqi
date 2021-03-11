@@ -1,83 +1,48 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah User')
+@section('title', 'Tambah Hak Akses')
 
 @section('content')
-  <div class="container">
-    <h3 class="mb-4">Tambah User</h3>
+  <div class="container w-50">
+    <h3 class="mb-4">Tambah Hak Akses</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.users.store')}}" method="POST">
+      <form action="{{route('admin.permissions.store')}}" method="POST">
         @csrf
         <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputNama">Nama</label>
-            <input type="text" name="nama" class="form-control @error('nama')
+          <div class="form-group col-md-12">
+            <label>Title</label>
+            <input type="text" name="title[]" class="form-control @error('title')
                 is-invalid
-            @enderror" id="inputNama" value="{{old('nama')}}" placeholder="Masukkan nama">
-            @error('nama')
+            @enderror" value="" placeholder="Masukkan title">
+            @error('title')
               <span class="text-danger">{{$message}}</span>
             @enderror
           </div>
-          <div class="form-group col-md-6">
-            <label for="username">Username</label>
-            <input type="text" name="username" class="form-control @error('username')
-                is-invalid
-            @enderror" id="username" value="{{old('username')}}" placeholder="Masukkan username">
-            @error('username')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
-          </div>
+          <button class="btn btn-primary-custom ml-auto" type="button" id="btnAddRow">Tambah Baris</button>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputEmail">Email</label>
-            <input type="text" name="email" class="form-control @error('email')
-                is-invalid
-            @enderror" id="inputEmail" value="{{old('email')}}" placeholder="Masukkan email">
-            @error('email')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-6">
-            <label for="selectGolonganTarif">Level</label>
-            <select name="id_level" class="form-control @error('id_level')
-                is-invalid
-            @enderror" id="selectGolonganTarif">
-              <option selected>Pilih Level</option>
-              @foreach($levels as $level)
-                <option value="{{$level->id}}" {{($level->id == old('id_level') ? 'selected' : '')}}>{{$level->level}}</option>
-              @endforeach
-            </select>
-            @error('id_level')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="password">Password</label>
-            <input type="password" name="password" class="form-control @error('password')
-                is-invalid
-            @enderror" id="password" placeholder="Masukkan password">
-            @error('password')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
-          </div>
-          <div class="form-group col-md-6">
-            <label for="passwordConfirmation">Konfirmasi Password</label>
-            <input type="password" name="password_confirmation" class="form-control @error('password_confirmation')
-                is-invalid
-            @enderror" id="passwordConfirmation" placeholder="Konfirmasi password">
-            @error('password_confirmation')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
-          </div>
-        </div>
-        <a href="{{route('admin.users.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{route('admin.permissions.index')}}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>
     </div>
   </div>
 @endsection
+@push('addon-script')
+  <script>
+    const maxInput = 10;
+    let i = 0;
+    $("#btnAddRow").on("click", function(e){
+      i++;
+      e.preventDefault();
+      $(this).appendTo('form .form-row');
+      let input = $(".form-group").last();
+      if(i < maxInput){
+        input.clone().prependTo('form .form-row');
+      }else{
+        $(".text-danger.info").remove();
+        $("<span class='text-danger info mr-auto'>Maksmimal 10 baris</span>").prependTo('form .form-row');
+      }
+    })
+  </script>
+@endpush

@@ -11,7 +11,7 @@ class Tariff extends Model
 
     protected $guarded = [];
     
-    public function customers()
+    public function plnCustomers()
     {
         return $this->hasMany(PlnCustomer::class, 'id_tarif');
     }

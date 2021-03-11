@@ -9,3 +9,6 @@
 
 <!-- Bootstrap 4 Select Plugin v.1.13.14 -->
 <script src="{{ asset('assets/plugin/bootstrap-select-1.13.14/js/bootstrap-select.min.js') }}"></script>
+
+<!-- Fontawesome v5.11.2-->
+<script src="{{asset('assets/plugin/fontawesome/all.js')}}"></script>

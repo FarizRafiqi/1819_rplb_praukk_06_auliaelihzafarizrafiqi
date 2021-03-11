@@ -25,7 +25,7 @@ class PaymentController extends Controller
         }
 
         if($request->ajax()){
-            $payments = Payment::with(['plnCustomer', 'customer'])->get();
+            $payments = Payment::with(['plnCustomer', 'customer', 'details', 'paymentMethod'])->get();
             return Datatables::of($payments)
                     ->addColumn('action', function($payments){
                         $button = '<a href="'. route("admin.payments.edit", $payments->id).'" class="btn btn-success btn-sm">edit</a>';
@@ -70,7 +70,10 @@ class PaymentController extends Controller
         if(!Gate::allows('payment_show')){
             abort(403);
         }
-
+        if(request()->ajax()){
+            return Datatables::of($payment->details())
+                                ->toJson();
+        }
         $totalBayar = $payment->total_bayar+$payment->denda+$payment->biaya_admin;
         $totalBayar = number_format($totalBayar, 2, ",", ".");
         return view('pages.admin.payment.show', compact('payment', 'totalBayar'));

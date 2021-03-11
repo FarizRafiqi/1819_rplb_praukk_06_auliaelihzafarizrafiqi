@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Resource controller untuk model Permission
@@ -20,17 +21,20 @@ class PermissionController extends Controller
      */
     public function index(Request $request)
     {
-        if(!Gate::allows('permission_access')){
-            abort(403);
-        }
+        abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
         if($request->ajax()){
             $permissions = Permission::all();
             return DataTables::of($permissions)
                     ->addColumn('action', function($permissions){
-                        $button = '<a href='. route("admin.permissions.edit", $permissions->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.permissions.show", $permissions->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '<a href='. route("admin.permissions.destroy", $permissions->id).' class="btn btn-danger btn-sm">delete</a>';
+                        $button = '<a href='. route("admin.permissions.edit", $permissions->id).' class="btn btn-success btn-sm mr-2 btn-edit">edit</a>';
+                        $button .= '
+                            <form action='.route("admin.permissions.destroy", $permissions->id).' method="POST" class="d-inline-block form-delete">
+                                '. csrf_field() .'
+                                '. method_field("DELETE") .'
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
+                            </form>
+                        ';
                         return $button;
                     })
                     ->toJson();
@@ -45,9 +49,8 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        if(!Gate::allows('permission_create')){
-            abort(403);
-        }
+        abort_if(Gate::denies('permission_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        return view('pages.admin.permission.create');
     }
 
     /**
@@ -58,20 +61,21 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Permission  $permission
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Permission $permission)
-    {
-        if(!Gate::allows('permission_show')){
-            abort(403);
+        $request->validate(
+            [
+                'title.*' => 'required|string|min:3'
+            ],
+            [
+                'title.*.required' => 'Title tidak boleh kosong',
+                'title.*.string' => 'Title harus berupa karakter',
+                'title.*.min' => 'Title minimal terdiri dari 3 karakter',
+            ]
+        );
+    
+        foreach ($request->title as $key => $value) {
+            Permission::create(['title' => $value]);
         }
+        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil ditambahkan!');
     }
 
     /**
@@ -82,9 +86,8 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        if(!Gate::allows('permission_edit')){
-            abort(403);
-        }
+        abort_if(Gate::denies('permission_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        return view('pages.admin.permission.edit', compact('permission'));
     }
 
     /**
@@ -96,9 +99,19 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        if(!Gate::allows('permission_update')){
-            abort(403);
-        }
+        abort_if(Gate::denies('permission_update'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $request->validate(
+            [
+            'title' => 'required|string|min:3'
+            ],
+            [
+                'title.required' => 'Title tidak boleh kosong',
+                'title.string' => 'Title harus berupa karakter',
+                'title.min' => 'Title minimal terdiri dari 3 karakter',
+            ]
+        );
+        Permission::create($request->all());
+        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil diubah!');
     }
 
     /**
@@ -109,8 +122,9 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        if(!Gate::allows('permission_delete')){
-            abort(403);
-        }
+        abort_if(Gate::denies('permission_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $permission->levels()->detach();
+        $permission->delete();
+        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil dihapus!');
     }
 }

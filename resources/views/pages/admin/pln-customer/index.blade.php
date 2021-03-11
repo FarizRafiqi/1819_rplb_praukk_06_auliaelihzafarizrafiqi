@@ -3,7 +3,7 @@
 @section('title', 'Pelanggan PLN')
 
 @section('content')
-<div class="container mb-3">
+<div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -52,7 +52,11 @@
                 data.substr( 0, 30 ) +'…' :
                 data;
             }},
-            {data: 'tariff.golongan_tarif'},
+            {data: 'tariff.golongan_tarif',
+              render: function(data, type, row) {
+                return data + '/' + row.tariff.daya + ' VA'
+              }
+            },
             {data: 'action', searchable: false, orderable: false},
         ],
     });
@@ -63,8 +67,7 @@
       if($(e.target).hasClass('btn-delete')){
         e.preventDefault();
         Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: "Data pelanggan, tagihan, dan tarif dari pelanggan ini akan dihapus",
+          title: 'Apakah kamu yakin ingin menghapusnya?',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',

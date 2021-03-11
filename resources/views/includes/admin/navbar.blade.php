@@ -58,7 +58,7 @@
 					<a class="nav-link" href="{{route('admin.tariffs.index')}}">Tarif</a>
 				</li>
 			@endcan
-			<li class="nav-item">
+			<li class="nav-item {{Route::is('admin.reports') ? 'active' : ''}}">
 				<a class="nav-link" href="{{route('admin.reports')}}">Laporan</a>
 			</li>
 		</ul>
@@ -69,6 +69,7 @@
 			</a>
 			<ul class="dropdown-menu">
 				<li><a class="dropdown-item" href="{{route('admin.profile.index')}}">Profile</a></li>
+				<li><a class="dropdown-item" href="{{route('admin.settings')}}">Setting</a></li>
 				<li><hr class="dropdown-divider"></li>
 				<li>
 					<a href="{{route('logout')}}" class="dropdown-item">Logout</a>

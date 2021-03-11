@@ -6,7 +6,7 @@
 <div class="container w-50 mb-3">
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Hak Akses</h3>
-    <a href="{{route('admin.users.create')}}" class="btn btn-primary-custom">
+    <a href="{{route('admin.permissions.create')}}" class="btn btn-primary-custom">
       <i class="fas fa-plus"></i>
       Tambah
     </a>
@@ -37,6 +37,27 @@
             {data: 'title'},
             {data: 'action', searchable: false, orderable: false},
         ]
+    });
+
+    $("#permissions").on("click.dt", function(e){
+      /*cek apakah yang diklik adalah tombol delete, 
+      jika true maka tampilkan alert konfirmasi*/
+      if($(e.target).hasClass('btn-delete')){
+        e.preventDefault();
+        Swal.fire({
+          title: 'Apakah kamu yakin?',
+          text: "Data hak akses ini akan dihapus beserta dengan relasinya!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus itu!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $(e.target).parent().submit();
+          }
+        })
+      }
     });
   </script>
 @endpush

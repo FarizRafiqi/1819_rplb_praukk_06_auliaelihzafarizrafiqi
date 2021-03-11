@@ -36,16 +36,13 @@ class RegisterController extends Controller
             ]
         );
 
-        $user = User::create([
+        Auth::login($user = User::create([
             'nama' => $request->nama,
             'username' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'id_level' => 2 // id pelanggan
-        ]);
-
-        alert('Registrasi Berhasil!', '', 'success');
-        Auth::login($user, true);
-        return redirect()->route('login');
+        ]), true);
+        return redirect()->route('login')->withSuccess('Registrasi Berhasil!');
     }
 }

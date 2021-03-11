@@ -58,6 +58,8 @@ class PermissionSeeder extends Seeder
             ['title' => 'permission_update'],
             ['title' => 'permission_delete'],
             ['title' => 'permission_edit'],
+            ['title' => 'activity_log_access'],
+            ['title' => 'report_create'],
         ];
 
         Permission::insert($permissions);

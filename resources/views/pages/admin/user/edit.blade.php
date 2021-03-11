@@ -2,7 +2,7 @@
 
 @section('title', 'Edit User')
 @section('content')
-  <div class="container container-edit-user">
+  <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container container-edit-user'}}">
     <h3 class="mb-4">Edit User</h3>
     <div class="card">
       <div class="card-body">
@@ -42,7 +42,6 @@
           </div>
           <div class="form-group col-md-6">
             <label for="selectLevel">Level</label>
-            @if(!$user->id_level === 1 || !$user->level->level == 'administrator')
               <select name="id_level" class="form-control @error('id_level')
                 is-invalid 
               @enderror" id="selectLevel">
@@ -51,12 +50,9 @@
                   <option value="{{$level->id}}" {{($level->id == $user->id_level) ? 'selected' : ''}}>{{$level->level}}</option>
                 @endforeach
               </select>
-            @else
-              <input class="form-control" value="{{$user->level->level}}" disabled>
-            @endif
-            @error('id_level')
-              <span class="text-danger">{{$message}}</span>
-            @enderror
+              @error('id_level')
+                <span class="text-danger">{{$message}}</span>
+              @enderror
           </div>
         </div>
         <h4>Atur Password</h4>

@@ -7,8 +7,8 @@ use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
 
 /**
@@ -29,8 +29,13 @@ class DashboardController extends Controller
         $totalPendapatan = 'Rp '. number_format($totalPendapatan, 2, ',', '.');
 
         //ambil pendapatan bulan ini dari stored function yang telah dibuat di database
-        $monthEarnings = DB::select('SELECT getMonthEarnings() AS pendapatan_bulan_ini')[0]->pendapatan_bulan_ini;
-        $monthEarnings = 'Rp '. number_format($monthEarnings, 2, ',', '.');
+        $monthEarnings = DB::select('SELECT getMonthEarnings() AS pendapatan_bulan_ini');
+        if(empty($monthEarnings)){
+            $monthEarnings = 0;
+        }else{
+            $monthEarnings[0]->pendapatan_bulan_ini;
+            $monthEarnings = 'Rp '. number_format($monthEarnings, 2, ',', '.');
+        }
         $bills = Bill::get();
 
         if($request->ajax()){
@@ -38,7 +43,20 @@ class DashboardController extends Controller
             return DataTables::of($paymentHistories)
                     ->toJson();
         }
-
         return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments', 'monthEarnings'));
+    }
+
+    /**
+     * Method untuk mengatur tampilan dashboard
+     */
+    public function settings(Request $request)
+    {
+        $cookieEnableSidebar = Cookie::get('enable_sidebar');
+        $enableSidebar = $request->boolean('enable_sidebar', $cookieEnableSidebar);
+        if(!$enableSidebar){
+            $enableSidebar = false;
+        }
+        Cookie::queue('enable_sidebar', $enableSidebar, 60*24, '/');
+        return view('pages.admin.settings');
     }
 }

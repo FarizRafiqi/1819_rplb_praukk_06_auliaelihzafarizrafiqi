@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route,
     App\Http\Controllers\HomeController,
     App\Http\Controllers\Auth\LoginController,
@@ -15,12 +16,31 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\TariffController,
     App\Http\Controllers\Admin\UserProfileController,
     App\Http\Controllers\Admin\ActivityLogController,
-    App\Http\Controllers\Admin\PermissionController;
+    App\Http\Controllers\Admin\PermissionController,
+    App\Http\Controllers\Admin\TransactionController,
+    App\Http\Controllers\Admin\PaymentMethodController,
+    App\Http\Controllers\Admin\PermissionLevelController;
 
 Route::get('/', [HomeController::class, "index"])->name("home");
-Route::post('/', [HomeController::class, "checkBill"])->name("tagihan");
 Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about-us");
-Route::get('/transaction-history', [HomeController::class, "transactionHistory"])->name("transaction-history");
+
+//Upload File
+Route::post('/', [TransactionController::class, "checkBill"])->name("check-bill");
+Route::post('upload', [UploadController::class, "store"])->name('upload.store');
+Route::delete('upload', [UploadController::class, "destroy"])->name('upload.destroy');
+
+//Transaksi
+Route::group(['middleware' => ['auth']], function(){
+  Route::get('/transaction-history', [TransactionController::class, "transactionHistory"])->name("transaction-history");
+
+  Route::group(['prefix' => 'payments', 'as' => 'payment.'], function(){
+    Route::get('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "confirm"])->name('confirm');
+    Route::post('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "process"])->name('process');
+    Route::get('/{payment}', [TransactionController::class, "index"])->name('index');
+    
+    Route::post('create', [TransactionController::class, "create"])->name('create');
+  });
+});
 
 // Auth
 Route::get('/login', [LoginController::class, "index"])->name('login');
@@ -33,14 +53,19 @@ Route::post('/register', [RegisterController::class, "register"])->name('auth.re
 Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
+  Route::post('/reports/payment', [ReportController::class, "printPaymentReports"])->name('reports.payment');
 
   // User Profile
   Route::get('profile', [UserProfileController::class, "index"])->name('profile.index');
   Route::get('profile/edit', [UserProfileController::class, "edit"])->name('profile.edit');
   Route::put('profile/update', [UserProfileController::class, "update"])->name('profile.update');
 
+  // Dashboard setting
+  Route::get('settings', [DashboardController::class, "settings"])->name('settings');
   // Data Master
   Route::resource('activity-logs', ActivityLogController::class)->except('create', 'store', 'edit', 'update', 'destroy');
+  Route::resource('payment-methods', PaymentMethodController::class)->except('show');
+  Route::resource('level-permissions', PermissionLevelController::class)->except('show');
   Route::resources([
     'payments' => PaymentController::class,
     'bills' => BillController::class,

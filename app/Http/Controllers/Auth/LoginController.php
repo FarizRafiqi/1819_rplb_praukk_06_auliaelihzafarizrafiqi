@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,9 +32,15 @@ class LoginController extends Controller
 
         if(Auth::attempt($credentials, $request->remember_me)){
             $request->session()->regenerate();
+            ActivityLog::create([
+                'id_user' => auth()->user()->id,
+                'tabel_referensi' => '-',
+                'id_referensi' => null,
+                'deskripsi' => 'User login',
+            ]);
             return $this->checkUserLevel();
         }
-
+        
         return back()->withErrors([
             'email' => 'Email yang diberikan salah',
             'password' => 'Password yang diberikan salah'
@@ -45,10 +52,15 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        ActivityLog::create([
+            'id_user' => auth()->user()->id,
+            'tabel_referensi' => '-',
+            'id_referensi' => null,
+            'deskripsi' => 'User logout',
+        ]);
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('home');
     }
 
@@ -58,7 +70,7 @@ class LoginController extends Controller
     private function checkUserLevel()
     {
         if(Auth::user()->isAdmin() || Auth::user()->isBank()){
-            return redirect()->intended('admin.dashboard');
+            return redirect()->intended();
         }
 
         return redirect()->route('home');

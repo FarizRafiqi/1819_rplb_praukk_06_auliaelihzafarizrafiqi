@@ -3,7 +3,7 @@
 @section('title', 'Pembayaran')
 
 @section('content')
-<div class="container mb-3">
+<div class="container-fluid mb-3">
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Kemungkinan besar data-data yang ada tidak berhubungan sama sekali, karena datanya dibuat secara acak.
     <button type="button" class="close" data-dismiss="alert">
@@ -18,9 +18,11 @@
           <tr>
             <th>ID</th>
             <th>Nama Customer</th>
-            <th>Nama Pelanggan PLN</th>
-            <th>ID Tagihan</th>
+            <th>Nama Customer PLN</th>
             <th>Tanggal Bayar</th>
+            <th>Biaya Admin</th>
+            <th>Total Bayar</th>
+            <th>Metode Pembayaran</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -39,10 +41,16 @@
         ajax: "",
         columns: [
             {data: 'id'},
-            {data: 'customer.nama'},
-            {data: 'pln_customer.nama_pelanggan'},
-            {data: 'id_tagihan'},
+            {data: 'customer.nama', defaultContent: '-'},
+            {data: 'pln_customer.nama_pelanggan', defaultContent: '-'},
             {data: 'tanggal_bayar'},
+            {data: 'biaya_admin',
+             render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+            },
+            {data: 'total_bayar',
+             render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+            },
+            {data: 'payment_method.nama', defaultContent: '-'},
             {data: 'status',
               render: function(data, type, row){
                 let state;
