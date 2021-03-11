@@ -262,6 +262,11 @@
                       $payment->details->first()->bill->usage->meter_awal}}
                     </dd>
       
+                    <dt class="col-12">Total Tagihan</dt>
+                    <dd class="col-12">
+                      @rupiah($totalBill)
+                    </dd>
+
                     <dt class="col-12">Biaya Admin</dt>
                     <dd class="col-12">
                       @rupiah(config('const.biaya_admin'))

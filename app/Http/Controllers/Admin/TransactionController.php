@@ -8,7 +8,6 @@ use App\Http\Requests\Customer\BillRequest;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PlnCustomer;
-use App\Models\Usage;
 use Exception;
 use Midtrans\Config;
 use Midtrans\CoreApi;
@@ -24,7 +23,8 @@ class TransactionController extends Controller
         $paymentMethods = PaymentMethod::all();
         $totalBill = $payment->details()->first()->bill->jumlah_kwh * $payment->plnCustomer->tariff->tarif_per_kwh;
         $total = $totalBill + config("const.biaya_admin");
-        return view("pages.pelanggan.payments", compact("payment", "paymentMethods", "totalBill", "total"));
+
+        return view("pages.pelanggan.payments.index", compact("payment", "paymentMethods", "totalBill", "total"));
     }
 
     /**
@@ -157,9 +157,9 @@ class TransactionController extends Controller
         Config::$is3ds = config("midtrans.is3ds");
 
         $response = MidtransTransaction::status("PLN-".$payment->id);
-   
+        $totalBill = $payment->details()->first()->bill->jumlah_kwh * $payment->plnCustomer->tariff->tarif_per_kwh;
         if(!empty($response) && $response->transaction_status == "pending"){
-            return view("pages.pelanggan.payment-confirm", compact("paymentMethod", "response", "payment"));
+            return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
         }
     }
     /**

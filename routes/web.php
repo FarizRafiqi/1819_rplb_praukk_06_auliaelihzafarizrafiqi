@@ -39,6 +39,12 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/{payment}', [TransactionController::class, "index"])->name('index');
     
     Route::post('create', [TransactionController::class, "create"])->name('create');
+
+    // Midtrans Transaction Notification 
+    Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
+    Route::get('finish', [MidtransController::class, 'finishRedirect'])->name('finish');
+    Route::get('unfinish', [MidtransController::class, 'unfinishRedirect'])->name('unfinish');
+    Route::get('error', [MidtransController::class, 'errorRedirect'])->name('error');
   });
 });
 
