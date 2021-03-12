@@ -18,21 +18,24 @@ class PaymentMethodSeeder extends Seeder
         DB::table('payment_methods')->insert(
             [
                 'nama' => 'VA BCA', 
-                'gambar' => '-', 
+                'gambar' => '-',
+                'slug' => 'va-bca', 
                 'deskripsi' => '-',
                 'created_at' => now(),
                 'updated_at' => null,
             ],
             [
                 'nama' => 'VA Mandiri', 
-                'gambar' => '-', 
+                'gambar' => '-',
+                'slug' => 'va-mandiri', 
                 'deskripsi' => '-',
                 'created_at' => now(),
                 'updated_at' => null,
             ],
             [
                 'nama' => 'VA BNI', 
-                'gambar' => '-', 
+                'gambar' => '-',
+                'slug' => 'va-bni', 
                 'deskripsi' => '-',
                 'created_at' => now(),
                 'updated_at' => null,
