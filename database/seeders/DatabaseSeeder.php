@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(TariffSeeder::class);
         $this->call(LevelSeeder::class);
-        $this->call(PlnCustomerSeeder::class);
+        // $this->call(PlnCustomerSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(UsageSeeder::class);
-        $this->call(BillSeeder::class);
+        // $this->call(UsageSeeder::class);
+        // $this->call(BillSeeder::class);
         $this->call(PaymentMethodSeeder::class);
-        $this->call(PaymentSeeder::class);
+        // $this->call(PaymentSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(PermissionLevelSeeder::class);
     }

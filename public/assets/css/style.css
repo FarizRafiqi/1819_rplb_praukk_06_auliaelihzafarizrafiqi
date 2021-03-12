@@ -256,6 +256,16 @@ footer .list-item {
     line-height: 1.5;
     cursor: pointer;
 }
+
+.container-transaction .col-order-detail .btn-payment {
+    height: 50px;
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.container-transaction .btn.btn-payment:hover {
+    color: #fff;
+    background-color: #0d4c75;
+}
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */

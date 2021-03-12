@@ -34,15 +34,15 @@ class MidtransController extends Controller
 
         //Handler notification status midtrans
         if($status == 'settlement'){
-            $payment->status = "SUCCESS";
+            $payment->status = "success";
         }else if($status == 'pending'){
-            $payment->status = "PENDING";
+            $payment->status = "pending";
         }else if($status == 'deny'){
-            $payment->status = "FAILED";
+            $payment->status = "failed";
         }else if($status == 'expire'){
-            $payment->status = "EXPIRED";
+            $payment->status = "expired";
         }else if($status == 'cancel'){
-            $payment->status = "FAILED";
+            $payment->status = "failed";
         }  
 
         //Simpan transaksi
@@ -88,17 +88,17 @@ class MidtransController extends Controller
         return view('pages.pelanggan.payments.success');
     }
 
-    public function finishRedirect(Request $request)
+    public function finish(Request $request)
     {
         return view('pages.pelanggan.payments.success');
     }
 
-    public function unfinishRedirect(Request $request)
+    public function unfinish(Request $request)
     {
         return view('pages.pelanggan.payments.unfinish');
     }
 
-    public function errorRedirect(Request $request)
+    public function error(Request $request)
     {
         return view('pages.pelanggan.payments.failed');
     }

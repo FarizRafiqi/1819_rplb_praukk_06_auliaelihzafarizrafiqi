@@ -279,6 +279,21 @@
                   </dl>
                 </div>
               </div>
+              {{-- Payment Button --}}
+              @if (strtolower($paymentMethod->nama) == "va mandiri")
+                <form action="https://simulator.sandbox.midtrans.com/mandiri/bill/index" target="_blank">
+                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
+                </form>
+              @elseif(strtolower($paymentMethod->nama) == "va bni")
+                <form action="https://simulator.sandbox.midtrans.com/bni/va/index" target="_blank">
+                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
+                </form>
+              @else
+                <form action="https://simulator.sandbox.midtrans.com/bca/va/index" target="_blank">
+                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
+                </form>
+              @endif
+              {{-- End of Payment Button --}}
             </div>
           </div>
         </div>
@@ -317,6 +332,23 @@
         }).then((result) => {
           if (result.isConfirmed) {
             
+          }
+        });
+      });
+
+      $("#btnPayment").on("click", function(e){
+        e.preventDefault();
+        Swal.fire({
+          title: "Peringatan",
+          icon: "warning",
+          text: "Karena web ini merupakan web tugas akhir saya, maka kamu hanya bisa melakukan simulasi pembayaran. Kamu akan diarahkan ke halaman simulasi Midtrans. Jangan lupa salin kode pembayarannya untuk melakukan pembayaran!",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $(e.target).parent().submit();
           }
         });
       });

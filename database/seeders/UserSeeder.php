@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
+        // User::factory(10)->create();
         User::create([
             'nama' => 'admin',
             'username' => 'Admin',
@@ -26,12 +26,33 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
             'id_level' => Level::find(1)->id,
         ]);
+        
         User::create([
             'nama' => 'bank',
             'username' => 'Bank BCA',
             'email' => 'bankbca@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('bank123'),
+            'password' => bcrypt('bankbca123'),
+            'remember_token' => Str::random(10),
+            'id_level' => Level::find(3)->id,
+        ]);
+
+        User::create([
+            'nama' => 'bank',
+            'username' => 'Bank BNI',
+            'email' => 'bankbni@gmail.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('bankbni123'),
+            'remember_token' => Str::random(10),
+            'id_level' => Level::find(3)->id,
+        ]);
+
+        User::create([
+            'nama' => 'bank',
+            'username' => 'Bank Mandiri',
+            'email' => 'bankbca@gmail.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('bankmandiri123'),
             'remember_token' => Str::random(10),
             'id_level' => Level::find(3)->id,
         ]);

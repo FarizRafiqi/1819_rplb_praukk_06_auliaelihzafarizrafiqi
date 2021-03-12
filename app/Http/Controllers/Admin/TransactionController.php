@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Customer\BillRequest;
 use App\Models\Payment;
+use App\Models\PaymentDetail;
 use App\Models\PaymentMethod;
 use App\Models\PlnCustomer;
 use Exception;
@@ -94,6 +95,9 @@ class TransactionController extends Controller
 
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
+        $payment->paymentMethod()->associate($paymentMethod->id);
+        $payment->save();
+        
         //Konfigurasi Midtrans
         Config::$serverKey = config("midtrans.serverKey");
         Config::$isProduction = config("midtrans.isProduction");
@@ -134,13 +138,23 @@ class TransactionController extends Controller
         }
         
         try {
-            //cek apakah id pembayaran ini sudah ada sebelumnya
-            
+            //cek apakah id pembayaran ini sudah ada sebelumnya, jika sudah ada cek status transaksinya,
+            //kalau masih pending, maka arahkan pelanggan ke halaman pembayaran
+            $response = MidtransTransaction::status("PLN-".$payment->id);
+            if($response && $response->transaction_status == "pending"){
+                return redirect()->route("payment.confirm", [
+                    "payment_method" => $paymentMethod->slug, 
+                    "payment" => $payment->id,
+                    "transaction_id" => $response->transaction_id
+                ]);
+            }
+            //Kalau tidak ada maka buat pembayaran, kemudian arahkan pelanggan ke halaman pembayaran
             $response = CoreApi::charge($midtransParams);
             if($response){
                 return redirect()->route("payment.confirm", [
                         "payment_method" => $paymentMethod->slug, 
-                        "payment" => $payment->id
+                        "payment" => $payment->id,
+                        "transaction_id" => $response->transaction_id
                     ]);
             }
         } catch (Exception $e) {
@@ -158,8 +172,12 @@ class TransactionController extends Controller
 
         $response = MidtransTransaction::status("PLN-".$payment->id);
         $totalBill = $payment->details()->first()->bill->jumlah_kwh * $payment->plnCustomer->tariff->tarif_per_kwh;
-        if(!empty($response) && $response->transaction_status == "pending"){
+        if($response && $response->transaction_status == "pending"){
             return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
+        }elseif($response->transaction_status == "expire"){
+            return view('pages.pelanggan.payments.expire');
+        }elseif($response->transaction_status == "settlement"){
+            return redirect()->route('transaction-history');
         }
     }
     /**
@@ -167,7 +185,17 @@ class TransactionController extends Controller
      */
     public function transactionHistory(Request $request)
     {
-        $userPayments = $request->user()->payments()->get();
-        return view("pages.pelanggan.riwayat-transaksi", compact("userPayments"));
+        //tampilkan history transaksi pelanggan 30 hari terakhir
+        $userPayments = $request->user()->payments()
+                                ->where("created_at", ">=", now()->subDays(30))
+                                ->get();
+
+        if($request->payment){
+            $payment = Payment::all()->find($request->payment);
+            return view("pages.pelanggan.transaction-history", compact("userPayments","payment"));
+        }
+
+        return view("pages.pelanggan.transaction-history", compact("userPayments"));
+        
     }
 }

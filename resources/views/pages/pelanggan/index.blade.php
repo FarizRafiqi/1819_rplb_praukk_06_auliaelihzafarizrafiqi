@@ -44,6 +44,23 @@
                 Bayar
               </button>
             </div>
+            <div class="col-12">
+              <div class="alert alert-info alert-dismissible fade show mt-3 mb-0">
+                <button type="button" class="close" data-dismiss="alert">
+                  <span>&times;</span>
+                </button>
+                <h5 class="alert-heading">Keterangan</h5>
+                <p class="mb-0">
+                  <ol>
+                    <li>
+                      Transaksi Tagihan Listrik yang dilakukan pukul 23:30-00.59 WIB akan mulai diproses pada pukul 01.00 WIB sesuai kebijakan pihak PLN.
+                    </li>
+                    <li>Jatuh tempo pembayaran tagihan listrik adalah <strong>tanggal 20 di setiap bulannya</strong>.</li>
+                    <li>Proses verifikasi pembayaran maksimum <strong>2x24 jam hari kerja</strong>.</li>
+                  </ol>
+                </p>
+              </div>
+            </div>
           </div>
         </form>
         
@@ -204,13 +221,13 @@
           //hilangkan pesan error dan spinnernya jika data berhasil di ambil
           $('#validation-errors').children().remove();
           $("#btnBayar .spinner-border").remove();
-          $("#alertInfo").remove();
+          $(".alert-info").remove();
           
           //Jika data tagihan ditemukan, maka cek apakah statusnya sudah terbayar atau belum
           //jika sudah terbayar maka tampilkan pesan
           if(data.userBill.bill.status == 'LUNAS'){
             $("#tabelTagihan").addClass("d-none"); //munculkan tabel
-            $(`<div class="col-12 mt-3" id="alertInfo">
+            $(`<div class="col-12 mt-3">
                 <div class="alert alert-info alert-dismissible fade show">
                   <strong>Tagihan Sudah Terbayar!</strong>
                   <button type="button" class="close" data-dismiss="alert"">

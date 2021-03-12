@@ -32,6 +32,7 @@ Route::delete('upload', [UploadController::class, "destroy"])->name('upload.dest
 //Transaksi
 Route::group(['middleware' => ['auth']], function(){
   Route::get('/transaction-history', [TransactionController::class, "transactionHistory"])->name("transaction-history");
+  Route::get('/transaction-history/details/{payment?}', [TransactionController::class, "transactionHistory"])->name("transaction-history.details");
 
   Route::group(['prefix' => 'payments', 'as' => 'payment.'], function(){
     Route::get('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "confirm"])->name('confirm');
@@ -42,9 +43,9 @@ Route::group(['middleware' => ['auth']], function(){
 
     // Midtrans Transaction Notification 
     Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-    Route::get('finish', [MidtransController::class, 'finishRedirect'])->name('finish');
-    Route::get('unfinish', [MidtransController::class, 'unfinishRedirect'])->name('unfinish');
-    Route::get('error', [MidtransController::class, 'errorRedirect'])->name('error');
+    Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
+    Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
+    Route::get('error', [MidtransController::class, 'error'])->name('error');
   });
 });
 
