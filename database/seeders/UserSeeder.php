@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
         User::create([
             'nama' => 'bank',
             'username' => 'Bank Mandiri',
-            'email' => 'bankbca@gmail.com',
+            'email' => 'bankmandiri@gmail.com',
             'email_verified_at' => now(),
             'password' => bcrypt('bankmandiri123'),
             'remember_token' => Str::random(10),
