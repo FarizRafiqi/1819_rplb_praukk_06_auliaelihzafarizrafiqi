@@ -7,7 +7,6 @@ use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -29,13 +28,13 @@ class DashboardController extends Controller
         $totalPendapatan = 'Rp '. number_format($totalPendapatan, 2, ',', '.');
 
         //ambil pendapatan bulan ini dari stored function yang telah dibuat di database
-        $monthEarnings = DB::select('SELECT getMonthEarnings() AS pendapatan_bulan_ini');
-        if(empty($monthEarnings)){
-            $monthEarnings = 0;
-        }else{
-            $monthEarnings[0]->pendapatan_bulan_ini;
-            $monthEarnings = 'Rp '. number_format($monthEarnings, 2, ',', '.');
-        }
+        // $monthEarnings = DB::select('SELECT getMonthEarnings() AS pendapatan_bulan_ini');
+        // if(empty($monthEarnings)){
+        //     $monthEarnings = 0;
+        // }else{
+        //     $monthEarnings = $monthEarnings[0]->pendapatan_bulan_ini;
+        //     $monthEarnings = 'Rp '. number_format($monthEarnings, 2, ',', '.');
+        // }
         $bills = Bill::get();
 
         if($request->ajax()){
@@ -43,7 +42,7 @@ class DashboardController extends Controller
             return DataTables::of($paymentHistories)
                     ->toJson();
         }
-        return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments', 'monthEarnings'));
+        return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments'));
     }
 
     /**

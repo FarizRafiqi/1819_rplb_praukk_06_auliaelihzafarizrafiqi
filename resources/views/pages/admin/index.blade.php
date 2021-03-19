@@ -15,9 +15,9 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$totalPendapatan}}</h6>
-                  @if ($monthEarnings > 0)
+                  {{-- @if ($monthEarnings > 0)
                     <h6 class="text-success font-weight-bold">+ {{$monthEarnings}} Bulan ini</h6>
-                  @endif
+                  @endif --}}
                   Total Pendapatan
                 </div>
               </div>
