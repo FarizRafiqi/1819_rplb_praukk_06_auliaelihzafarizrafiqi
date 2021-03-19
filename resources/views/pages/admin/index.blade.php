@@ -10,11 +10,11 @@
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
-                <div class="col-3">
+                <div class="col-4">
                   <img src="{{ asset('assets/img/mm-icon/revenue-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
                 </div>
-                <div class="col-9">
-                  <h4 class="font-weight-bold">{{$totalPendapatan}}</h4>
+                <div class="col-8">
+                  <h6 class="font-weight-bold">{{$totalPendapatan}}</h6>
                   @if ($monthEarnings > 0)
                     <h6 class="text-success font-weight-bold">+ {{$monthEarnings}} Bulan ini</h6>
                   @endif
@@ -33,11 +33,11 @@
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
-                <div class="col-3">
+                <div class="col-4">
                   <img src="{{ asset('assets/img/mm-icon/payment-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
                 </div>
-                <div class="col-9">
-                  <h4 class="font-weight-bold">{{$payments->count()}}</h4>
+                <div class="col-8">
+                  <h6 class="font-weight-bold">{{$payments->count()}}</h6>
                   Total pembayaran
                 </div>
               </div>
@@ -49,11 +49,11 @@
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
-                <div class="col-3">
+                <div class="col-4">
                   <img src="{{ asset('assets/img/mm-icon/payment-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
                 </div>
-                <div class="col-9">
-                  <h4 class="font-weight-bold">{{$payments->count()}}</h4>
+                <div class="col-8">
+                  <h6 class="font-weight-bold">{{$payments->count()}}</h6>
                   <div>Total pembayaran</div>
                   <a href="{{route('admin.payments.index')}}" class="text-decoration-none">Lihat detail pembayaran</a>
                 </div>
@@ -70,11 +70,11 @@
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
-                <div class="col-3">
+                <div class="col-4">
                   <img src="{{ asset('assets/img/mm-icon/bill-paid-off-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
                 </div>
-                <div class="col-9">
-                  <h4 class="font-weight-bold">{{$bills->where('status', 'LUNAS')->count()}}</h4>
+                <div class="col-8">
+                  <h6 class="font-weight-bold">{{$bills->where('status', 'LUNAS')->count()}}</h6>
                   Tagihan listrik lunas
                 </div>
               </div>
@@ -90,11 +90,11 @@
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
-                <div class="col-3">
+                <div class="col-4">
                   <img src="{{ asset('assets/img/mm-icon/bill-not-paid-off-icon@2x.png') }}" alt="Payment Icon" width="65" height="65">
                 </div>
-                <div class="col-9">
-                  <h4 class="font-weight-bold">{{$bills->where('status', 'BELUM LUNAS')->count()}}</h4>
+                <div class="col-8">
+                  <h6 class="font-weight-bold">{{$bills->where('status', 'BELUM LUNAS')->count()}}</h6>
                   Tagihan listrik belum lunas
                 </div>
               </div>
@@ -103,7 +103,7 @@
         </div>
       @endif
       <!-- End of Bill Not Paid Off Overview -->
-      <div class="col-12 col-md-10">
+      <div class="col-12">
         <h2 class="text-center mt-5">Histori Pembayaran</h2>
         <div class="card my-5 ">
           <div class="card-body">

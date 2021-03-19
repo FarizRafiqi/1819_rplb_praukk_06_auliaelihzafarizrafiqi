@@ -8,6 +8,7 @@
     @stack('prepend-style')
     @include('includes.style')
     @stack('addon-style')
+    @livewireStyles
   </head>
   <body>
     @include('includes.navbar')
@@ -17,6 +18,7 @@
     @stack('prepend-script')
     @include('includes.script')
     @include('sweetalert::alert')
+    @livewireScripts
     @stack('addon-script')
   </body>
 </html>

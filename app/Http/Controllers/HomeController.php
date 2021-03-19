@@ -27,4 +27,13 @@ class HomeController extends Controller
     {
         return view('pages.pelanggan.about-us');
     }
+
+    /**
+     * Halaman Frequently Ask Question
+     */
+
+    public function faq()
+    {
+        return view('pages.pelanggan.faq');
+    }
 }

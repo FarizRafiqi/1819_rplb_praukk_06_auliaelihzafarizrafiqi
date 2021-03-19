@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\Admin\UserRequest;
 use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -56,7 +56,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\UserRequest  $request
+     * @param  \App\Http\Requests\Admin\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRequest $request)
@@ -99,7 +99,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UserRequest  $request
+     * @param  \App\Http\Requests\Admin\UserRequest  $request
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */

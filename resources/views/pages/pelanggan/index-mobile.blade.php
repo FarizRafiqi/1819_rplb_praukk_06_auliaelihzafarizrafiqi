@@ -125,7 +125,7 @@
           <div class="row">
             <div class="col pr-0">
               <p class="step-one-text">
-                4. Klik tombol <strong>Cek Tagihan</strong>.
+                4. Klik tombol <strong>Bayar</strong>.
               </p>
             </div>
             <div class="col pl-0">
@@ -187,7 +187,7 @@
 <!-- End of Main Content -->
 @endsection
 @push('addon-script')
-  <script>
+  {{-- <script>
     $(".btn-bayar").prop("disabled", true);
     $("#inputIDPelanggan").on("keyup", delay(function(){
       let idPelanggan = $(this).val();
@@ -265,6 +265,6 @@
           callback.apply(context, args);
         }, ms || 0);
       }
-    }
+    } --}}
   </script>
 @endpush

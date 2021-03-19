@@ -51,12 +51,6 @@ class DashboardController extends Controller
      */
     public function settings(Request $request)
     {
-        $cookieEnableSidebar = Cookie::get('enable_sidebar');
-        $enableSidebar = $request->boolean('enable_sidebar', $cookieEnableSidebar);
-        if(!$enableSidebar){
-            $enableSidebar = false;
-        }
-        Cookie::queue('enable_sidebar', $enableSidebar, 60*24, '/');
         return view('pages.admin.settings');
     }
 }

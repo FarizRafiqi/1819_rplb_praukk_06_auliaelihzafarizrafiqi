@@ -4,8 +4,12 @@
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Fitur Tagihan Listrik:</strong>
+    <ol>
+      <li>Data tagihan <strong>otomatis dibuat</strong> apabila Admin sudah memasukkan data penggunaan</li>
+      <li>Status tagihan otomatis berubah menjadi <strong>LUNAS</strong> apabila pembayaran sukses</li>
+    </ol>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

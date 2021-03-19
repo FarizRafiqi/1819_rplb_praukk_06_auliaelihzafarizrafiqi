@@ -39,13 +39,30 @@
           @enderror
         </div>
         <div class="form-group">
-          <label for="selectGolonganTarif">Golongan Tarif</label>
-          <select name="id_tarif" class="form-control @error('id_tarif')
+          <label for="selectKota">Kota</label>
+          <select name="id_kota" class="form-control selectpicker @error('id_kota')
             is-invalid   
-          @enderror" id="selectGolonganTarif">
-            <option selected>Pilih Golongan Tarif</option>
+          @enderror" id="selectKota" data-live-search="true">
+            <option selected disabled>Pilih Kota</option>
+            @foreach(\Indonesia::allProvinces() as $province)
+              <optgroup label="{{$province->name}}">
+              @foreach ($province->cities as $city)
+                <option value="{{$city->id}}" {{$city->id === old('id_kota') ? 'selected' : ''}}>{{$city->name}}</option>
+              @endforeach
+            @endforeach
+          </select>
+          @error('id_kota')
+            <span class="invalid-feedback">{{$message}}</span>    
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="selectGolonganTarif">Golongan Tarif</label>
+          <select name="id_tarif" class="form-control selectpicker @error('id_tarif')
+            is-invalid   
+          @enderror" id="selectGolonganTarif" data-live-search="true">
+            <option selected disabled>Pilih Golongan Tarif</option>
             @foreach($tariffs as $tariff)
-              <option value="{{$tariff->id}}" {{$tariff->id === old('id_tarif') ? 'selected' : ''}}>{{$tariff->golongan_tarif}}</option>
+              <option value="{{$tariff->id}}" {{$tariff->id === old('id_tarif') ? 'selected' : ''}}>{{$tariff->golongan_tarif . ' / ' . number_format($tariff->daya, 0, ',', '.') . ' VA'}} </option>
             @endforeach
           </select>
           @error('id_tarif')

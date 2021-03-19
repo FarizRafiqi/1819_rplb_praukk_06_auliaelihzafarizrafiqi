@@ -4,8 +4,13 @@
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Fitur User:</strong>
+    <ol>
+      <li><strong>Akun siap digunakan</strong> untuk testing, lihat detail akun di <a href="">Cara Menggunakan Aplikasi Mega Mendung</a></li>
+      <li>User <strong>sudah diberi hak akses</strong> sesuai dengan levelnya</li>
+      <li>Akun Admin <strong>hanya bisa diinput sekali</strong>. Karena admin itu hanya bisa satu kan?</li>
+    </ol>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

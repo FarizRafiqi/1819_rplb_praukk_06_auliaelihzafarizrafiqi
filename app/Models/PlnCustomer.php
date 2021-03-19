@@ -18,6 +18,7 @@ class PlnCustomer extends Model
         'nomor_meter',
         'alamat',
         'id_tarif',
+        'id_kota'
     ];
 
     public function tariff()
@@ -28,5 +29,18 @@ class PlnCustomer extends Model
     public function usages()
     {
         return $this->hasMany(Usage::class, 'id_pelanggan_pln');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(IndonesiaCity::class, "id_kota");
+    }
+
+    public function getBillWhere($month, $year)
+    {
+        $usage = $this->usages()->where('bulan', $month)->where('tahun', $year)->firstOrFail();
+        $bill = $usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh;
+        $totalBill = $bill + config("const.biaya_admin");
+        return $totalBill;        
     }
 }

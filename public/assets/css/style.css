@@ -192,6 +192,10 @@ footer .list-item {
     color: #fff;
 }
 
+.card-forgot-password,
+.card-reset-password {
+    width: 100%;
+}
 /* || Dashboard */
 
 .navbar-dashboard .navbar-nav .active > .nav-link {
@@ -269,7 +273,7 @@ footer .list-item {
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
-    width: 0; /* 0 width - change this with JavaScript */
+    width: 260px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
@@ -329,14 +333,11 @@ footer .list-item {
     background-color: #dee2ee;
 }
 
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-    transition: margin-left 0.5s;
     padding: 20px;
+    margin-left: 260px;
 }
-/* On smaller screens, where height is less than 450px, 
-   change the style of the sidenav (less padding and a smaller font size) 
-*/
+
 @media (max-height: 450px) {
     .sidenav {
         padding-top: 15px;
@@ -408,6 +409,12 @@ footer .list-item {
 
     .postpaid-instruction .step {
         padding: 0px 200px 0px;
+    }
+
+    /* Auth */
+    .card-forgot-password,
+    .card-reset-password {
+        width: 50%;
     }
 
     /* || Footer */

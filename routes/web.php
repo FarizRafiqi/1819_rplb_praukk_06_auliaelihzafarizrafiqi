@@ -19,13 +19,17 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\PermissionController,
     App\Http\Controllers\Admin\TransactionController,
     App\Http\Controllers\Admin\PaymentMethodController,
-    App\Http\Controllers\Admin\PermissionLevelController;
+    App\Http\Controllers\Admin\LevelPermissionController,
+    App\Http\Controllers\Auth\NewPasswordController,
+    App\Http\Controllers\Auth\PasswordResetLinkController,
+    App\Http\Controllers\MidtransController;
 
+//Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
 Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about-us");
+Route::get('/faq', [HomeController::class, "faq"])->name('faq');
 
 //Upload File
-Route::post('/', [TransactionController::class, "checkBill"])->name("check-bill");
 Route::post('upload', [UploadController::class, "store"])->name('upload.store');
 Route::delete('upload', [UploadController::class, "destroy"])->name('upload.destroy');
 
@@ -40,21 +44,29 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/{payment}', [TransactionController::class, "index"])->name('index');
     
     Route::post('create', [TransactionController::class, "create"])->name('create');
-
-    // Midtrans Transaction Notification 
-    Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-    Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
-    Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
-    Route::get('error', [MidtransController::class, 'error'])->name('error');
   });
 });
+
+// Midtrans Transaction Notification 
+Route::post('/payments/callback', [MidtransController::class, 'notificationHandler'])->name('callback');
+Route::get('/payments/finish', [MidtransController::class, 'finish'])->name('finish');
+Route::get('/payments/unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
+Route::get('/payments/error', [MidtransController::class, 'error'])->name('error');
 
 // Auth
 Route::get('/login', [LoginController::class, "index"])->name('login');
 Route::post('/login', [LoginController::class, "login"])->name('auth.login');
-Route::get('/logout', [LoginController::class, "logout"])->name('logout');
+Route::post('/logout', [LoginController::class, "logout"])->name('logout');
 Route::get('/register', [RegisterController::class, "index"])->name('register');
 Route::post('/register', [RegisterController::class, "register"])->name('auth.register');
+
+//Password Reset
+Route::group(['middleware' => 'guest'], function(){
+  Route::get('/forgot-password', [PasswordResetLinkController::class, "create"])->name('password.request');
+  Route::post('/forgot-password', [PasswordResetLinkController::class, "store"])->name('password.email');
+  Route::get('/reset-password/{token}', [NewPasswordController::class, "create"])->name('password.reset');
+  Route::post('/reset-password', [NewPasswordController::class, "store"])->name('password.update');
+});
 
 // Admin Panel
 Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
@@ -71,8 +83,7 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
   Route::get('settings', [DashboardController::class, "settings"])->name('settings');
   // Data Master
   Route::resource('activity-logs', ActivityLogController::class)->except('create', 'store', 'edit', 'update', 'destroy');
-  Route::resource('payment-methods', PaymentMethodController::class)->except('show');
-  Route::resource('level-permissions', PermissionLevelController::class)->except('show');
+  Route::resource('level-permissions', LevelPermissionController::class)->except('show');
   Route::resources([
     'payments' => PaymentController::class,
     'bills' => BillController::class,
@@ -82,5 +93,6 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
     'pln-customers' => PLNCustomerController::class,
     'users' => UserController::class,
     'permissions' => PermissionController::class,
+    'payment-methods' => PaymentMethodController::class,
   ]);
 });

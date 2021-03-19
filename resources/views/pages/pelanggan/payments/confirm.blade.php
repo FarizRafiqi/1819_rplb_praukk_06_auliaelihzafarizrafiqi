@@ -5,7 +5,7 @@
 @section('content')
     <div class="container container-transaction my-4">
       <div class="row">
-        <div class="col-md-8 py-3 col-payment-method bg-white border order-2 order-md-1">
+        <div class="col-md-8 py-3 col-payment-method bg-white border">
           <div class="font-weight-bold bank-account-information-title mb-3">Silakan Transfer Ke</div>
           <div class="card bank-account-information">
             <div class="card-body">
@@ -14,7 +14,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                   <span class="font-weight-bold va-{{strtolower($paymentMethod->nama)}}">{{$paymentMethod->nama}}</span>
                   <span>
-                    <img src="{{Storage::url('img/payment-method/'. $paymentMethod->gambar)}}" alt="{{$paymentMethod->gambar}}" class="img-fluid" width="80">
+                    <img src="{{Storage::url($paymentMethod->gambar)}}" alt="{{$paymentMethod->gambar}}" class="img-fluid" width="80">
                   </span>
                 </div>
               </div>
@@ -125,8 +125,8 @@
                 @if($paymentMethod->nama == 'VA BNI')
                   <ol>
                     <li>Buka aplikasi BNI Mobile Banking dan login</li>
-                    <li>Pilih menu<strong>Transfer</strong></li>
-                    <li>Pilih menu<strong>Virtual Account Billing</strong> kemudian pilih <strong>Rekening Debit</strong></li>
+                    <li>Pilih menu <strong>Transfer</strong></li>
+                    <li>Pilih menu <strong>Virtual Account Billing</strong> kemudian pilih <strong>Rekening Debit</strong></li>
                     <li>Pilih menu Input Baru dan masukkan 16 digit nomor Virtual Account</li>
                     <li>Informasi tagihan akan muncul pada halaman validasi</li>
                     <li>Jika informasi telah sesuai, masukkan Password Transaksi dan klik Lanjut</li>
@@ -231,7 +231,7 @@
           </div>
           <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" type="button" id="btnChangePaymentMethod">UBAH METODE PEMBAYARAN</button>
         </div>
-        <div class="col-md-4 mb-3 col-order-detail ml-auto order-1 order-md-2">
+        <div class="col-md-4 mb-3 col-order-detail ml-auto">
           <div class="accordion" id="billDetail">
             <div class="card">
               <div class="card-header">

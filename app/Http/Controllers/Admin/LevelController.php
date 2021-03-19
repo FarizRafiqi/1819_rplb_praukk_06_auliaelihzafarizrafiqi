@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LevelRequest;
+use App\Http\Requests\Admin\LevelRequest;
 use App\Models\Level;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -50,7 +50,7 @@ class LevelController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\LevelRequest  $request
+     * @param  \App\Http\Requests\Admin\LevelRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(LevelRequest $request)
@@ -84,7 +84,7 @@ class LevelController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\LevelRequest  $request
+     * @param  \App\Http\Requests\Admin\LevelRequest  $request
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */

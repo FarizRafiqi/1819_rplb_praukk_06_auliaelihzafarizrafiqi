@@ -4,8 +4,12 @@
 
 @section('content')
 <div class="container mb-3">
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Fitur Penggunaan Listrik:</strong>
+    <ol>
+      <li>Meter awal <strong>otomatis mengambil dari meter terakhir pelanggan</strong></li>
+      <li>Admin <strong>tidak bisa</strong> memasukkan data penggunaan pelanggan tertentu di bulan dan tahun yang sama <strong>2 kali</strong></li>
+    </ol>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -61,7 +65,7 @@
         e.preventDefault();
         Swal.fire({
           title: 'Apakah kamu yakin?',
-          text: "Data tagihan dari penggunaan ini akan dihapus juga!",
+          html: "Data tagihan dari penggunaan ini akan dihapus juga jika statusnya masih <span class='text-danger'>BELUM LUNAS</span>!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',

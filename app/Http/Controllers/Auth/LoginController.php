@@ -69,7 +69,7 @@ class LoginController extends Controller
      */
     private function checkUserLevel()
     {
-        if(Auth::user()->isAdmin() || Auth::user()->isBank()){
+        if(auth()->user()->isAdmin() || auth()->user()->isBank()){
             return redirect()->intended();
         }
 

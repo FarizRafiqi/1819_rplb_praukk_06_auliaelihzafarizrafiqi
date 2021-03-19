@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PaymentMethodRequest;
 use App\Models\PaymentMethod;
 use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
@@ -25,6 +24,7 @@ class PaymentMethodController extends Controller
             return DataTables::of($paymentMethods)
                                 ->addColumn("action", function($paymentMethod){
                                     $buttons = '<a href='. route("admin.payment-methods.edit", $paymentMethod->id) .' class="btn btn-sm btn-success btn-edit">edit</a>';
+                                    $buttons .= '<a href='. route("admin.payment-methods.show", $paymentMethod->id) .' class="btn btn-sm mx-2 btn-primary btn-detail">detail</a>';
                                     $buttons .= '
                                         <form action=' . route("admin.payment-methods.destroy", $paymentMethod->id). ' method="POST" class="d-inline-block form-delete">
                                             '.csrf_field().'
@@ -35,7 +35,7 @@ class PaymentMethodController extends Controller
                                     return $buttons;
                                 })
                                 ->editColumn('gambar', function($paymentMethod){
-                                    return "<img src='" . Storage::url('img/payment-method/'.$paymentMethod->gambar) . "'/width='100px'>";
+                                    return "<img src='" . Storage::url($paymentMethod->gambar) . "' width='100px'>";
                                 })
                                 ->rawColumns(['gambar', 'action'])
                                 ->toJson();
@@ -56,26 +56,11 @@ class PaymentMethodController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Admin\PaymentMethodRequest $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request["slug"] = Str::slug($request->nama);
-        $temporaryFile = TemporaryFile::where("folder", $request->gambar)->first();
-        if($temporaryFile){
-            $from = "tmp/".$request->gambar."/".$temporaryFile->filename;
-            $to = "public/img/payment-method/" . $temporaryFile->filename;
-            
-            Storage::move($from, $to);
-            $paymentMethod = PaymentMethod::create($request->except("gambar")+["gambar" => $temporaryFile->filename]);
-            rmdir(storage_path('app/tmp/'.$request->gambar));
-            if($paymentMethod){
-                return redirect()->route("admin.payment-methods.index")->with("success", "Metode Pembayaran berhasil ditambahkan!");
-            }
-        }
-
-        return redirect()->route("admin.payment-methods.index")->with("error", "Metode Pembayaran gagal ditambahkan!");
 
     }
 
@@ -87,7 +72,7 @@ class PaymentMethodController extends Controller
      */
     public function show(PaymentMethod $paymentMethod)
     {
-        //
+        return view('pages.admin.payment-method.show', compact('paymentMethod'));
     }
 
     /**
@@ -104,20 +89,21 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Admin\PaymentMethodRequest $request
+     * @param  \Illuminate\Http\Request $request
      * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
+    public function update(Request $request, PaymentMethod $paymentMethod)
     {
         if($request->gambar){
             $temporaryFile = TemporaryFile::where("folder", $request->gambar)->firstOrFail();
             $from = "tmp/".$request->gambar."/".$temporaryFile->filename;
             $to = "public/img/payment-method/" . $temporaryFile->filename;
-            
-            Storage::move($from, $to);
-            $paymentMethod->update($request->except('gambar')+["gambar" => $temporaryFile->filename]);
-            rmdir(storage_path('app/tmp/'.$request->gambar));
+            if(!Storage::exists($to)){
+                Storage::move($from, $to);
+                $paymentMethod->update($request->except('gambar')+["gambar" => $temporaryFile->filename]);
+                rmdir(storage_path('app/tmp/'.$request->gambar));
+            }
             
             return redirect()->route("admin.payment-methods.index")->with("success", "Metode Pembayaran berhasil ditambahkan!");
         }
@@ -134,8 +120,7 @@ class PaymentMethodController extends Controller
     public function destroy(PaymentMethod $paymentMethod)
     {
         if($paymentMethod->payments()->count() > 0){
-            alert()->error("Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
-            return redirect()->back();
+            return redirect()->back()->with("error", "Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
         }
         $paymentMethod->delete();
         return redirect()->route('admin.payment-methods.index')->with("success", "Data berhasil dihapus!");

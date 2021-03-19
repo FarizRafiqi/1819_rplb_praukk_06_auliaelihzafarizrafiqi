@@ -4,9 +4,12 @@
 
 @section('content')
 <div class="container-fluid mb-3">
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Kemungkinan besar data-data yang ada tidak berhubungan sama sekali, karena datanya dibuat secara acak.
-    <button type="button" class="close" data-dismiss="alert">
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Fitur Pembayaran:</strong>
+    <ol>
+      <li><strong>Status pembayaran otomatis berubah menjadi success</strong> ketika pelanggan telah berhasil melakukan pembayaran</li>
+    </ol>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>

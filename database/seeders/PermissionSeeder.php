@@ -60,6 +60,12 @@ class PermissionSeeder extends Seeder
             ['title' => 'permission_edit'],
             ['title' => 'activity_log_access'],
             ['title' => 'report_create'],
+            ['title' => 'transaction_access'],
+            ['title' => 'payment_method_access'],
+            ['title' => 'payment_method_create'],
+            ['title' => 'payment_method_update'],
+            ['title' => 'payment_method_delete'],
+            ['title' => 'payment_method_show'],
         ];
 
         Permission::insert($permissions);

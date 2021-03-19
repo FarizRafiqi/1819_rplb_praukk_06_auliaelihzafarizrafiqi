@@ -4,8 +4,12 @@
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Fitur Pelanggan PLN:</strong>
+    <ol>
+      <li>Tersedia pilihan kota lengkap se-Indonesia</li>
+      <li>Golongan tarif sudah disesuaikan dengan tariff adjustment PLN 2020</li>
+    </ol>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

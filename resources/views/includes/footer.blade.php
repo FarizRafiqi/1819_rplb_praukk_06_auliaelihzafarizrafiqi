@@ -8,7 +8,8 @@
         <ul class="list-unstyled">
           <li class="list-item font-weight-bold">Bantuan</li>
           <li class="list-item">Kebijakan Privasi</li>
-          <li class="list-item">FAQ</li>
+          <li class="list-item"><a href="{{route('faq')}}" class="text-decoration-none text-dark">FAQ</a></li>
+          <li class="list-item"><a href="/docs" class="text-decoration-none text-dark">Developer Docs</a></li>
         </ul>
       </div>
       <div class="col-12 col-md-auto">

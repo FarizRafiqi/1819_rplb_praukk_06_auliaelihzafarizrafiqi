@@ -33,7 +33,7 @@
               <dd class="col-md-8">@rupiah($payment->total_bayar)</dd>
 
               <dt class="col-md-4">Metode Pembayaran</dt>
-              <dd class="col-md-8">{{$payment->paymentMethod->nama}}</dd>
+              <dd class="col-md-8">{{$payment->paymentMethod->nama ?? '-'}}</dd>
 
               <dt class="col-md-4">Status</dt>
               <dd class="col-md-8">
@@ -100,6 +100,8 @@
                   <td>ID Pembayaran</td>
                   <td>ID Tagihan</td>
                   <td>Denda</td>
+                  <td>PPN</td>
+                  <td>PPJ</td>
                 </tr>
               </thead>
             </table>
@@ -122,7 +124,13 @@
           {data: 'id_tagihan'},
           {data: 'denda',
            render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
-          }
+          },
+          {data: 'ppn',
+           render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+          },
+          {data: 'ppj',
+           render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+          },
       ]
   });
 </script>

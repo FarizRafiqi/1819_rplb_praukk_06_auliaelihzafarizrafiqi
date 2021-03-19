@@ -9,7 +9,7 @@ class PaymentDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id_tagihan', 'id_pembayaran', 'denda'];
+    protected $guarded = [];
 
     public function payment()
     {

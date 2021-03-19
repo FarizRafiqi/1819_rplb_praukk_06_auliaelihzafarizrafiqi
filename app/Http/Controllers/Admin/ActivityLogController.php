@@ -19,7 +19,12 @@ class ActivityLogController extends Controller
         abort_if(Gate::denies("activity_log_access"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($request->ajax()){
             $activityLogs = ActivityLog::get();
-            return DataTables::of($activityLogs)->toJson();
+            return DataTables::of($activityLogs)
+                                ->editColumn('id_user', function($user){
+                                    return '<a href='. route("admin.users.show", $user->id_user).' class="text-decoration-none">'.$user->id_user.'</a>';
+                                })
+                                ->rawColumns(['id_user'])
+                                ->toJson();
         }
         return view("pages.admin.activity-log");
     }

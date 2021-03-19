@@ -43,9 +43,12 @@
 						</li>
 					@endif
 						<li class="nav-item my-2 my-md-0">
-							<a href="{{route('logout')}}" class="nav-link btn btn-primary-custom">
-								Logout
-							</a>
+							<form action="{{route('logout')}}" method="post">
+								@csrf
+								<button class="nav-link btn btn-primary-custom">
+									Logout
+								</button>
+							</form>
 						</li>
 				@endauth
 				</ul>

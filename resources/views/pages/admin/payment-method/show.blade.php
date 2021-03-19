@@ -1,52 +1,31 @@
 @extends('layouts.admin')
 
-@section('title', "Detail Pelanggan $plnCustomer->nama_pelanggan")
+@section('title', "Detail $paymentMethod->nama")
 
 @section('content')
   <div class="container">
-    <h4 class="mb-4">{{$plnCustomer->nama_pelanggan}}</h4>
-    <div class="row">
+    <h4 class="mb-4">{{$paymentMethod->nama}}</h4>
+    <div class="row justify-content-center">
       <div class="col-6">
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">
-              Detail Pelanggan
+              Detail Metode Pembayaran
             </h5>
           </div>
           <div class="card-body">
             <dl class="row">
-              <dt class="col-sm-3">Nama</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->nama_pelanggan}}</dd>
+              <dt class="col-12 col-md-3">Nama</dt>
+              <dd class="col-12 col-md-9">{{$paymentMethod->nama}}</dd>
 
-              <dt class="col-sm-3">Nomor Meter</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->nomor_meter}}</dd>
+              <dt class="col-12 col-md-3">Gambar</dt>
+              <dd class="col-12 col-md-9"><img src="{{Storage::url($paymentMethod->gambar)}}" alt="Logo {{$paymentMethod->nama}}" class="img-fluid img-thumbnail" width="120"></dd>
 
-              <dt class="col-sm-3">Alamat</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->alamat}}</dd>
+              <dt class="col-12 col-md-3">Slug</dt>
+              <dd class="col-12 col-md-9">{{$paymentMethod->slug}}</dd>
 
-              <dt class="col-sm-3">Tarif</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->tariff->golongan_tarif}}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title">
-              Detail Golongan Tarif
-            </h5>
-          </div>
-          <div class="card-body">
-            <dl class="row">
-              <dt class="col-sm-3">Golongan Tarif</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->tariff->golongan_tarif}}</dd>
-
-              <dt class="col-sm-3">Daya</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->tariff->daya}}</dd>
-
-              <dt class="col-sm-3">Tarif Per KwH</dt>
-              <dd class="col-sm-9">: {{$plnCustomer->tariff->formatted_tarif_per_kwh}}</dd>
+              <dt class="col-12 col-md-3">Deskripsi</dt>
+              <dd class="col-12 col-md-9">{{$paymentMethod->deskripsi}}</dd>
             </dl>
           </div>
         </div>

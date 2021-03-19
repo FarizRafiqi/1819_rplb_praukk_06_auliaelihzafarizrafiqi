@@ -10,20 +10,22 @@
     "require": {
         "php": "^7.3|^8.0",
         "barryvdh/laravel-dompdf": "^0.9.0",
+        "binarytorch/larecipe": "^2.4",
         "doctrine/dbal": "^3.0",
+        "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
+        "laravolt/indonesia": "^0.29.0",
         "livewire/livewire": "^2.4",
         "midtrans/midtrans-php": "^2.3",
         "realrashid/sweet-alert": "^3.2",
         "snapappointments/bootstrap-select": "^1.13",
-        "spatie/laravel-activitylog": "^3.16",
         "yajra/laravel-datatables-oracle": "~9.0",
-        "fakerphp/faker": "^1.9.1"
+        "megamendung/css/style.css": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -68,5 +70,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./larecipe-components/Css"
+        }
+    ]
 }

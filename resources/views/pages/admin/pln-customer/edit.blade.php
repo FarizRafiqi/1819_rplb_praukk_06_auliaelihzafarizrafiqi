@@ -25,6 +25,23 @@
           <textarea name="alamat" class="form-control" id="inputAlamat" placeholder="Masukkan alamat">{{$plnCustomer->alamat}}</textarea>
         </div>
         <div class="form-group">
+          <label for="selectKota">Kota</label>
+          <select name="id_kota" class="form-control selectpicker @error('id_kota')
+            is-invalid   
+          @enderror" id="selectKota" data-live-search="true">
+            <option selected disabled>Pilih Kota</option>
+            @foreach(\Indonesia::allProvinces() as $province)
+              <optgroup label="{{$province->name}}">
+              @foreach ($province->cities as $city)
+                <option value="{{$city->id}}" {{$city->id == $plnCustomer->id_kota ? 'selected' : ''}}>{{$city->name}}</option>
+              @endforeach
+            @endforeach
+          </select>
+          @error('id_kota')
+            <span class="invalid-feedback">{{$message}}</span>    
+          @enderror
+        </div>
+        <div class="form-group">
           <label for="selectGolonganTarif">Golongan Tarif</label>
           <select name="tariff_id" class="form-control" id="selectGolonganTarif">
             <option selected>Pilih Golongan Tarif</option>

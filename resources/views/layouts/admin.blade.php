@@ -11,12 +11,12 @@
   @livewireStyles
 </head>
 <body class="d-flex flex-column h-100">
-  @if((bool)Cookie::get('enable_sidebar') == false)
-    @include('includes.admin.navbar')
-  @elseif(Cookie::get('enable_sidebar'))
-    @includeWhen((bool)Cookie::get('enable_sidebar') == true, 'includes.admin.sidebar')
+  {{-- @if((bool)Cookie::get('enable_sidebar') == false) --}}
+    {{-- @include('includes.admin.navbar') --}}
+  {{-- @elseif(Cookie::get('enable_sidebar')) --}}
+    @include('includes.admin.sidebar')
     @include('includes.admin.navbar-admin-alternate')
-  @endif
+  {{-- @endif --}}
   <main class="flex-shrink-0" id="main">
     <div class="container-dashboard mt-5">
       @yield('content')
@@ -27,18 +27,10 @@
   @stack('prepend-script')
   @include('includes.admin.script')
   @include('sweetalert::alert')
-  @stack('addon-script')
   @livewireScripts
+  @stack('addon-script')
   <script>
-    let statusEnableSidebar = @json(\Cookie::get('enable_sidebar'));
-    if(statusEnableSidebar){
-      $("#sidebar").css('width', '260px');
-      $("main").css('margin-left', '260px');
-    }else{
-      $("#sidebar").css('width', '0px');
-      $("main").css('margin-left', '0px');
-    }
-    
+    let statusEnableSidebar = @json(Cookie::get('enable_sidebar'));
     $("#switchNavbar").on("click", function(){
         $(this).parent().parent().submit();
     });
@@ -53,7 +45,6 @@
     $(".navbar-toggler").on("click", function(){
       $("#sidebar").css('width', '260px');
       $("main").css('margin-left', '260px');
-      $("header .navbar-dashboard").css('margin-left', '260px');
     });
 
     $('#collapseManajemenUser').on('show.bs.collapse', function () {

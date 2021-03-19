@@ -56,5 +56,15 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
             'id_level' => Level::find(3)->id,
         ]);
+
+        User::create([
+            'nama' => 'Aulia El Ihza Fariz Rafiqi',
+            'username' => 'Eel',
+            'email' => 'auliaelihza@gmail.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('alidaneel123'),
+            'remember_token' => Str::random(10),
+            'id_level' => Level::find(2)->id,
+        ]);
     }
 }

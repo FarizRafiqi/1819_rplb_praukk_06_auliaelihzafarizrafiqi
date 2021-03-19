@@ -15,10 +15,10 @@ class PaymentMethodSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('payment_methods')->insert(
+        DB::table('payment_methods')->insert([
             [
                 'nama' => 'VA BCA', 
-                'gambar' => '-',
+                'gambar' => 'img/payment-method/bca-thumb.png',
                 'slug' => 'va-bca', 
                 'deskripsi' => '-',
                 'created_at' => now(),
@@ -26,7 +26,7 @@ class PaymentMethodSeeder extends Seeder
             ],
             [
                 'nama' => 'VA Mandiri', 
-                'gambar' => '-',
+                'gambar' => 'img/payment-method/mandiri-thumb.png',
                 'slug' => 'va-mandiri', 
                 'deskripsi' => '-',
                 'created_at' => now(),
@@ -34,12 +34,12 @@ class PaymentMethodSeeder extends Seeder
             ],
             [
                 'nama' => 'VA BNI', 
-                'gambar' => '-',
+                'gambar' => 'img/payment-method/bni-thumb.png',
                 'slug' => 'va-bni', 
                 'deskripsi' => '-',
                 'created_at' => now(),
                 'updated_at' => null,
             ],
-        );
+        ]);
     }
 }

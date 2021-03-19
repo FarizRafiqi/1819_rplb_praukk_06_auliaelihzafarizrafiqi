@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PlnCustomerRequest;
+use App\Http\Requests\Admin\PlnCustomerRequest;
 use App\Models\PlnCustomer;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
@@ -39,7 +39,6 @@ class PLNCustomerController extends Controller
                     })
                     ->toJson();
         }
-
         return view("pages.admin.pln-customer.index");
     }
     /**
@@ -57,7 +56,7 @@ class PLNCustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\PlnCustomerRequest  $request
+     * @param  \App\Http\Requests\Admin\PlnCustomerRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(PlnCustomerRequest $request)
@@ -94,7 +93,7 @@ class PLNCustomerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\PlnCustomerRequest  $request
+     * @param  \App\Http\Requests\Admin\PlnCustomerRequest  $request
      * @param  \App\Models\PlnCustomer  $plnCustomer
      * @return \Illuminate\Http\Response
      */
@@ -102,7 +101,7 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $plnCustomer->update($request->all());
-        return back()->withSuccess("Pelanggan Berhasil Diubah!");
+        return redirect()->route('admin.pln-customers.index')->withSuccess("Pelanggan Berhasil Diubah!");
     }
 
     /**

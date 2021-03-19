@@ -4,12 +4,16 @@
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
-  <div class="d-flex justify-content-between mb-4">
-    <h3>Metode Pembayaran</h3>
-    <a href="{{route('admin.payment-methods.create')}}" class="btn btn-primary-custom">
-      <i class="fas fa-plus"></i>
-      Tambah
-    </a>
+  <div class="row mb-4">
+    <div class="col-12 col-md-6">
+      <h3>Metode Pembayaran</h3>
+    </div>
+    <div class="col-12 col-md-6 text-md-right">
+      <a href="{{route('admin.payment-methods.create')}}" class="btn btn-primary-custom">
+        <i class="fas fa-plus"></i>
+        Tambah
+      </a>
+    </div>
   </div>
   <div class="card">
     <div class="card-body">
@@ -19,6 +23,7 @@
             <th>ID</th>
             <th>Nama Metode</th>
             <th>Gambar</th>
+            <th>Slug</th>
             <th>Deskripsi</th>
             <th>Action</th>
           </tr>
@@ -39,6 +44,7 @@
             {data: 'id'},
             {data: 'nama'},
             {data: 'gambar'},
+            {data: 'slug'},
             {data: 'deskripsi',
               render: function ( data, type, row ) {
               return data.length > 30 ?

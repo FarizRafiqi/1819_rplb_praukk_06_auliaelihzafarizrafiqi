@@ -4,12 +4,6 @@
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> data yang digunakan dibawah ini adalah data bohongan semua. Dan kemungkinan besar data-datanya tidak saling berhubungan sama sekali, karena dibuat secara acak.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Tarif</h3>
     <a href="{{route('admin.tariffs.create')}}" class="btn btn-primary-custom">
@@ -45,9 +39,7 @@
             {data: 'id'},
             {data: 'golongan_tarif'},
             {data: 'daya',
-              render: function(data, type, row){
-                return data+" VA";
-              }
+              render: $.fn.dataTable.render.number('.', ',', 0, '', ' VA')
             },
             {data: 'tarif_per_kwh', 
               render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')

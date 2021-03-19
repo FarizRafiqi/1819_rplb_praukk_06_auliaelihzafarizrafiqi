@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UsageRequest;
+use App\Http\Requests\Admin\UsageRequest;
 use App\Models\Bill;
 use App\Models\PlnCustomer;
 use App\Models\Usage;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
@@ -59,8 +58,8 @@ class ElectricityUsageController extends Controller
         $customers = PlnCustomer::get();
 
         if($request->ajax()){
-            $usage = Usage::where('id_pelanggan_pln', $request->id_pelanggan)->max('meter_akhir');
-            return response()->json($usage);
+            $usage = Usage::where('id_pelanggan_pln', $request->id_pelanggan)->max('meter_akhir') ?? sprintf("%08d", 0);
+            return response()->json(sprintf("%08d", $usage));
         }
         return view('pages.admin.electricity-usage.create', compact('customers'));
     }
@@ -68,7 +67,7 @@ class ElectricityUsageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\UsageRequest  $request
+     * @param  \App\Http\Requests\Admin\UsageRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UsageRequest $request)
@@ -105,7 +104,7 @@ class ElectricityUsageController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UsageRequest  $request
+     * @param  \App\Http\Requests\Admin\UsageRequest  $request
      * @param  \App\Models\Usage  $usage
      * @return \Illuminate\Http\Response
      */
@@ -130,11 +129,11 @@ class ElectricityUsageController extends Controller
          * jika penggunaan ini memiliki relasi dengan tagihan,
          * maka soft deletes.
          */
-        if($usage->bill_count > 0){
-            $bill = Bill::firstWhere('id_penggunaan', $usage->id);
-            $bill->usage()->delete();
+        if($usage->bill_count > 0 && $usage->bill->status == "LUNAS"){
+            alert('Data tidak dapat dihapus', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar', 'error');
+            return redirect()->back();
         }
-
+        $usage->bill->delete();
         $usage->delete();
         return redirect()->route('admin.usages.index')->withSuccess('Data penggunaan berhasil dihapus!');
     }
