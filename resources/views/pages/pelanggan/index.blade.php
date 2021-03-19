@@ -9,7 +9,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-5 col-lg-6 left-side d-md-inline-block d-none">
-        <img src="{{ asset('assets/img/illustrasi/mobile-payment-illustration@2x.png') }}" class="ilustrasi-mobile-payment" alt="Mobile Payment Illustration" width="300px">
+        <img src="{{ asset('assets/img/ilustrasi/mobile-payment-illustration@2x.png') }}" class="ilustrasi-mobile-payment" alt="Mobile Payment Illustration" width="300px">
       </div>
       <div class="col-md-7 col-lg-6 right-side d-md-inline-block d-none">
         <h1 class="jumbotron-header">Penuhi Kebutuhan Listrik Kamu</h1>
@@ -51,7 +51,7 @@
               </p>
             </div>
             <div class="col col-4">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-meteran-listrik@2x.png') }}" class="d-block ilustrasi-meteran-listrik text-right" alt="Ilustrasi Meteran Listrik">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-meteran-listrik@2x.png') }}" class="d-block ilustrasi-meteran-listrik text-right" alt="Ilustrasi Meteran Listrik">
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
               </p>
             </div>
             <div class="col col-4">
-              <img src="{{ asset('assets/img/illustrasi/search-illustration@2x.png') }}" class="d-block search-illustration text-right" alt="Ilustrasi Mencari Website">
+              <img src="{{ asset('assets/img/ilustrasi/search-illustration@2x.png') }}" class="d-block search-illustration text-right" alt="Ilustrasi Mencari Website">
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@
               </p>
             </div>
             <div class="col col-4">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-input-id-pelanggan@2x.png') }}" class="d-block ilustrasi-input-id-pelanggan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-input-id-pelanggan@2x.png') }}" class="d-block ilustrasi-input-id-pelanggan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@
               </p>
             </div>
             <div class="col col-4">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-klik-tombol-cek-tagihan@2x.png') }}" class="d-block ilustrasi-klik-tombol-cek-tagihan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-klik-tombol-cek-tagihan@2x.png') }}" class="d-block ilustrasi-klik-tombol-cek-tagihan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
             </div>
           </div>
         </div>

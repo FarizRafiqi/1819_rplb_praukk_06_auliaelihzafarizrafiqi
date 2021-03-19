@@ -12,7 +12,7 @@
       tagihan listrik kamu..
     </h4>
     <img src="{{ asset('assets/img/icopln.png') }}" class="icon-pln" alt="ICON PLN" width="43" height="63">
-    <img src="{{ asset('assets/img/illustrasi/payment-bill-time-illustration@2x.png') }}" class="ilustrasi-payment-bill-time" alt="Payment Bill Time Illustration" width="180">
+    <img src="{{ asset('assets/img/ilustrasi/payment-bill-time-illustration@2x.png') }}" class="ilustrasi-payment-bill-time" alt="Payment Bill Time Illustration" width="180">
   </div>
 </div>
 <!-- End of Jumbotron -->
@@ -91,7 +91,7 @@
               </p>
             </div>
             <div class="col pl-0">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-meteran-listrik@2x.png') }}" class="d-block ilustrasi-meteran-listrik text-right" alt="Ilustrasi Meteran Listrik">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-meteran-listrik@2x.png') }}" class="d-block ilustrasi-meteran-listrik text-right" alt="Ilustrasi Meteran Listrik">
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@
               </p>
             </div>
             <div class="col pl-0">
-              <img src="{{ asset('assets/img/illustrasi/search-illustration@2x.png') }}" class="d-block search-illustration text-right" alt="Ilustrasi Mencari Website">
+              <img src="{{ asset('assets/img/ilustrasi/search-illustration@2x.png') }}" class="d-block search-illustration text-right" alt="Ilustrasi Mencari Website">
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@
               </p>
             </div>
             <div class="col pl-0">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-input-id-pelanggan@2x.png') }}" class="d-block ilustrasi-input-id-pelanggan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-input-id-pelanggan@2x.png') }}" class="d-block ilustrasi-input-id-pelanggan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
             </div>
           </div>
         </div>
@@ -129,7 +129,7 @@
               </p>
             </div>
             <div class="col pl-0">
-              <img src="{{ asset('assets/img/illustrasi/ilustrasi-klik-tombol-cek-tagihan@2x.png') }}" class="d-block ilustrasi-klik-tombol-cek-tagihan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
+              <img src="{{ asset('assets/img/ilustrasi/ilustrasi-klik-tombol-cek-tagihan@2x.png') }}" class="d-block ilustrasi-klik-tombol-cek-tagihan text-right" alt="Ilustrasi Memasukkan ID Pelanggan">
             </div>
           </div>
         </div>

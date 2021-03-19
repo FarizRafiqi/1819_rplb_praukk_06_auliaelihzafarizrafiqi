@@ -50,7 +50,7 @@ header .dropdown-toggle {
 
 .jumbotron {
     background-color: #28b7ca;
-    background-image: url("../img/illustrasi/blob-2.svg");
+    background-image: url("../img/ilustrasi/blob-2.svg");
     background-size: 280px 260px;
     background-repeat: no-repeat;
     background-position: 100px -40px;
@@ -359,7 +359,7 @@ footer .list-item {
     }
 
     .jumbotron {
-        background-image: url("../img/illustrasi/blob.svg");
+        background-image: url("../img/ilustrasi/blob.svg");
         background-position: 360px 0px;
         background-size: cover;
         height: 350px;

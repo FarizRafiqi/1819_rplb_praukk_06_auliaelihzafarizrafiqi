@@ -43,7 +43,7 @@
             <button class="btn btn-primary-custom btn-block" type="submit">Masuk</button>
           </div>
           <div class="col-md-6 text-center d-none d-md-inline-block">
-            <img src="{{ asset('assets/img/illustrasi/illustration-login.png') }}" width="240" class="img-fluid">
+            <img src="{{ asset('assets/img/ilustrasi/ilustrasi-login.png') }}" width="240" class="img-fluid">
           </div>
         </form>
       </div>
