@@ -51,7 +51,7 @@
               <button class="btn btn-primary-custom btn-block" type="submit">Daftar</button>
             </div>
             <div class="col-md-6 text-center d-none d-md-flex">
-              <img src="{{ asset('assets/img/illustrasi/illustration-register.png') }}" width="420" height="380" alt="illustrasi register">
+              <img src="{{ asset('assets/img/illustrasi/illustration-register.png') }}" width="420" height="380" class="img-fluid">
             </div>
           </form>
         </div>
