@@ -32,7 +32,7 @@ return [
     'google' => [
         'client_id' => '560047199479-nkrqae2dt1ee7t53ok5nqd6iql698hva.apps.googleusercontent.com',
         'client_secret' => 'XOUnjLm6U22Q2deGwnUZ_MpC',
-        'redirect' => 'http://127.0.0.1:8000/auth/google/callback',
+        'redirect' => 'http://megamendung.herokuapp.com/auth/google/callback',
     ], 
 
 ];
