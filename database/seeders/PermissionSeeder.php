@@ -65,6 +65,7 @@ class PermissionSeeder extends Seeder
             ['title' => 'payment_method_create'],
             ['title' => 'payment_method_update'],
             ['title' => 'payment_method_delete'],
+            ['title' => 'payment_method_edit'],
             ['title' => 'payment_method_show'],
         ];
 

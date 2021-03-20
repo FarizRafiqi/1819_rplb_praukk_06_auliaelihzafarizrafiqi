@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PlnCustomer;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\CoreApi;
 use Midtrans\Transaction as MidtransTransaction;
@@ -73,32 +74,44 @@ class TransactionController extends Controller
         $paymentSuccess = Payment::where("id_pelanggan_pln", $plnCustomer->id)
                           ->where("status", "success")
                           ->get();
+
         if($paymentSuccess->count() === 0){
             $waktuSaatIni = now()->format("Y-m-d H:i:s");
-            //Jika ada pembayaran tagihan yang sama maka update tanggal bayarnya saja.
-            //Jika tidak ada maka buat pembayaran baru.
-            $payment = Payment::updateOrCreate([
-                "id_customer" => auth()->user()->id,
-                "id_pelanggan_pln" => $plnCustomer->id,
-                "biaya_admin" => config('const.biaya_admin'),
-                "total_bayar" => $totalPayment,
-                "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
-                "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
-            ], ["tanggal_bayar" => $waktuSaatIni]);
+        
+            DB::beginTransaction();
 
-            foreach($usages as $index => $usage){
-                $payment->details()->updateOrCreate([
-                    "id_tagihan" => $usage->bill->id,
-                    "denda" => $data[$index]['denda'],
-                    "ppn" => $data[$index]['ppn'],
-                    "ppj" => $data[$index]['ppj'],
-                    "total_tagihan" => $data[$index]['total_tagihan']
-                ], ["updated_at" => $waktuSaatIni]);
+            try {
+                //Jika ada pembayaran tagihan yang sama maka update tanggal bayarnya saja.
+                //Jika tidak ada maka buat pembayaran baru.
+                $payment = Payment::updateOrCreate([
+                    "id_customer" => auth()->user()->id,
+                    "id_pelanggan_pln" => $plnCustomer->id,
+                    "biaya_admin" => config('const.biaya_admin'),
+                    "total_bayar" => $totalPayment,
+                    "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
+                    "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
+                ], ["tanggal_bayar" => $waktuSaatIni]);
+
+                foreach($usages as $index => $usage){
+                    $payment->details()->updateOrCreate([
+                        "id_tagihan" => $usage->bill->id,
+                        "denda" => $data[$index]['denda'],
+                        "ppn" => $data[$index]['ppn'],
+                        "ppj" => $data[$index]['ppj'],
+                        "total_tagihan" => $data[$index]['total_tagihan']
+                    ], ["updated_at" => $waktuSaatIni]);
+                }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
+            
             return redirect()->route("payment.index", $payment->id);
         }
 
-        return redirect()->back()->with("success", "Tagihan sudah terbayar");
+        return redirect()->back()->withSuccess("Tagihan sudah terbayar");
     }
 
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
@@ -146,27 +159,18 @@ class TransactionController extends Controller
         }
         
         try {
-            //cek apakah id pembayaran ini sudah ada sebelumnya, jika sudah ada cek status transaksinya,
-            //kalau masih pending, maka arahkan pelanggan ke halaman pembayaran
-            $response = MidtransTransaction::status("PLN-".$payment->id);
-            if($response && $response->transaction_status == "pending"){
-                return redirect()->route("payment.confirm", [
-                    "payment_method" => $paymentMethod->slug, 
-                    "payment" => $payment->id,
-                    "transaction_id" => $response->transaction_id
-                ]);
-            }
+            $response = CoreApi::charge($midtransParams);
+            
+            return redirect()->route("payment.confirm", [
+                "payment_method" => $paymentMethod->slug, 
+                "payment" => $payment->id,
+                "transaction_id" => $response->transaction_id
+            ]);
         } catch (Exception $ex) {
-            //Kalau tidak ada maka buat pembayaran, kemudian arahkan pelanggan ke halaman pembayaran
-            if($ex->getCode() === 404){
-                $response = CoreApi::charge($midtransParams);
-                if($response){
-                    return redirect()->route("payment.confirm", [
-                            "payment_method" => $paymentMethod->slug, 
-                            "payment" => $payment->id,
-                            "transaction_id" => $response->transaction_id
-                        ]);
-                }
+            //Kalau statusnya 406, itu berarti sudah ada pembayaran dengan id yang sama.
+            if($ex->getCode() === 406){
+                $response = MidtransTransaction::status("PLN-".$payment->id);
+                return $this->checkTransactionStatus($paymentMethod, $payment, $response);
             }
             echo $ex->getMessage();
             exit;
@@ -181,14 +185,7 @@ class TransactionController extends Controller
         Config::$is3ds = config("midtrans.is3ds");
 
         $response = MidtransTransaction::status("PLN-".$payment->id);
-        $totalBill = $payment->details()->first()->bill->jumlah_kwh * $payment->plnCustomer->tariff->tarif_per_kwh;
-        if($response && $response->transaction_status == "pending"){
-            return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
-        }elseif($response->transaction_status == "expire"){
-            return view('pages.pelanggan.payments.expire');
-        }elseif($response->transaction_status == "settlement"){
-            return redirect()->route('transaction-history');
-        }
+        return $this->checkTransactionStatus($paymentMethod, $payment, $response);
     }
 
     /**
@@ -197,5 +194,18 @@ class TransactionController extends Controller
     public function transactionHistory(Request $request)
     {
         return view("pages.pelanggan.transaction-history");
+    }
+
+    public function checkTransactionStatus(PaymentMethod $paymentMethod, Payment $payment, $response)
+    {
+        $totalBill = $payment->details()->sum('total_tagihan');
+        if($response->transaction_status == "settlement"){
+            return redirect()->route('transaction-history');
+        }elseif($response->transaction_status == "pending"){
+            $totalBill = $payment->details()->sum('total_tagihan');
+            return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
+        }elseif($response->transaction_status == "expire"){
+            return view('pages.pelanggan.payments.expire');
+        }
     }
 }

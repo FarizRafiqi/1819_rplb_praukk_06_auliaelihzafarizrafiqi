@@ -15,12 +15,12 @@ class PaymentObserver
      */
     public function created(Payment $payment)
     {
-        ActivityLog::create([
-            'id_user' => 1,
-            'tabel_referensi' => 'payments',
-            'id_referensi' => $payment->id,
-            'deskripsi' => 'Memasukkan data pembayaran'
-        ]);
+        // ActivityLog::create([
+        //     'id_user' => 1,
+        //     'tabel_referensi' => 'payments',
+        //     'id_referensi' => $payment->id,
+        //     'deskripsi' => 'Memasukkan data pembayaran'
+        // ]);
     }
 
     /**
@@ -31,12 +31,12 @@ class PaymentObserver
      */
     public function updated(Payment $payment)
     {
-        ActivityLog::create([
-            'id_user' => 1,
-            'tabel_referensi' => 'payments',
-            'id_referensi' => $payment->id,
-            'deskripsi' => 'Memperbarui data pembayaran'
-        ]);
+        // ActivityLog::create([
+        //     'id_user' => 1,
+        //     'tabel_referensi' => 'payments',
+        //     'id_referensi' => $payment->id,
+        //     'deskripsi' => 'Memperbarui data pembayaran'
+        // ]);
         
         //Jika status pembayarannya success, maka tagihan lunas
         if($payment->status == "success"){

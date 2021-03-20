@@ -40,10 +40,10 @@
             @enderror
           </div>
           <div class="form-group col-md-6">
-            <label for="selectGolonganTarif">Level</label>
+            <label for="selectLevel">Level</label>
             <select name="id_level" class="form-control @error('id_level')
                 is-invalid
-            @enderror" id="selectGolonganTarif">
+            @enderror" id="selectLevel">
               <option selected>Pilih Level</option>
               @foreach($levels as $level)
                 <option value="{{$level->id}}" {{($level->id == old('id_level') ? 'selected' : '')}}>{{$level->level}}</option>

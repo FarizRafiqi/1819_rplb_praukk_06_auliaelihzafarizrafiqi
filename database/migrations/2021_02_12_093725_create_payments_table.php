@@ -14,7 +14,7 @@ class CreatePaymentsTable extends Migration
     public function up()
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->unique();
             $table->foreignId('id_customer')->constrained('users')->onUpdate('cascade');
             $table->foreignId('id_pelanggan_pln')->constrained('pln_customers')->onUpdate('cascade');
             $table->dateTime('tanggal_bayar', 0);

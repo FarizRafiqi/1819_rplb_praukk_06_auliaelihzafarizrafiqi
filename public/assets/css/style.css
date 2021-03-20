@@ -179,12 +179,12 @@ footer .list-item {
     font-size: 16px;
 }
 
-.auth-form .form-group input {
+.auth-form .form-group input,
+.auth-form .form-group a.btn {
     height: 48px;
 }
 
 .auth-form .btn.btn-primary-custom {
-    height: 48px;
     background: linear-gradient(to right, #28b7ca 0%, #125684 100%);
 }
 

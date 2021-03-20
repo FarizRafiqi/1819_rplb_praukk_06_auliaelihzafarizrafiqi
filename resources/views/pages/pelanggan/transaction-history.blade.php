@@ -18,10 +18,12 @@
   </div>
   @include('includes.script')
   @livewireScripts
+  @include('sweetalert::alert')
+  @stack('addon-script')
   <script>
     $(".dropdown-item").on("click", function(e){
       e.stopPropagation();
-    })
+    });
   </script>
 </body>
 </html>

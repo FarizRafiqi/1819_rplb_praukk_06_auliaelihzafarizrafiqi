@@ -9,6 +9,7 @@
   @include('includes.admin.style')
   @stack('addon-style')
   @livewireStyles
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
 </head>
 <body class="d-flex flex-column h-100">
   {{-- @if((bool)Cookie::get('enable_sidebar') == false) --}}
@@ -30,7 +31,7 @@
   @livewireScripts
   @stack('addon-script')
   <script>
-    let statusEnableSidebar = @json(Cookie::get('enable_sidebar'));
+    // let statusEnableSidebar = @json(Cookie::get('enable_sidebar'));
     $("#switchNavbar").on("click", function(){
         $(this).parent().parent().submit();
     });
@@ -48,11 +49,11 @@
     });
 
     $('#collapseManajemenUser').on('show.bs.collapse', function () {
-      $(".bi-chevron-right").css('transform', 'rotate(90deg)')
+      $(".bi-chevron-right").css('transform', 'rotate(90deg)');
     })
 
     $('#collapseManajemenUser').on('hide.bs.collapse', function () {
-      $(".bi-chevron-right").css('transform', 'rotate(0deg)')
+      $(".bi-chevron-right").css('transform', 'rotate(0deg)');
     })
   </script>
 </body>

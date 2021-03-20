@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,27 +36,6 @@ class PaymentController extends Controller
                     ->toJson();
         }
         return view("pages.admin.payment.index");
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -102,20 +82,17 @@ class PaymentController extends Controller
         abort_if(Gate::denies("payment_update"), Response::HTTP_FORBIDDEN, "Forbidden");
 
         $request->validate([
-            'status' => 'required|in:success,failed,pending'
+            'status' => ['required', Rule::in(config('enum.payment_status'))],
         ]);
-        $payment->update($request->only("status"));
-        return redirect()->route("admin.payments.index")->withSuccess("Data pembayaran berhasil diubah!");
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Payment  $payment
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Payment $payment)
-    {
         
+        if(auth()->user()->isBank()){
+            $payment->update([
+                'id_bank' => auth()->id(),
+                'status' => $request->status,
+            ]);
+        }else{
+            $payment->update($request->only("status"));
+        }
+        return redirect()->route("admin.payments.index")->withSuccess("Data pembayaran berhasil diubah!");
     }
 }

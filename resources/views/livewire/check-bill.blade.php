@@ -34,22 +34,21 @@
 		</div>
 	</form>
 	@if(!empty($usages))
-		<table class="table text-center table-bordered table-stripped w-100 mt-3" id="billTable">
+	<div class="table-responsive">
+		<table class="table text-center table-bordered table-stripped table-hover mt-3" id="billTable">
 			<thead>
 				<tr>
-					<th>Nama Lengkap</th>
-					<th>Jumlah Periode</th>
-					<th>Periode</th>
-					<th>Biaya Admin</th>
-					@if ($this->fine > 0)
-						<th>Denda</th>
-					@endif
-					<th>Tagihan</th>
-					<th>Total Tagihan</th>
+					<th scope="col">Nama Lengkap</th>
+					<th scope="col">Jumlah Periode</th>
+					<th scope="col">Periode</th>
+					<th scope="col">Biaya Admin</th>
+					<th scope="col">Total Denda</th>
+					<th scope="col">Tagihan</th>
+					<th scope="col">Total Tagihan</th>
 				</tr>
 			</thead>
 			<tbody>
-					<tr>
+					<tr scope="row">
 						<td>{{$usages->first()->plnCustomer->nama_pelanggan}}</td>
 						<td>{{$usages->count()}}</td>
 						<td>
@@ -60,14 +59,13 @@
 							@endif
 						</td>
 						<td>@rupiah(config('const.biaya_admin'))</td>
-						@if ($this->fine > 0)
-							<td>@rupiah($this->fine)</td>
-						@endif
-						<td>@rupiah($bills)</td>
+						<td>@rupiah(collect($data)->sum('denda'))</td>
+						<td>@rupiah(collect($data)->sum('total_tagihan'))</td>
 						<td class="font-weight-bold">@rupiah($total)</td>
 					</tr>
 			</tbody>
 		</table>
+	</div>
 	@endif
 </div>
 @push('addon-script')

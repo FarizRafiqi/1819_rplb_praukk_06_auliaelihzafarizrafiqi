@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentMethod;
 use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentMethodController extends Controller
 {
@@ -19,6 +20,8 @@ class PaymentMethodController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies("payment_method_access"), Response::HTTP_FORBIDDEN, "Forbidden");
+
         if($request->ajax()){
             $paymentMethods = PaymentMethod::all();
             return DataTables::of($paymentMethods)
@@ -50,18 +53,8 @@ class PaymentMethodController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies("payment_method_create"), Response::HTTP_FORBIDDEN, "Forbidden");
         return view("pages.admin.payment-method.create");
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-
     }
 
     /**
@@ -72,6 +65,7 @@ class PaymentMethodController extends Controller
      */
     public function show(PaymentMethod $paymentMethod)
     {
+        abort_if(Gate::denies("payment_method_show"), Response::HTTP_FORBIDDEN, "Forbidden");
         return view('pages.admin.payment-method.show', compact('paymentMethod'));
     }
 
@@ -83,6 +77,7 @@ class PaymentMethodController extends Controller
      */
     public function edit(PaymentMethod $paymentMethod)
     {
+        abort_if(Gate::denies("payment_method_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
         return view("pages.admin.payment-method.edit", compact("paymentMethod"));
     }
 
@@ -95,20 +90,9 @@ class PaymentMethodController extends Controller
      */
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
-        if($request->gambar){
-            $temporaryFile = TemporaryFile::where("folder", $request->gambar)->firstOrFail();
-            $from = "tmp/".$request->gambar."/".$temporaryFile->filename;
-            $to = "public/img/payment-method/" . $temporaryFile->filename;
-            if(!Storage::exists($to)){
-                Storage::move($from, $to);
-                $paymentMethod->update($request->except('gambar')+["gambar" => $temporaryFile->filename]);
-                rmdir(storage_path('app/tmp/'.$request->gambar));
-            }
-            
-            return redirect()->route("admin.payment-methods.index")->with("success", "Metode Pembayaran berhasil ditambahkan!");
-        }
-        $paymentMethod->update($request->except('gambar'));
-        return redirect()->route('admin.payment-methods.index')->with("success", "Data berhasil diubah!");
+        abort_if(Gate::denies("payment_method_update"), Response::HTTP_FORBIDDEN, "Forbidden");
+        
+        return redirect()->route('admin.payment-methods.index')->withSuccess("Data berhasil diubah!");
     }
 
     /**
@@ -119,10 +103,11 @@ class PaymentMethodController extends Controller
      */
     public function destroy(PaymentMethod $paymentMethod)
     {
+        abort_if(Gate::denies("payment_method_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($paymentMethod->payments()->count() > 0){
             return redirect()->back()->with("error", "Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
         }
         $paymentMethod->delete();
-        return redirect()->route('admin.payment-methods.index')->with("success", "Data berhasil dihapus!");
+        return redirect()->route('admin.payment-methods.index')->withSuccess("Data berhasil dihapus!");
     }
 }

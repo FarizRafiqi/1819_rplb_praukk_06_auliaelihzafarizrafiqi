@@ -19,64 +19,7 @@
 
 <!-- Main Content -->
 <main class="container">
-  <!-- Input ID Pelanggan -->
-  <div class="card card-input-no-meteran p-1">
-    <form action="{{route('payment.create')}}" method="POST" id="formTagihan">
-      @csrf
-      <div class="form-row">
-        <div class="col-9">
-          <input class="form-control @error('id_pelanggan')
-              is-invalid
-          @enderror" name="id_pelanggan" id="inputIDPelanggan" type="text" placeholder="ID Pelanggan" autocomplete="off" autofocus>
-        </div>
-        <div class="col-3">
-          <button class="btn btn-secondary-custom w-100" type="submit" id="btnBayar" disabled>Bayar</button>
-        </div>
-        <span class="col-12" id="validation-errors"></span>
-      </div>
-    </form>
-    <div class="modal" tabindex="-1" id="modalTagihan">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Tagihan Pelanggan</h5>
-            <button type="button" class="close" data-dismiss="modal">
-              <span>&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <dl class="row">
-              <dt class="col-12">Nama Lengkap</dt>
-              <dd class="col-12" id="namaLengkap">A description list is perfect for defining terms.</dd>
-            
-              <dt class="col-12">Jumlah Periode</dt>
-              <dd class="col-12" id="jumlahPeriode"></dd>
-            
-              <dt class="col-12">Periode</dt>
-              <dd class="col-12" id="periode"></dd>
-            
-              <dt class="col-12 text-truncate">Tagihan</dt>
-              <dd class="col-12" id="tagihan">This can be useful when space is tight. Adds an ellipsis at the end.</dd>
-            
-              <dt class="col-12">Biaya Admin</dt>
-              <dd class="col-12" id="biayaAdmin"></dd>
-
-              <dt class="col-12">Total</dt>
-              <dd class="col-12 font-weight-bold" id="total"></dd>
-            </dl>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-            <form action="{{route('payment.create')}}" method="POST">
-              @csrf
-              <input type="hidden" name="id_pelanggan">
-              <button type="submit" class="btn btn-primary">Bayar</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  @livewire('check-bill-mobile')
   <!-- End of Input ID Pelanggan -->
 
   <section class="postpaid-instruction mt-n4">

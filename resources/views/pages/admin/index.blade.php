@@ -150,7 +150,7 @@
             {data: 'total_bayar',
              render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
             },
-            {data: 'metode_pembayaran', defaultContent: '-'},
+            {data: 'payment.payment_method.nama', defaultContent: '-'},
             {data: 'status',
               render: function(data, type, row){
                 let state;

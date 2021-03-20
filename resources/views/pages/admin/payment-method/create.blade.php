@@ -16,7 +16,7 @@
   </div>
 @endsection
 @push('addon-script')
-  <script src="{{asset('assets/plugin/filepond-master/dist/filepond.min.js')}}"></script>
+  {{-- <script src="{{asset('assets/plugin/filepond-master/dist/filepond.min.js')}}"></script> --}}
   <script src="{{asset('assets/plugin/filepond-plugin-image-preview-master/dist/filepond-plugin-image-preview.min.js')}}"></script>
   <script src="{{asset('assets/plugin/ckeditor5-build-classic/ckeditor.js')}}"></script>
   <script>
@@ -27,6 +27,15 @@
             console.error( error );
         } );
     });
+
+    Livewire.on('alertSuccess', () => {
+      Swal.fire({
+        title: 'Metode pembayaran berhasil ditambahkan',
+        icon: 'success',
+      }).then(function(){
+        window.location.href = "{{route('admin.payment-methods.index')}}";
+      });
+    })
       // Register the plugin
       // FilePond.registerPlugin(FilePondPluginImagePreview);    
       // const inputElement = document.querySelector('input[type="file"]');

@@ -39,11 +39,22 @@
               <span class="text-danger">{{$message}}</span>
             @enderror
           </div>
+          
           <div class="form-group col-md-6">
-            <label for="level">Level</label>
-            <div class="d-flex align-items-center h-50">
-              <span class="align-middle" id="level">{{$request->user()->level->level}}</span>
-            </div>
+            <label for="selectLevel">Level</label>
+            <select name="id_level" class="form-control @error('id_level')
+                is-invalid
+            @enderror" id="selectLevel">
+              <option selected disabled>Pilih Level</option>
+              @foreach($levels as $level)
+                <option value="{{$level->id}}"  
+                  {{($level->id === auth()->user()->id_level) ? 'selected' : ''}}
+                >{{$level->level}}</option>
+              @endforeach
+            </select>
+            @error('id_level')
+              <span class="text-danger">{{$message}}</span>
+            @enderror
           </div>
         </div>
         <h4 class="mb-3">Atur Password</h4>
@@ -58,10 +69,10 @@
         </div>
         <div class="form-group">
           <label for="new_password">Password Baru</label>
-          <input type="password" name="new_password" class="form-control @error('new_password')
+          <input type="password" name="password" class="form-control @error('password')
              is-invalid 
           @enderror" id="newPassword" placeholder="Password baru">
-          @error('new_password')
+          @error('password')
             <span class="text-danger">{{$message}}</span>
           @enderror
         </div>

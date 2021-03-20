@@ -14,7 +14,7 @@
           </div>
           <div class="card-body">
             <dl class="row">
-              <dt class="col-md-4">ID Pembayaran</dt>
+              <dt class="col-md-4">ID</dt>
               <dd class="col-md-8">{{$payment->id}}</dd>
 
               <dt class="col-md-4">Nama Customer</dt>
@@ -51,6 +51,8 @@
                         
                 @endswitch
               </dd>
+              <dt class="col-md-4">Staff Bank</dt>
+              <dd class="col-md-8">{{$payment->bank->nama ?? '-'}}</dd>
             </dl>
           </div>
         </div>
@@ -64,7 +66,7 @@
           </div>
           <div class="card-body">
             <dl class="row">
-              <dt class="col-md-4">ID Pelanggan</dt>
+              <dt class="col-md-4">ID</dt>
               <dd class="col-md-8">{{$payment->plnCustomer->id}}</dd>
 
               <dt class="col-md-4">Nama</dt>
@@ -102,6 +104,7 @@
                   <td>Denda</td>
                   <td>PPN</td>
                   <td>PPJ</td>
+                  <td>Total Tagihan</td>
                 </tr>
               </thead>
             </table>
@@ -129,6 +132,9 @@
            render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
           },
           {data: 'ppj',
+           render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
+          },
+          {data: 'total_tagihan',
            render: $.fn.dataTable.render.number('.', ',', 2, 'Rp ')
           },
       ]

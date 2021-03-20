@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use Exception;
 use Midtrans\Config;
 use Midtrans\Transaction as MidtransTransaction;
 
@@ -39,7 +40,6 @@ class TransactionHistory extends Component
                               ->get();
         return view("livewire.transaction-history", [
             "userPayments" => $userPayments,
-            "transaction" => $this->payment,
             "transactionDetail" => $this->paymentDetail,
             "selectedStatuses" => $this->selectedStatuses,
             "paymentMethods" => $this->paymentMethods,
@@ -54,8 +54,16 @@ class TransactionHistory extends Component
         Config::$isProduction = config("midtrans.isProduction");
         Config::$isSanitized = config("midtrans.isSanitized");
         Config::$is3ds = config("midtrans.is3ds");
-
-        $this->paymentDetail = MidtransTransaction::status("PLN-".$id);
+    
+        try{
+            $this->paymentDetail = MidtransTransaction::status("PLN-".$id);
+        }catch(Exception $ex){
+            if($ex->getCode() === 404 && $this->payment->status == "pending"){
+                $this->emit('paymentNotCompleteYet', $this->payment->id);return;
+            }
+            echo $ex->getMessage();
+            exit;
+        }
     }
 
     public function filterStatus($status)

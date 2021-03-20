@@ -6,7 +6,7 @@
   <div class="container">
     <h4 class="mb-4">{{$paymentMethod->nama}}</h4>
     <div class="row justify-content-center">
-      <div class="col-6">
+      <div class="col-12">
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">
@@ -25,7 +25,7 @@
               <dd class="col-12 col-md-9">{{$paymentMethod->slug}}</dd>
 
               <dt class="col-12 col-md-3">Deskripsi</dt>
-              <dd class="col-12 col-md-9">{{$paymentMethod->deskripsi}}</dd>
+              <dd class="col-12 col-md-9">{!!$paymentMethod->deskripsi!!}</dd>
             </dl>
           </div>
         </div>

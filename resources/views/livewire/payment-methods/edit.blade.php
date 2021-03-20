@@ -14,33 +14,76 @@
             @if ($gambar)
             <div class="form-group col-md-12">
                 <label for="imagePreview">Image Preview:</label> <br>
-                <img src="{{ $gambar->temporaryUrl() }}" class="img-fluid" id="imagePreview" width="200px">
+                <img src="{{ $gambar }}" class="img-fluid img-thumbnail" id="imagePreview" width="200px">
             </div>
             @endif
             <div class="form-group col-md-12">
                 <label for="gambar">Gambar</label>
+                <div wire:loading wire:target="gambar">
+                    <span class="spinner-border spinner-border-sm mb-1"></span>
+                </div>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input @error('gambar') is-invalid @enderror" id="gambar" name="gambar" wire:model="gambar">
                     <label class="custom-file-label" for="gambar">Pilih Gambar</label>
                     @error('gambar') <span class="invalid-feedback"> {{ $message }} </span> @enderror
                 </div>
-                <div wire:loading wire:target="gambar"><span class="spinner-border spinner-border-sm mb-1"></span></div>
             </div>
             <div class="form-group col-md-12">
                 <label for="deskripsi">Deskripsi</label>
-                <textarea name="deskripsi" class="form-control" id="deskripsi" placeholder="Masukkan deskripsi. Contohnya Anda bisa memasukkan cara pembayaran" wire:model="deskripsi"></textarea>
+                <textarea 
+                    name="deskripsi" 
+                    class="form-control" 
+                    id="deskripsi" 
+                    placeholder="Masukkan deskripsi. Contohnya Anda bisa memasukkan cara pembayaran" 
+                    x-data="editorApp()" 
+                    x-init="init($dispatch)" 
+                    wire:ignore 
+                    wire:key="ckEditor" 
+                    x-ref="ckEditor" 
+                    wire:model.debounce.9999999ms="deskripsi"
+                >
+                {!!$deskripsi!!}
+                </textarea>
             </div>
         </div>
         <a href="{{route('admin.payment-methods.index')}}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <script>
-        document.addEventListener('livewire:load', function(){
-            ClassicEditor
-            .create( document.querySelector( '#deskripsi' ) ).then(editor => { thisEditor = editor }) 
-            .catch( error => {
-                console.error( error );
-            } );
-        })
-    </script>
 </div>
+@push('addon-script')
+    {{-- <script src="{{asset('assets/plugin/filepond-master/dist/filepond.min.js')}}"></script> --}}
+    <script>
+
+        Livewire.on('alertSuccess', () => {
+            Swal.fire({
+                title: 'Metode pembayaran berhasil diubah',
+                icon: 'success'
+            }).then(function(){
+                window.location.href = "{{route('admin.payment-methods.index')}}";
+            });
+        });
+
+        function editorApp() {
+            return {
+                create: async function($dispatch) {
+                    const editor = await ClassicEditor.create(this.$refs.ckEditor);
+                    editor.model.document.on('change:data', function(e){
+                        $dispatch('input', editor.getData());
+                    });
+                    return editor;
+                },
+                init: async function($disptach) {
+                    const editor  = await this.create($disptach);
+                    editor.setData('{!! $deskripsi !!}')
+
+                    const $this = this;
+
+                    Livewire.on('reinit', async function(e){
+                        editor.destroy();
+                        await $this.create($disptach);
+                    });
+                }
+            }
+        }
+    </script>
+@endpush

@@ -11,6 +11,6 @@ class PaymentHistory extends Model
 
     public function payment()
     {
-        return $this->belongsTo(Payment::class, 'id_customer');
+        return $this->belongsTo(Payment::class, 'id_pembayaran');
     }
 }

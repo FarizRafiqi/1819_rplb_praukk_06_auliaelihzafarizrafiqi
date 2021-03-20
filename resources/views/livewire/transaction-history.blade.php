@@ -1,5 +1,8 @@
 <div class="row">
-	<div class="col-12 col-md-6">
+	<h3 class="text-info col-12" wire:offline>
+		Oops koneksi anda terputus..
+	</h3>
+	<div class="col-12 col-md-6" wire:offline.class="d-none">
 		<div class="card">
 			<div class="card-header d-flex align-items-center justify-content-between">
 				<div>{{$day}} Hari Terakhir</div>
@@ -47,8 +50,8 @@
 			</div>
 			<ul class="list-group list-group-flush">
 				@forelse ($userPayments as $payment)
-					<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor:pointer;" wire:click="transactionDetail({{$payment->id}})">
-						<i class="bi bi-lightning-fill mr-1" style="font-size: 20px"></i> Pembayaran Tagihan {{\Str::limit($payment->tanggal_bayar->monthName,3,'')}} {{$payment->tanggal_bayar->year}}
+					<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor:pointer;" wire:click="transactionDetail({{json_encode($payment->id)}})">
+						<i class="bi bi-lightning-fill mr-1 pacific-blue" style="font-size: 20px"></i> Pembayaran Tagihan {{\Str::limit($payment->tanggal_bayar->monthName,3,'')}} {{$payment->tanggal_bayar->year}}
 							<span class="badge
 							@switch($payment->status)
 									@case('success')
@@ -73,13 +76,11 @@
 			</ul>
 		</div>
 	</div>
-	<div class="col-12 mt-4 mt-md-0 col-md-6">
-		@if ($payment)
-			<div class="d-flex align-items-center justify-content-center">
-				<div wire:loading wire:target="transactionDetail({{$payment->id}})">Loading...</div>
-			</div>
-		@endif
-		@if ($transaction && $transactionDetail)
+	<div class="col-12 mt-4 mt-md-0 col-md-6" wire:offline.class="d-none">
+		<div class="d-flex align-items-center justify-content-center">
+			<div wire:loading wire:target="payment">Loading...</div>
+		</div>
+		@if ($this->payment && $transactionDetail)
 		{{-- Card Detail --}}
 			<div class="card" wire:loading.remove>
 				<div class="card-body">
@@ -90,36 +91,36 @@
 							<dl class="row">
 								<dt class="col-md-4">Virtual Account</dt>
 								<dd class="col-md-8">
-									{{$transactionDetail->va_numbers[0]->va_number}}
+									{{$transactionDetail->va_numbers[0]->va_number ?? $transactionDetail->bill_key}}
 								</dd>
 				
 								<dt class="col-md-4">Nama Customer</dt>
-								<dd class="col-md-8">{{$transaction->customer->nama}}</dd>
+								<dd class="col-md-8">{{$this->payment->customer->nama}}</dd>
 				
 								<dt class="col-md-4">Nama Pelanggan PLN</dt>
-								<dd class="col-md-8">{{$transaction->plnCustomer->nama_pelanggan}}</dd>
+								<dd class="col-md-8">{{$this->payment->plnCustomer->nama_pelanggan}}</dd>
 				
 								<dt class="col-md-4">ID Pelanggan</dt>
-								<dd class="col-md-8">{{$transaction->plnCustomer->nomor_meter}}</dd>
+								<dd class="col-md-8">{{$this->payment->plnCustomer->nomor_meter}}</dd>
 				
 								<dt class="col-md-4">Tanggal Bayar</dt>
-								<dd class="col-md-8">{{$transaction->tanggal_bayar}}</dd>
+								<dd class="col-md-8">{{$this->payment->tanggal_bayar}}</dd>
 				
 								<dt class="col-md-4">Tarif / Daya</dt>
-								<dd class="col-md-8">{{$transaction->plnCustomer->tariff->golongan_tarif . " / " . $transaction->plnCustomer->tariff->daya . " VA"}}</dd>
+								<dd class="col-md-8">{{$this->payment->plnCustomer->tariff->golongan_tarif . " / " . $this->payment->plnCustomer->tariff->daya . " VA"}}</dd>
 				
 								<dt class="col-md-4">Biaya Admin</dt>
-								<dd class="col-md-8">@rupiah($transaction->biaya_admin)</dd>
+								<dd class="col-md-8">@rupiah($this->payment->biaya_admin)</dd>
 				
 								<dt class="col-md-4">Total Bayar</dt>
-								<dd class="col-md-8">@rupiah($transaction->total_bayar)</dd>
+								<dd class="col-md-8">@rupiah($this->payment->total_bayar)</dd>
 				
 								<dt class="col-md-4">Metode Pembayaran</dt>
-								<dd class="col-md-8">{{$transaction->paymentMethod->nama ?? "-"}}</dd>
+								<dd class="col-md-8">{{$this->payment->paymentMethod->nama ?? "-"}}</dd>
 				
 								<dt class="col-md-4">Status</dt>
 								<dd class="col-md-8">
-									@switch($transaction->status)
+									@switch($this->payment->status)
 											@case('success')
 													<span class="badge pill-badge badge-success p-1">{{$payment->status}}</span>
 													@break
@@ -127,7 +128,7 @@
 													<span class="badge pill-badge badge-warning p-1">Menunggu Pembayaran</span>
 													@break
 											@case('failed')
-													<span class="badge pill-badge badge-danger p-1">{{$transaction->status}}</span>
+													<span class="badge pill-badge badge-danger p-1">{{$this->payment->status}}</span>
 													@break
 											@default
 													
@@ -138,45 +139,29 @@
 					</div>
 
 					{{-- Detail Tagihan --}}
-					@foreach ($transaction->details as $detail)
-						<div class="accordion mt-4" id="accordionDetailTagihan">
-							<div class="card my-3">
-								<div class="card-header" data-toggle="collapse" data-target="#detail-{{$detail->id}}" style="cursor: pointer">
-									Detail Tagihan {{$detail->bill->bulan . ' ' . $detail->bill->tahun}}
-								</div>
-
-								<div class="collapse" id="detail-{{$detail->id}}" data-parent="#accordionDetailTagihan">
-									<div class="card-body">
-										<dl class="row">
-											<dt class="col-md-4">Jumlah KwH</dt>
-											<dd class="col-md-8">
-												{{$detail->bill->jumlah_kwh}}
-											</dd>
-											<dt class="col-md-4">PPJ</dt>
-											<dd class="col-md-8">
-												@rupiah($detail->ppj)
-											</dd>
-											<dt class="col-md-4">PPN</dt>
-											<dd class="col-md-8">
-												@rupiah($detail->ppn)
-											</dd>
-											<dt class="col-md-4">Denda</dt>
-											<dd class="col-md-8">
-												@rupiah($detail->denda)
-											</dd>
-
-											<dt class="col-md-4">Total Tagihan</dt>
-											<dd class="col-md-8">
-												@rupiah($detail->total_tagihan)
-											</dd>
-										</dl>
-									</div>
-								</div>
-							</div>
-						</div>
+					@foreach ($this->payment->details as $detail)
+						@livewire('transaction-history.bill-detail', ["detail" => $detail], key($detail->id))
 					@endforeach
 				</div>
 			</div>
 		@endif
 	</div>
 </div>
+@push('addon-script')
+	<script>
+		Livewire.on('paymentNotCompleteYet', (paymentId) => {
+				Swal.fire({
+					'title': 'Pembayaranmu belum selesai, lanjutkan pembayaran?',
+					'icon': 'info',
+					'showConfirmButton': true,
+					'showCancelButton': true,
+				}).then((result) => {
+					if(result.isConfirmed){
+						let url = "{{route('payment.index', ':id')}}";
+						url = url.replace(':id', paymentId);
+						window.location.href = url;
+					}
+				});
+		});
+	</script>
+@endpush

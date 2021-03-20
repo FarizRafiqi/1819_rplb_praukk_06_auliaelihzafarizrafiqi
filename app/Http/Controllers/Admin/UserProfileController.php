@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UserProfileRequest;
+use App\Models\Level;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
@@ -24,17 +27,19 @@ class UserProfileController extends Controller
      */
     public function edit(Request $request)
     {
-        return view('pages.admin.profile.edit', compact('request'));
+        $levels = Level::all();
+        return view('pages.admin.profile.edit', compact('request', 'levels'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Admin\UserProfileRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UserProfileRequest $request)
     {
-        //
+        User::find(auth()->id())->update($request->all()+['password' => bcrypt($request->password)]);
+        return redirect()->back()->withSuccess('Profil berhasil diperbarui!');
     }
 }

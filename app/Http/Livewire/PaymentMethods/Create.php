@@ -51,8 +51,7 @@ class Create extends Component
         $validatedData["gambar"] = $this->gambar->storeAs('img/payment-method', $this->gambar->getClientOriginalName(), 'public');
 
         PaymentMethod::create($validatedData+["deskripsi" => $this->deskripsi]);
-        session()->put('alert.config', json_encode(['title' => 'Metode pembayaran berhasil ditambahkan', 'icon' => 'success', 'showConfirmButton' => true]));
-        return redirect()->route("admin.payment-methods.index");
+        $this->emit('alertSuccess');
     }
 
     public function dehydrate()

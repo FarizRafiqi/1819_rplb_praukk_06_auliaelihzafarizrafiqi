@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\LevelPermissionController,
     App\Http\Controllers\Auth\NewPasswordController,
     App\Http\Controllers\Auth\PasswordResetLinkController,
-    App\Http\Controllers\MidtransController;
+    App\Http\Controllers\MidtransController,
+    App\Http\Controllers\SocialiteController;
 
 //Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
@@ -59,6 +60,9 @@ Route::post('/login', [LoginController::class, "login"])->name('auth.login');
 Route::post('/logout', [LoginController::class, "logout"])->name('logout');
 Route::get('/register', [RegisterController::class, "index"])->name('register');
 Route::post('/register', [RegisterController::class, "register"])->name('auth.register');
+
+Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 //Password Reset
 Route::group(['middleware' => 'guest'], function(){

@@ -25,7 +25,7 @@ class ElectricityUsageController extends Controller
      */
     public function index(Request $request)
     {
-        abort_if(Gate::denies('usage_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
         if($request->ajax()){
             $usage = Usage::all();
@@ -54,7 +54,7 @@ class ElectricityUsageController extends Controller
      */
     public function create(Request $request)
     {
-        abort_if(Gate::denies('usage_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $customers = PlnCustomer::get();
 
         if($request->ajax()){
@@ -84,7 +84,7 @@ class ElectricityUsageController extends Controller
      */
     public function show(Usage $usage)
     {
-        abort_if(Gate::denies('usage_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_show'), Response::HTTP_FORBIDDEN, 'Forbidden');
         return view('pages.admin.electricity-usage.show', compact('usage'));
     }
 
@@ -96,7 +96,7 @@ class ElectricityUsageController extends Controller
      */
     public function edit(Usage $usage)
     {
-        abort_if(Gate::denies('usage_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $customers = PlnCustomer::get();
         return view('pages.admin.electricity-usage.edit', compact('usage', 'customers'));
     }
@@ -110,7 +110,7 @@ class ElectricityUsageController extends Controller
      */
     public function update(UsageRequest $request, Usage $usage)
     {
-        abort_if(Gate::denies('usage_update'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_update'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $usage->update($request->all());
         return redirect()->route('admin.usages.index')->withSuccess('Data penggunaan berhasil diubah!');
     }
@@ -123,7 +123,7 @@ class ElectricityUsageController extends Controller
      */
     public function destroy(Usage $usage)
     {
-        abort_if(Gate::denies('usage_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('usage_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
         /**
          * jika penggunaan ini memiliki relasi dengan tagihan,

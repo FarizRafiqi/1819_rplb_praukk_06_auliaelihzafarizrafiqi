@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Payment extends Model
 {
     use HasFactory, SoftDeletes;
-
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $guarded = [];
     protected $with = ['details'];
     
@@ -17,6 +19,20 @@ class Payment extends Model
         'tanggal_bayar' => 'datetime:d-m-Y',
         'created_at' => 'datetime:d-m-Y',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        Payment::creating(function ($model){
+            $model->setId();
+        });
+    }
+
+    public function setId()
+    {
+        $this->attributes['id'] = Str::uuid();
+    }
 
     public function customer()
     {

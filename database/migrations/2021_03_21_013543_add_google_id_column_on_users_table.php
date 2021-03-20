@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTemporaryFilesTable extends Migration
+class AddGoogleIdColumnOnUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateTemporaryFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('temporary_files', function (Blueprint $table) {
-            $table->id();
-            $table->string('folder');
-            $table->string('filename');
-            $table->timestamps();
+        Schema::table('users', function($table){
+            $table->string('google_id')->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateTemporaryFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('temporary_files');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('google_id');
+        });
     }
 }

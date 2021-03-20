@@ -19,9 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(true);
             $table->rememberToken();
-            $table->foreignId('id_level')->default(3) //3 merupakan id pelanggan
+            $table->foreignId('id_level')->default(2) //2 merupakan id pelanggan
                     ->constrained('levels')
                     ->onUpdate('cascade');
             $table->timestamps();
