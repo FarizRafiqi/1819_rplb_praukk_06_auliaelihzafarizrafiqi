@@ -9,9 +9,6 @@
     @include('includes.style')
     @stack('addon-style')
     @livewireStyles
-    <link id="TW_LINK" href="https://css.twik.io/605639f172642.css" onload="TWIK_SB()" rel="stylesheet"/>
-    <script>!function(){window.TWIK_ID="605639f172642",localStorage.tw_init=1;var t=document.documentElement;if(window.TWIK_SB=function(){t.style.visibility="",t.style.opacity=""},window.TWIK_RS=function(){var t=document.getElementById("TW_LINK");t&&t.parentElement&&t.parentElement.removeChild(t)},setTimeout(TWIK_RS,localStorage.tw_init?2e3:6e3),setTimeout(TWIK_SB,localStorage.tw_init?250:1e3),document.body)return TWIK_RS();t.style.visibility="hidden",t.style.opacity=0}();</script>
-    <script id="TW_SCRIPT" onload="window.TWIK_SB && window.TWIK_SB()" src="https://cdn.twik.io/tcs.js"></script>
   </head>
   <body>
     @include('includes.navbar')
@@ -23,5 +20,18 @@
     @include('sweetalert::alert')
     @livewireScripts
     @stack('addon-script')
+    <!--Start of Tawk.to Script-->
+      <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/605652d7067c2605c0ba9926/1f18j77cp';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+      </script>
+    <!--End of Tawk.to Script-->
   </body>
 </html>
