@@ -18,20 +18,19 @@ class MidtransController extends Controller
         Config::$isProduction = config('midtrans.isProduction');
         Config::$isSanitized = config('midtrans.isSanitized');
         Config::$is3ds = config('midtrans.is3ds');
-        dd($request->all());
+        
         //Buat instances midtrans notification
         $notification = new Notification();
         // Pecah order id agar bisa diterima oleh database
-        $order = explode('-', $notification->order_id);
+        $order = explode('PLN-', $notification->order_id);
 
         $status     = $notification->transaction_status;
         $type       = $notification->payment_type;
         $fraud      = $notification->fraud_status; 
         $orderId    = $order[1];
-
+        
         // Cari Transkasi berdasarkan id
         $payment = Payment::findOrFail($orderId);
-
         //Handler notification status midtrans
         if($status == 'settlement'){
             $payment->status = "success";

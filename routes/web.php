@@ -45,10 +45,10 @@ Route::group(['middleware' => ['auth']], function(){
 });
 
 // Midtrans Transaction Notification 
-Route::post('/payments/callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-Route::get('/payments/finish', [MidtransController::class, 'finish'])->name('finish');
-Route::get('/payments/unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
-Route::get('/payments/error', [MidtransController::class, 'error'])->name('error');
+Route::post('payments/callback', [MidtransController::class, 'notificationHandler'])->name('callback');
+Route::get('payments/finish', [MidtransController::class, 'finish'])->name('finish');
+Route::get('payments/unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
+Route::get('payments/error', [MidtransController::class, 'error'])->name('error');
 
 // Auth
 Auth::routes();
