@@ -58,7 +58,7 @@
           <div class="form-group col-12">
             <label class="mb-0">Tarif/Daya</label>
             <div class="font-weight-bold">
-              {{$plnCustomer->tariff->golongan_tarif . ' ' . $plnCustomer->tariff->daya}}
+              {{$plnCustomer->tariff->golongan_tarif . '/' . $plnCustomer->tariff->daya . ' VA'}}
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pelanggan PLN')
+@section('title', 'Metode Pembayaran')
 
 @section('content')
 <div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">

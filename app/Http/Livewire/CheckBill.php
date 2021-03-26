@@ -42,7 +42,7 @@ class CheckBill extends Component
 
         $usages = $this->plnCustomer
                        ->usages()
-                       ->whereYear("tahun", now()->year)
+                       ->where("tahun", now()->year)
                        ->where("bulan", now()->monthName)
                        ->get();
        
