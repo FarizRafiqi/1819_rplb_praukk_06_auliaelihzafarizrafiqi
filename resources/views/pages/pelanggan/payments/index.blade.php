@@ -6,7 +6,7 @@
   <div class="container container-payment">
     <h3 class="my-4">Pilih Metode Pembayaran</h3>
     <div class="row">
-      <div class="col-12 col-md-8 order-2 order-md-1 mt-4 mt-md-0">
+      <div class="col-12 col-md-7 col-lg-8 order-2 order-md-1 mt-3 mt-md-0">
         <div class="card card-details">
           <div class="card-body">
             <ul class="list-group list-payment-method">
@@ -27,9 +27,9 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-4 order-1 order-md-2">
+      <div class="col-12 col-md-5 col-lg-4 order-1 order-md-2">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header bg-pacific-blue">
             <h5>Informasi Pelanggan</h5>
           </div>
           <div class="card-body">
@@ -50,25 +50,21 @@
             </dl>
           </div>
         </div>
-        <div class="card mt-2">
-          <div class="card-header">
+
+        <div class="card mt-3">
+          <div class="card-header bg-pacific-blue">
             <h5>Informasi Tagihan</h5>
           </div>
           <div class="card-body">
             <dl class="row">
-              <dt class="col-12">Nama</dt>
-              <dd class="col-12">{{$payment->plnCustomer->nama_pelanggan}}</dd>
-            
-              <dt class="col-12">No. Meter / ID Pelanggan</dt>
+              <dt class="col-12">Periode</dt>
               <dd class="col-12">
-                {{$payment->plnCustomer->nomor_meter}}
+                @if ($payment->details->count() > 1)
+                  {{$payment->details->first()->bill->bulan . '-' . $payment->details->last()->bill->bulan . ' ' .$payment->details->first()->bill->tahun}}
+                @else
+                  {{$payment->details->first()->bill->bulan . ' ' .$payment->details->first()->bill->tahun}}
+                @endif
               </dd>
-            
-              <dt class="col-12">Tarif / Daya</dt>
-              <dd class="col-12">{{$payment->plnCustomer->tariff->golongan_tarif . ' / ' . $payment->plnCustomer->tariff->daya . ' VA'}}</dd>
-            
-              <dt class="col-12">Bulan/Tahun</dt>
-              <dd class="col-12">{{$payment->details->first()->bill->bulan . ' / ' . $payment->details->first()->bill->tahun}}</dd>
 
               <dt class="col-12">Total Tagihan</dt>
               <dd class="col-12">
@@ -84,9 +80,46 @@
               <dd class="col-12">
                 <span class="pacific-blue font-weight-bold">@rupiah($payment->total_bayar)</span>
               </dd>
+              <a class="text-decoration-none col-12" data-toggle="collapse" href="#detail">detail</a>
             </dl>
+
+            <div class="card collapse mt-2" id="detail">
+              <div class="card-body">
+                @foreach ($payment->details as $index => $detail)
+                  <h5>Tagihan {{$detail->bill->bulan . ' ' . $detail->bill->tahun}}</h5>
+                  <div class="row">
+                    <dt class="col-md-5">Jumlah KwH</dt>
+                    <dd class="col-md-7">
+                        {{$detail->bill->jumlah_kwh}}
+                    </dd>
+                    <dt class="col-md-5">PPJ</dt>
+                    <dd class="col-md-7">
+                        @rupiah($detail->ppj)
+                    </dd>
+                    <dt class="col-md-5">PPN</dt>
+                    <dd class="col-md-7">
+                        @rupiah($detail->ppn)
+                    </dd>
+                    <dt class="col-md-5">Denda</dt>
+                    <dd class="col-md-7">
+                        @rupiah($detail->denda)
+                    </dd>
+
+                    <dt class="col-md-5">Total Tagihan</dt>
+                    <dd class="col-md-7">
+                        @rupiah($detail->total_tagihan)
+                    </dd>
+                  </div>
+                  @if($loop->odd && $loop->iteration > 1)
+                      <hr>
+                  @endif
+                @endforeach
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
   </div>

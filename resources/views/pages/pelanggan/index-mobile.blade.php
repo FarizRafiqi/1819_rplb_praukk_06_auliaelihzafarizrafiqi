@@ -209,5 +209,5 @@
         }, ms || 0);
       }
     } --}}
-  </script>
+  {{-- </script> --}}
 @endpush

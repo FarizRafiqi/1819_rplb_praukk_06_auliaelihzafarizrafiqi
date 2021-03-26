@@ -11,7 +11,8 @@ body {
     font-family: "OpenSans-Regular";
 }
 
-.btn-primary-custom {
+.btn-primary-custom,
+.bg-pacific-blue {
     background: #28b7ca; /*Pacific Blue*/
     color: #fff !important;
 }

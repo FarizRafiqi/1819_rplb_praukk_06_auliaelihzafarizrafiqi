@@ -53,7 +53,7 @@ class MidtransController extends Controller
 
         $payment->save();
         
-        return redirect()->route('finish');
+        return redirect()->route('transaction.finish');
     }
 
     public function finish(Request $request)
