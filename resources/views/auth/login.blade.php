@@ -5,6 +5,10 @@
     body{
       background-color: #28b7ca;
     }
+    .modal tr > td:nth-child(2),
+    .modal tr > td:nth-child(3){
+      color: red;
+    }
   </style>
 @endpush
 @section('content')
@@ -12,33 +16,40 @@
   <div class="auth-form container d-flex justify-content-center align-items-center">
     <div div class="card p-3">
       <div class="card-body">
-        <form action="{{route('auth.login')}}" method="POST" class="form-row" >
+        <form action="{{route('login')}}" method="POST" class="form-row align-items-center" >
           @csrf
           <div class="col-12 col-md-6">
             <h1>Masuk</h1>
             <strong>Pengguna Baru?</strong> <a href="{{route('register')}}" class="text-decoration-none">buat akun.</a>
             <div class="form-group mt-4 mb-3">
-              <input type="email" name="email" class="form-control @error('email')
-                is-invalid    
-              @enderror" value="{{old('email')}}" placeholder="Email">
+              <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
+              value="{{ old('email') }}" placeholder="Email" autocomplete="email" autofocus>
+
               @error('email')
-                <span class="invalid-feedback">{{$message}}</span>    
+                <span class="invalid-feedback">
+                  {{ $message }}
+                </span>    
               @enderror
             </div>
             <div class="form-group mb-3">
-              <input type="password" name="password" class="form-control @error('password')
-                is-invalid    
-              @enderror" placeholder="Password">
+              <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" autocomplete="current-password">
+
               @error('password')
-                <span class="invalid-feedback">{{$message}}</span>    
+                <span class="invalid-feedback">
+                  {{ $message }}
+                </span>    
               @enderror
             </div>
             <div class="custom-control custom-checkbox mr-sm-2 mb-3">
-              <input type="checkbox" name="remember_me" class="custom-control-input" id="customControlAutosizing">
-              <label class="custom-control-label" for="customControlAutosizing">Keep me signed in</label>
+              <input type="checkbox" name="remember" class="custom-control-input" id="remember" {{ old('remember') ? 'checked' : '' }}>
+              <label class="custom-control-label" for="remember">ingat saya</label>
             </div>
             <div class="form-group">
-              <a href="{{route('password.request')}}" class="text-decoration-none">Lupa Password?</a>
+              @if (Route::has('password.request'))
+                <a href="{{route('password.request')}}" class="text-decoration-none">
+                  Lupa Password?
+                </a>
+              @endif
             </div>
             <button class="btn btn-primary-custom btn-block" type="submit">Masuk</button>
             <div class="text-center my-2">
@@ -59,4 +70,57 @@
     </div>
   </div>
 </div>
+<div class="modal" id="modalLoginCredentials">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login Credentials</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body table-responsive">
+        <table class="table table-striped table-bordered">
+          <tbody>
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Username</th>
+                <th>Password</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Admin</td>
+                <td>admin@gmail.com</td>
+                <td>admin123</td>
+              </tr>
+              <tr>
+                <td>Bank</td>
+                <td>bank{nama_bank}@gmail.com</td>
+                <td>bank{nama_bank}123</td>
+              </tr>
+              <tr>
+                <td>Pelanggan</td>
+                <td>customer1@gmail.com</td>
+                <td>password</td>
+              </tr>
+            </tbody>
+          </tbody>
+        </table>
+        Note: <code>nama_bank</code> diisi sesuai nama bank yang tersedia yaitu BCA, BNI, dan Mandiri.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
+@push('script')
+    <script>
+      $(function(){
+        $("#modalLoginCredentials").modal('show');
+      })
+    </script>
+@endpush

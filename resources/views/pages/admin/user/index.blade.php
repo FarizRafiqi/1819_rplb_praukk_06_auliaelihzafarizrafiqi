@@ -3,7 +3,7 @@
 @section('title', 'Users')
 
 @section('content')
-<div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
+<div class="container mb-3">
   <div class="alert alert-info alert-dismissible fade show" role="alert">
     <strong>Fitur User:</strong>
     <ol>
@@ -27,11 +27,12 @@
       <table class="table table-striped table-bordered w-100" id="users">
         <thead>
           <tr>
+            <th></th>
             <th>ID</th>
             <th>Nama</th>
             <th>Username</th>
             <th>Email</th>
-            <th>ID Level</th>
+            <th>Level</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -42,11 +43,84 @@
 @endsection
 @push('addon-script')
   <script>
-    $('#users').DataTable({
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons);
+    let selectAllButton = {
+      text: 'Select All',
+      action: function () {
+        table.rows().select();
+      }
+    }
+
+    let deselectButton = {
+      text: 'Deselect All',
+      className: 'mx-md-2',
+      action: function () {
+        table.rows().deselect();
+      }
+    }
+
+    let deleteButton = {
+      text: 'Delete Selected',
+      extend: 'selected',
+      url: "{{ route('admin.users.massDestroy') }}",
+      className: 'btn-danger',
+      key: String.fromCharCode(46),
+      action: function(e, dt, node, config){
+        let ids = $.map(dt.rows({selected: true}).data(), function(entry) {
+          return entry.id;
+        })
+
+        if(ids.length === 0) {
+          Swal.fire({
+            title: 'Tidak ada data yang dipilih!',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+          })
+          return;
+        }
+
+        Swal.fire({
+          title: 'Apakah kamu yakin?',
+          html: "Data users ini akan dihapus!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              headers: {"x-csrf-token": "{{ csrf_token() }}"},
+              method: 'POST',
+              url: config.url,
+              data: {ids: ids, _method: 'DELETE'}
+            }).done(function(){ location.reload() });
+          }
+        })
+
+      }
+    }
+
+    dtButtons.push([selectAllButton, deselectButton, deleteButton ]);
+    
+    let table = $('#users').DataTable({
+        select: {
+          style: 'multi',
+          selector: 'td:first-child',
+        },
+        dom: 'Bfrtip',
+        buttons: dtButtons,
         responsive: true,
         serverSide: true,
-        ajax: "",
+        ajax: "{{ route('admin.users.index') }}",
+        columnDefs: [{
+          orderable: false,
+          className: 'select-checkbox',
+          targets: 0,
+          defaultContent: '',
+        }],
         columns: [
+            {data: null},
             {data: 'id'},
             {data: 'nama'},
             {data: 'username'},
@@ -68,7 +142,7 @@
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, hapus itu!'
+          confirmButtonText: 'Ya'
         }).then((result) => {
           if (result.isConfirmed) {
             $(e.target).parent().submit();

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
+use App\Http\Requests\Admin\MassDestroyUserRequest;
 use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,20 +26,27 @@ class UserController extends Controller
         if($request->ajax()){
             $users = User::with('level')->get();
             return DataTables::of($users)
-                    ->addColumn('action', function($users){
-                        $button = '<a href='. route("admin.users.edit", $users->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.users.show", $users->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '
-                            <form action='.route("admin.users.destroy", $users->id).' method="POST" class="d-inline-block form-delete">
-                                '. csrf_field() .'
-                                '. method_field("DELETE") .'
-                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
-                            </form>
-                        ';
-                        return $button;
+                    ->editColumn('level.level', function($row){
+                        return "<span class='badge badge-pill badge-info'>". $row->level->level ."</span>";
                     })
+                    ->addColumn('action', function($row){
+                        $showGate       = 'user_show';
+                        $editGate       = 'user_edit';
+                        $deleteGate     = 'user_delete';
+                        $crudRoutePart  = 'users';
+                        
+                        return view('partials.datatables-action', compact(
+                            'showGate', 
+                            'editGate', 
+                            'deleteGate', 
+                            'crudRoutePart',
+                            'row',
+                        ));
+                    })
+                    ->rawColumns(['level.level', 'action'])
                     ->toJson();
         }
+
         return view('pages.admin.user.index');
     }
 
@@ -65,7 +74,7 @@ class UserController extends Controller
             'nama' => $request->nama,
             'username' => $request->username,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'id_level' => $request->id_level
         ]);
         return redirect()->route('admin.users.index')->withSuccess('Data user berhasil ditambahkan!');
@@ -106,8 +115,10 @@ class UserController extends Controller
     public function update(UserRequest $request, User $user)
     {
         abort_if(Gate::denies('user_update'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        $request['password'] = bcrypt($request->password);
         $user->update($request->all());
-        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil diubah!');
+        
+        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . ' berhasil diubah!');
     }
 
     /**
@@ -119,11 +130,32 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+
         if(count($user->payments) > 0){
             alert()->error('User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
             return back();
         }
+
         $user->delete();
-        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . 'berhasil dihapus!');
+        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . ' berhasil dihapus!');
+    }
+
+    public function massDestroy(MassDestroyUserRequest $request)
+    {
+        $users = User::whereIn('id', request('ids'))->get();
+        foreach($users as $user){
+            if(count($user->payments) > 0){
+                alert()->error('User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
+                return;
+            }elseif($user->id_level !== 1){
+                $user->delete();
+            }else{
+                alert()->error('User Admin tidak dapat dihapus');
+                return;
+            }
+            
+        }
+
+        return redirect()->route('admin.users.index')->withSuccess('Data user(s) berhasil dihapus!');
     }
 }

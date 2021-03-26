@@ -58,11 +58,11 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'nama' => 'Aulia El Ihza Fariz Rafiqi',
-            'username' => 'Eel',
-            'email' => 'auliaelihza@gmail.com',
+            'nama' => 'Customer 1',
+            'username' => 'customer_1',
+            'email' => 'customer1@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('alidaneel123'),
+            'password' => bcrypt('password'),
             'remember_token' => Str::random(10),
             'id_level' => Level::find(2)->id,
         ]);

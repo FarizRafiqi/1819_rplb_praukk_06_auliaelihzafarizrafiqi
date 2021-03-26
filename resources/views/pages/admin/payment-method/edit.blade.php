@@ -9,7 +9,7 @@
     <h3 class="mb-4">Edit Metode Pembayaran</h3>
     <div class="card">
       <div class="card-body">
-        @livewire('payment-methods.edit', ['paymentMethod' => $paymentMethod])
+        @livewire('admin.payment-method.edit', ['paymentMethod' => $paymentMethod])
       </div>
     </div>
   </div>

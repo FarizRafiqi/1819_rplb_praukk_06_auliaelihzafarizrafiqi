@@ -26,6 +26,7 @@
       <table class="table table-striped table-bordered w-100" id="usages">
         <thead>
           <tr>
+            <th></th>
             <th>ID</th>
             <th>Nama Pelanggan</th>
             <th>Bulan</th>
@@ -43,11 +44,84 @@
 
 @push('addon-script')
   <script>
-    $('#usages').DataTable({
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons);
+    let selectAllButton = {
+      text: 'Select All',
+      action: function () {
+        table.rows().select();
+      }
+    }
+
+    let deselectButton = {
+      text: 'Deselect All',
+      className: 'mx-md-2',
+      action: function () {
+        table.rows().deselect();
+      }
+    }
+
+    let deleteButton = {
+      text: 'Delete Selected',
+      extend: 'selected',
+      url: "{{ route('admin.usages.massDestroy') }}",
+      className: 'btn-danger',
+      key: String.fromCharCode(46),
+      action: function(e, dt, node, config){
+        let ids = $.map(dt.rows({selected: true}).data(), function(entry) {
+          return entry.id;
+        })
+
+        if(ids.length === 0) {
+          Swal.fire({
+            title: 'Tidak ada data yang dipilih!',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+          })
+          return;
+        }
+
+        Swal.fire({
+          title: 'Apakah kamu yakin?',
+          html: "Data tagihan dari penggunaan ini akan dihapus juga jika statusnya masih <span class='text-danger'>BELUM LUNAS</span>!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'ya!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              headers: {"x-csrf-token": "{{ csrf_token() }}"},
+              method: 'POST',
+              url: config.url,
+              data: {ids: ids, _method: 'DELETE'}
+            }).done(function(){ location.reload() });
+          }
+        })
+
+      }
+    }
+
+    dtButtons.push([selectAllButton, deselectButton, deleteButton ]);
+
+    let table = $('#usages').DataTable({
+        select: {
+          style: 'multi',
+          selector: 'td:first-child',
+        },
+        dom: 'Bfrtip',
+        buttons: dtButtons,
         responsive: true,
         serverSide: true,
-        ajax: "",
+        ajax: "{{ route('admin.usages.index') }}",
+        columnDefs: [{
+          orderable: false,
+          className: 'select-checkbox',
+          targets: 0,
+          defaultContent: '',
+        }],
         columns: [
+            {data: null},
             {data: 'id'},
             {data: 'pln_customer.nama_pelanggan'},
             {data: 'bulan'},
@@ -58,25 +132,21 @@
         ]
     });
 
-    $("#usages").on("click.dt", function(e){
-      /*cek apakah yang diklik adalah tombol delete, 
-      jika true maka tampilkan alert konfirmasi*/
-      if($(e.target).hasClass('btn-delete')){
-        e.preventDefault();
-        Swal.fire({
-          title: 'Apakah kamu yakin?',
-          html: "Data tagihan dari penggunaan ini akan dihapus juga jika statusnya masih <span class='text-danger'>BELUM LUNAS</span>!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, hapus itu!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $(e.target).parent().submit();
-          }
-        })
-      }
+    $("#usages").on("click.dt", ".btn-delete", function(e){
+      e.preventDefault();
+      Swal.fire({
+        title: 'Apakah kamu yakin?',
+        html: "Data tagihan dari penggunaan ini akan dihapus juga jika statusnya masih <span class='text-danger'>BELUM LUNAS</span>!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ya!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $(e.target).parent().submit();
+        }
+      })
     });
   </script>
 @endpush

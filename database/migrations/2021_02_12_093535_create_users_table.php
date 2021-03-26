@@ -23,7 +23,8 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->foreignId('id_level')->default(2) //2 merupakan id pelanggan
                     ->constrained('levels')
-                    ->onUpdate('cascade');
+                    ->onUpdate('cascade')
+                    ->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

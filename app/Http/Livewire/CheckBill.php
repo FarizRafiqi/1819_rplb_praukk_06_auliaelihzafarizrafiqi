@@ -8,10 +8,15 @@ use App\Models\TaxRate;
 use Jenssegers\Agent\Facades\Agent;
 use Livewire\Component;
 
+/**
+ * Komponen untuk mengecek tagihan pelanggan secara live,
+ * Di komponen ini juga terdapat perhitungan denda 
+ * serta ppj dan ppn
+ */
 class CheckBill extends Component
 {
     public $nomor_meter;
-    public $usages = [], $bills, 
+    public $usages = [], 
            $total, $fines = 0,
            $plnCustomer, $data = [];
 
@@ -28,26 +33,26 @@ class CheckBill extends Component
             ]
         );
 
-        $this->reset(['bills', 'total', 'fines']);
+        $this->reset(['total', 'fines']);
         
-        $this->plnCustomer = PlnCustomer::where("nomor_meter", $this->nomor_meter)->first();
+        $this->plnCustomer = PlnCustomer::with('usages')->where("nomor_meter", $this->nomor_meter)->first();
         if(!$this->plnCustomer){
             return $this->reset('usages');
         }
 
         $usages = $this->plnCustomer
                        ->usages()
-                       ->whereYear("created_at", now())
-                       ->whereMonth("created_at", '<=', now())
+                       ->whereYear("tahun", now()->year)
+                       ->where("bulan", now()->monthName)
                        ->get();
-
+       
         $this->usages = $usages;
         //Cek PPJ berdasarkan daerah pelanggan
         $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
                         ->where('indonesia_city_id', $this->plnCustomer->city->id)
                         ->first()->rate;
 
-        foreach ($usages as $index => $usage) {
+        foreach ($usages as $index => $usage) { 
             if($usage->bill->status == "BELUM LUNAS"){
                 $this->data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
                 $this->data[$index]['ppj']  = ($ppj/100 * $this->data[$index]['biaya_listrik']);
@@ -79,7 +84,6 @@ class CheckBill extends Component
             return view('livewire.check-bill-mobile', [
                 'usages' => $this->usages,
                 'nomor_meter' => $this->nomor_meter,
-                'bills' => $this->bills,
                 'totals' => $this->total,
                 'plnCustomer' => $this->plnCustomer,
                 'fines' => $this->fines,
@@ -89,7 +93,6 @@ class CheckBill extends Component
         return view('livewire.check-bill', [
             'usages' => $this->usages,
             'nomor_meter' => $this->nomor_meter,
-            'bills' => $this->bills,
             'totals' => $this->total,
             'fines' => $this->fines,
         ]);

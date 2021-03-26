@@ -1,4 +1,4 @@
-<div wire:poll.keep-alive>
+<div>
     <div class="accordion mt-4" id="accordionDetailTagihan">
         <div class="card my-3">
             <div class="card-header" data-toggle="collapse" data-target="#detail-{{$detail->id}}" style="cursor: pointer">

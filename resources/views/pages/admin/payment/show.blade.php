@@ -95,7 +95,7 @@
             </h5>
           </div>
           <div class="card-body">
-            <table class="table table-stripped table-bordered w-100" id="paymentDetails">
+            <table class="table table-striped table-bordered table-hover w-100" id="paymentDetails">
               <thead>
                 <tr>
                   <td>ID</td>

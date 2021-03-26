@@ -37,13 +37,14 @@ class UsageRequest extends FormRequest
         return [
             'id_pelanggan_pln' => 'required|numeric|exists:pln_customers,id',
             'bulan' => [
-                'required', 
-                Rule::in($daftarBulan),
-                Rule::unique('usages')->where(function($query) use ($bulan, $tahun, $idPelanggan){
-                    return $query->where('id_pelanggan_pln', $idPelanggan)
-                                 ->where('bulan', $bulan)
-                                 ->where('tahun', $tahun);
-                })->ignore($this->id)
+                    'required', 
+                    Rule::in($daftarBulan),
+                    Rule::unique('usages')->where(function($query) use ($bulan, $tahun, $idPelanggan){
+                        return $query->where('id_pelanggan_pln', $idPelanggan)
+                                    ->where('bulan', $bulan)
+                                    ->where('tahun', $tahun);
+                    })->ignore($this->id),
+                    'date_equals:'.now()->month,
             ],
             'tahun' => 'required|date_format:Y|date_equals:'.now()->year,
             'meter_awal' => 'required|numeric',
@@ -67,7 +68,7 @@ class UsageRequest extends FormRequest
     {
         return [
             'id_pelanggan_pln.required' => 'ID Pelanggan tidak boleh kosong', 
-            'bulan.required' => 'Bulan tidak boleh kosong', 
+            'bulan.required' => 'Bulan tidak boleh kosong',
             'tahun.required' => 'ID Pelanggan tidak boleh kosong', 
             'meter_awal.required' => 'ID Pelanggan tidak boleh kosong', 
             'id_pelanggan_pln.numeric' => 'ID Pelanggan harus berupa angka', 
@@ -77,6 +78,8 @@ class UsageRequest extends FormRequest
             'bulan.unique' => 'Bulan yang dimasukkan sudah ada di tahun tersebut',
             'tahun.date_format' => 'Tahun tidak sesuai dengan format, harus 4 digit',
             'meter_akhir.gt' => 'Meter akhir harus lebih besar dari meter awal',
+            'bulan.date_equals' => 'Bulan harus sama dengan bulan ini', 
+            'tahun.date_equals' => 'Tahun harus sama dengan tahun ini', 
         ];
     }
 }

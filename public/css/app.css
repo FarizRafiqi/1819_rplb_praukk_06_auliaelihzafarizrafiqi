@@ -5083,13 +5083,13 @@ a.badge-success.focus {
 }
 
 .badge-info {
-    color: #212529;
-    background-color: #6cb2eb;
+    color: #fff;
+    background-color: #17a2b8;
 }
 a.badge-info:hover,
 a.badge-info:focus {
-    color: #212529;
-    background-color: #3f9ae5;
+    color: #fff;
+    background-color: #117a8b;
 }
 a.badge-info:focus,
 a.badge-info.focus {

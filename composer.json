@@ -21,6 +21,7 @@
         "laravel/framework": "^8.12",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
+        "laravel/ui": "^3.2",
         "laravolt/indonesia": "^0.29.0",
         "livewire/livewire": "^2.4",
         "midtrans/midtrans-php": "^2.3",

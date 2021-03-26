@@ -3,7 +3,7 @@
 @section('title', 'Edit Tarif')
 
 @section('content')
-  <div class="container w-50">
+  <div class="container">
     <h3 class="mb-4">Edit Tarif</h3>
     <div class="card">
       <div class="card-body">

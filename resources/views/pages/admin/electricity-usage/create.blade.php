@@ -3,14 +3,14 @@
 @section('title', 'Tambah Penggunaan')
 
 @section('content')
-  <div class="container w-50">
+  <div class="container">
     <h3 class="mb-4">Tambah Penggunaan</h3>
     <div class="card">
       <div class="card-body">
       <form action="{{route('admin.usages.store')}}" method="POST">
         @csrf
         <div class="form-group">
-          <label for="selectPlnCustomer">ID Pelanggan</label>
+          <label for="selectPlnCustomer">ID Pelanggan <span class="text-danger">*</span></label>
           <select name="id_pelanggan_pln" class="form-control selectpicker @error('id_pelanggan_pln')
               is-invalid
           @enderror" data-live-search="true" id="selectPlnCustomer">
@@ -26,7 +26,7 @@
           @enderror
         </div>
         <div class="form-group">
-          <label for="inputMeterAwal">Meter Awal</label>
+          <label for="inputMeterAwal">Meter Awal <span class="text-danger">*</span></label>
           <input type="text" name="meter_awal" class="form-control @error('meter_awal')
               is-invalid
           @enderror" id="inputMeterAwal" value="{{old('meter_awal')}}" placeholder="Masukkan meter awal">
@@ -35,7 +35,7 @@
           @enderror
         </div>
         <div class="form-group">
-          <label for="inputMeterAkhir">Meter Akhir</label>
+          <label for="inputMeterAkhir">Meter Akhir <span class="text-danger">*</span></label>
           <input type="text" name="meter_akhir" class="form-control @error('meter_akhir')
               
           @enderror" id="inputMeterAkhir" value="{{old('meter_akhir')}}" placeholder="Masukkan meter akhir">
@@ -45,7 +45,7 @@
         </div>
         
         <div class="form-group">
-          <label for="inputBulan">Bulan</label>
+          <label for="inputBulan">Bulan <span class="text-danger">*</span></label>
           <input type="text" name="bulan" class="form-control @error('bulan')
               is-invalid
           @enderror" id="inputBulan" value="{{now()->locale('id')->monthName}}">
@@ -55,7 +55,7 @@
         </div>
 
         <div class="form-group">
-          <label for="inputTahun">Tahun</label>
+          <label for="inputTahun">Tahun <span class="text-danger">*</span></label>
           <input type="text" name="tahun" class="form-control @error('tahun')
               is-invalid
           @enderror" id="inputTahun" value="{{now()->year}}">
@@ -64,7 +64,7 @@
           @enderror
         </div>
         
-        <a href="{{route('admin.usages.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{route('admin.usages.index')}}" class="btn btn-danger mr-1">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>

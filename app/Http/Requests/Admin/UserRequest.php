@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -26,9 +27,13 @@ class UserRequest extends FormRequest
         return [
             'nama' => 'required|string|min:3',
             'username' => 'required|string|min:3',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                        'required', 
+                        'email',
+                        Rule::unique('users')->ignore($this->request->get('id')),
+                    ],
             'id_level' => 'required|exists:levels,id|not_in:1',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'nullable|min:6|confirmed',
         ];
     }
 
@@ -47,7 +52,6 @@ class UserRequest extends FormRequest
             'id_level.required' => 'Level tidak boleh kosong!',
             'id_level.exist' => 'Level tidak ada di database!',
             'id_level.not_in' => 'Level admin sudah ada',
-            'password.required' => 'Password tidak boleh kosong!',
             'password.min' => 'Password tidak boleh kurang dari 6 karakter!',
             'password.confirmed' => 'Password dan konfirmasi password harus sama!',
         ];

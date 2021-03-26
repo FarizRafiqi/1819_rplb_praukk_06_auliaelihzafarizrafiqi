@@ -3,22 +3,22 @@
 @section('title', 'Edit Penggunaan')
 
 @section('content')
-  <div class="container w-50">
+  <div class="container">
     <h3 class="mb-4">Edit Penggunaan</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.usages.update', $usage->id)}}" method="POST">
+      <form action="{{ route('admin.usages.update', $usage->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <input type="hidden" name="id" value="{{$usage->id}}">
+        <input type="hidden" name="id" value="{{ $usage->id }}">
         <div class="form-group">
-          <label for="selectPlnCustomer">ID Pelanggan</label>
+          <label for="selectPlnCustomer">ID Pelanggan <span class="text-danger">*</span></label>
           <select name="id_pelanggan_pln" class="form-control selectpicker @error('id_pelanggan_pln')
               is-invalid
           @enderror" data-live-search="true" id="selectPlnCustomer">
             <option selected>Pilih Pelanggan PLN</option>
             @foreach($customers as $customer)
-              <option value="{{$customer->id}}" {{($customer->id == $usage->plnCustomer->id) ? 'selected' : ''}}>{{$customer->id . '. ' . $customer->nama_pelanggan}}</option>
+              <option value="{{ $customer->id }}" {{ ($customer->id == $usage->plnCustomer->id) ? 'selected' : '' }}>{{$customer->id . '. ' . $customer->nama_pelanggan}}</option>
             @endforeach
           </select>
           @error('id_pelanggan_pln')
@@ -26,45 +26,42 @@
           @enderror
         </div>
         <div class="form-group">
-          <label for="inputMeterAwal">Meter Awal</label>
-          <input type="text" name="meter_awal" class="form-control @error('meter_awal')
-              is-invalid
-          @enderror" id="inputMeterAwal" value="{{$usage->meter_awal}}" placeholder="Masukkan meter awal">
+          <label for="inputMeterAwal">Meter Awal <span class="text-danger">*</span></label>
+          <input type="text" name="meter_awal" class="form-control @error('meter_awal') is-invalid @enderror" id="inputMeterAwal" value="{{ old('meter_awal') ? old('meter_awal') : $usage->meter_awal }}" placeholder="Masukkan meter awal">
+
           @error('meter_awal')
-            <span class="invalid-feedback">{{$message}}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
           @enderror
         </div>
         <div class="form-group">
-          <label for="inputMeterAkhir">Meter Akhir</label>
-          <input type="text" name="meter_akhir" class="form-control @error('meter_akhir')
-            is-invalid    
-          @enderror" id="inputMeterAkhir"  value="{{$usage->meter_akhir}}" placeholder="Masukkan meter akhir">
+          <label for="inputMeterAkhir">Meter Akhir <span class="text-danger">*</span></label>
+          <input type="text" name="meter_akhir" class="form-control @error('meter_akhir') is-invalid @enderror" id="inputMeterAkhir"  value="{{ old('meter_akhir') ? old('meter_akhir') : $usage->meter_akhir }}" placeholder="Masukkan meter akhir">
+
           @error('meter_akhir')
-            <span class="invalid-feedback">{{$message}}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
           @enderror
         </div>
         
         <div class="form-group">
-          <label for="inputBulan">Bulan</label>
+          <label for="inputBulan">Bulan <span class="text-danger">*</span></label>
           <input type="text" name="bulan" class="form-control @error('bulan')
             is-invalid   
-          @enderror" id="inputBulan" value="{{$usage->bulan}}">
+          @enderror" id="inputBulan" value="{{ old('bulan') ? old('bulan') : $usage->bulan }}">
           @error('bulan')
-            <span class="invalid-feedback">{{$message}}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
           @enderror
         </div>
 
         <div class="form-group">
-          <label for="inputTahun">Tahun</label>
-          <input type="text" name="tahun" class="form-control @error('tahun')
-            is-invalid   
-          @enderror" id="inputTahun" value="{{$usage->tahun}}">
+          <label for="inputTahun">Tahun <span class="text-danger">*</span></label>
+          <input type="text" name="tahun" class="form-control @error('tahun') is-invalid @enderror" id="inputTahun" value="{{ old('tahun') ? old('tahun') : $usage->tahun }}">
+          
           @error('tahun')
-            <span class="invalid-feedback">{{$message}}</span>
+            <span class="invalid-feedback">{{ $message }}</span>
           @enderror
         </div>
         
-        <a href="{{route('admin.usages.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{ route('admin.usages.index') }}" class="btn btn-danger mr-1">Batal</a>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       </div>

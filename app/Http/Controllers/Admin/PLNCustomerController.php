@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlnCustomerRequest;
+use App\Http\Requests\Admin\MassDestroyPlnCustomerRequest;
 use App\Models\PlnCustomer;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
@@ -114,10 +115,26 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($plnCustomer->usages()->count() > 0){
-            return back()->with("error", "Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan");
+            alert("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan", "", "error");
+            return redirect()->back();
         }
         
         $plnCustomer->delete();
         return back()->withSuccess("Pelanggan Berhasil Dihapus!");
+    }
+
+    public function massDestroy(MassDestroyPlnCustomerRequest $request)
+    {
+        abort_if(Gate::denies("pln_customer_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
+        $customers = PlnCustomer::whereIn('id', request('ids'))->get();
+        foreach($customers as $customer){
+            if($customer->usages()->count() > 0){
+                alert("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan", "", "error");
+                return;
+            }
+            $customer->delete();
+        }
+
+        return redirect()->route('admin.pln-customers.index')->withSuccess('Data PLN customer(s) berhasil dihapus!');
     }
 }

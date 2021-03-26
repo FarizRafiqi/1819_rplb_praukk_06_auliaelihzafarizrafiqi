@@ -33,39 +33,39 @@
 			</div>
 		</div>
 	</form>
-	@if(!empty($usages))
-	<div class="table-responsive">
-		<table class="table text-center table-bordered table-stripped table-hover mt-3" id="billTable">
-			<thead>
-				<tr>
-					<th scope="col">Nama Lengkap</th>
-					<th scope="col">Jumlah Periode</th>
-					<th scope="col">Periode</th>
-					<th scope="col">Biaya Admin</th>
-					<th scope="col">Total Denda</th>
-					<th scope="col">Tagihan</th>
-					<th scope="col">Total Tagihan</th>
-				</tr>
-			</thead>
-			<tbody>
-					<tr scope="row">
-						<td>{{$usages->first()->plnCustomer->nama_pelanggan}}</td>
-						<td>{{$usages->count()}}</td>
-						<td>
-							@if ($usages->count() > 1)
-								{{$usages->first()->bulan . '-' . $usages->last()->bulan. ' ' . $usages->first()->tahun}}
-							@else
-								{{$usages->first()->bulan . ' ' . $usages->first()->tahun}}
-							@endif
-						</td>
-						<td>@rupiah(config('const.biaya_admin'))</td>
-						<td>@rupiah(collect($data)->sum('denda'))</td>
-						<td>@rupiah(collect($data)->sum('total_tagihan'))</td>
-						<td class="font-weight-bold">@rupiah($total)</td>
+	@if($usages && $usages->has('plnCustomer'))
+		<div class="table-responsive">
+			<table class="table text-center table-bordered table-stripped table-hover mt-3" id="billTable">
+				<thead>
+					<tr>
+						<th scope="col">Nama Lengkap</th>
+						<th scope="col">Jumlah Periode</th>
+						<th scope="col">Periode</th>
+						<th scope="col">Biaya Admin</th>
+						<th scope="col">Total Denda</th>
+						<th scope="col">Tagihan</th>
+						<th scope="col">Total Tagihan</th>
 					</tr>
-			</tbody>
-		</table>
-	</div>
+				</thead>
+				<tbody>
+						<tr scope="row">
+							<td>{{$usages->first()->plnCustomer->nama_pelanggan}}</td>
+							<td>{{$usages->count()}}</td>
+							<td>
+								@if ($usages->count() > 1)
+									{{$usages->first()->bulan . '-' . $usages->last()->bulan. ' ' . $usages->first()->tahun}}
+								@else
+									{{$usages->first()->bulan . ' ' . $usages->first()->tahun}}
+								@endif
+							</td>
+							<td>@rupiah(config('const.biaya_admin'))</td>
+							<td>@rupiah(collect($data)->sum('denda'))</td>
+							<td>@rupiah(collect($data)->sum('total_tagihan'))</td>
+							<td class="font-weight-bold">@rupiah($total)</td>
+						</tr>
+				</tbody>
+			</table>
+		</div>
 	@endif
 </div>
 @push('addon-script')

@@ -14,7 +14,7 @@
   @include('includes.navbar')
   <div class="container pt-5">
     <h3 class="mb-4">Riwayat Transaksi</h3>
-    @livewire('transaction-history')
+    @livewire('transaction-history.transaction-history')
   </div>
   @include('includes.script')
   @livewireScripts

@@ -3,8 +3,6 @@
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route,
     App\Http\Controllers\HomeController,
-    App\Http\Controllers\Auth\LoginController,
-    App\Http\Controllers\Auth\RegisterController,
     App\Http\Controllers\Admin\BillController,
     App\Http\Controllers\Admin\DashboardController,
     App\Http\Controllers\Admin\ElectricityUsageController,
@@ -19,11 +17,9 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\PermissionController,
     App\Http\Controllers\Admin\TransactionController,
     App\Http\Controllers\Admin\PaymentMethodController,
-    App\Http\Controllers\Admin\LevelPermissionController,
-    App\Http\Controllers\Auth\NewPasswordController,
-    App\Http\Controllers\Auth\PasswordResetLinkController,
     App\Http\Controllers\MidtransController,
-    App\Http\Controllers\SocialiteController;
+    App\Http\Controllers\SocialiteController,
+    Illuminate\Support\Facades\Auth;
 
 //Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
@@ -55,25 +51,12 @@ Route::get('/payments/unfinish', [MidtransController::class, 'unfinish'])->name(
 Route::get('/payments/error', [MidtransController::class, 'error'])->name('error');
 
 // Auth
-Route::get('/login', [LoginController::class, "index"])->name('login');
-Route::post('/login', [LoginController::class, "login"])->name('auth.login');
-Route::post('/logout', [LoginController::class, "logout"])->name('logout');
-Route::get('/register', [RegisterController::class, "index"])->name('register');
-Route::post('/register', [RegisterController::class, "register"])->name('auth.register');
-
+Auth::routes();
 Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
-//Password Reset
-Route::group(['middleware' => 'guest'], function(){
-  Route::get('/forgot-password', [PasswordResetLinkController::class, "create"])->name('password.request');
-  Route::post('/forgot-password', [PasswordResetLinkController::class, "store"])->name('password.email');
-  Route::get('/reset-password/{token}', [NewPasswordController::class, "create"])->name('password.reset');
-  Route::post('/reset-password', [NewPasswordController::class, "store"])->name('password.update');
-});
-
 // Admin Panel
-Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
+Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin', 'password.confirm']], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
   Route::post('/reports/payment', [ReportController::class, "printPaymentReports"])->name('reports.payment');
@@ -85,9 +68,16 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
 
   // Dashboard setting
   Route::get('settings', [DashboardController::class, "settings"])->name('settings');
+  
   // Data Master
+  Route::delete('usages/destroy', [ElectricityUsageController::class, "massDestroy"])->name('usages.massDestroy');
+  Route::delete('levels/destroy', [LevelController::class, "massDestroy"])->name('levels.massDestroy');
+  Route::delete('tariffs/destroy', [TariffController::class, "massDestroy"])->name('tariffs.massDestroy');
+  Route::delete('pln-customers/destroy', [PlnCustomerController::class, "massDestroy"])->name('pln-customers.massDestroy');
+  Route::delete('permissions/destroy', [PermissionController::class, "massDestroy"])->name('permissions.massDestroy');
+  Route::delete('users/destroy', [UserController::class, "massDestroy"])->name('users.massDestroy');
+  
   Route::resource('activity-logs', ActivityLogController::class)->except('create', 'store', 'edit', 'update', 'destroy');
-  Route::resource('level-permissions', LevelPermissionController::class)->except('show');
   Route::resources([
     'payments' => PaymentController::class,
     'bills' => BillController::class,

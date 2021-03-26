@@ -25,20 +25,22 @@ class PaymentMethodController extends Controller
         if($request->ajax()){
             $paymentMethods = PaymentMethod::all();
             return DataTables::of($paymentMethods)
-                                ->addColumn("action", function($paymentMethod){
-                                    $buttons = '<a href='. route("admin.payment-methods.edit", $paymentMethod->id) .' class="btn btn-sm btn-success btn-edit">edit</a>';
-                                    $buttons .= '<a href='. route("admin.payment-methods.show", $paymentMethod->id) .' class="btn btn-sm mx-2 btn-primary btn-detail">detail</a>';
-                                    $buttons .= '
-                                        <form action=' . route("admin.payment-methods.destroy", $paymentMethod->id). ' method="POST" class="d-inline-block form-delete">
-                                            '.csrf_field().'
-                                            '. method_field("DELETE") .'
-                                            <button class="btn btn-sm btn-danger btn-delete" type="submit">delete</button>
-                                        </form>
-                                    ';
-                                    return $buttons;
+                                ->addColumn("action", function($row){
+                                    $showGate       = 'payment_method_show';
+                                    $editGate       = 'payment_method_edit';
+                                    $deleteGate     = 'payment_method_delete';
+                                    $crudRoutePart  = 'payment-methods';
+                                    
+                                    return view('partials.datatables-action', compact(
+                                        'showGate', 
+                                        'editGate', 
+                                        'deleteGate',
+                                        'crudRoutePart',
+                                        'row',
+                                    ));
                                 })
-                                ->editColumn('gambar', function($paymentMethod){
-                                    return "<img src='" . Storage::url($paymentMethod->gambar) . "' width='100px'>";
+                                ->editColumn('gambar', function($row){
+                                    return "<img src='" . Storage::url($row->gambar) . "' width='100px'>";
                                 })
                                 ->rawColumns(['gambar', 'action'])
                                 ->toJson();
@@ -91,8 +93,6 @@ class PaymentMethodController extends Controller
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
         abort_if(Gate::denies("payment_method_update"), Response::HTTP_FORBIDDEN, "Forbidden");
-        
-        return redirect()->route('admin.payment-methods.index')->withSuccess("Data berhasil diubah!");
     }
 
     /**

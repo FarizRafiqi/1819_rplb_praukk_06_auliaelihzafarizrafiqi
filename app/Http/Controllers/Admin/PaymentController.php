@@ -27,11 +27,19 @@ class PaymentController extends Controller
         if($request->ajax()){
             $payments = Payment::with(["plnCustomer", "customer", "details", "paymentMethod"])->get();
             return Datatables::of($payments)
-                    ->addColumn("action", function($payments){
-                        $button = '<a href="'. route("admin.payments.edit", $payments->id).'" class="btn btn-success btn-sm">edit</a>';
-
-                        $button .= '<a href="'. route("admin.payments.show", $payments->id).'" class="btn btn-primary btn-sm mx-2">detail</a>';
-                        return $button;
+                    ->addColumn("action", function($row){
+                        $showGate       = 'payment_show';
+                        $editGate       = 'payment_edit';
+                        $deleteGate     = '';
+                        $crudRoutePart  = 'payments';
+                        
+                        return view('partials.datatables-action', compact(
+                            'showGate', 
+                            'editGate', 
+                            'deleteGate',
+                            'crudRoutePart',
+                            'row',
+                        ));
                     })
                     ->toJson();
         }

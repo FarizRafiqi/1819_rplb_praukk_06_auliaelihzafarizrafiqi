@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
 <!-- DataTables v.1.10.23 + Responsive v.2.2.7 + Button v.1.6.5 (Bootstrap 4.1 Integration) -->
-<link href="{{ asset('assets/plugin/DataTables-1.10.23/datatables.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugin/DataTables-1.10.24/datatables.min.css') }}" rel="stylesheet">
 
 <!-- Bootstrap 4 Datepicker -->
 <link href="{{ asset('assets/plugin/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" rel="stylesheet">

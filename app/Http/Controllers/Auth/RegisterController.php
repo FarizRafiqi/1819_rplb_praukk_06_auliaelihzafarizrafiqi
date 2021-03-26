@@ -3,46 +3,73 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    public function index()
+    /*
+    |--------------------------------------------------------------------------
+    | Register Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
+    |
+    */
+
+    use RegistersUsers;
+
+    /**
+     * Where to redirect users after registration.
+     *
+     * @var string
+     */
+    protected $redirectTo = RouteServiceProvider::HOME;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return view('auth.register');
+        $this->middleware('guest');
     }
 
-    public function register(Request $request)
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
     {
-        $request->validate(
-            [
-                'nama' => 'required|string|min:3',
-                'username' => 'required|string',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6|confirmed',
-            ],
-            [
-                'nama.required' => 'Nama tidak boleh kosong',
-                'nama.string' => 'Nama harus berupa karakter',
-                'nama.min' => 'Nama tidak boleh kurang dari 3 huruf',
-                'username.required' => 'Username tidak boleh kosong',
-                'username.string' => 'Username harus berupa karakter',
-                'email.required' => 'Email tidak boleh kosong',
-                'email.email' => 'Email tidak valid',
-                'password.required' => 'Password tidak boleh kosong',
-                'password.min' => 'Password tidak boleh kurang dari 6 karakter',
-            ]
-        );
+        return Validator::make($data, [
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
 
-        Auth::login($user = User::create([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'id_level' => 2 // id pelanggan
-        ]), true);
-        return redirect()->route('login')->withSuccess('Registrasi Berhasil!');
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\Models\User
+     */
+    protected function create(array $data)
+    {
+        return User::create([
+            'nama' => $data['nama'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'id_level' => 2,
+        ]);
     }
 }

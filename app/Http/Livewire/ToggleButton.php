@@ -17,6 +17,6 @@ class ToggleButton extends Component
 
     public function enableSidebar()
     {
-        // Cookie::queue('enable_sidebar', $this->isActive);
+        
     }
 }

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mb-3">
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Perhatian!</strong> jika ingin mengaktifkan fitur log ini jangan lupa untuk menambahkan trigger yang sudah saya buat di dokumen analisa UKK ke DBMS. <br> <strong>Atau</strong> jika malas, saya <strong>sudah menggunakan laravel observer</strong> untuk menangani event model (sama persis dengan trigger di SQL)
+    <strong>Perhatian!</strong> jika ingin mengaktifkan fitur log ini jangan lupa untuk menambahkan trigger yang sudah saya buat di dokumen analisa UKK ke DBMS. <br> <strong>Sebenarnya</strong> itu tidak wajib dilakukan, karena saya <strong>sudah menggunakan Laravel Observer</strong> untuk menangani <strong>event</strong> model (sama persis dengan trigger di SQL)
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

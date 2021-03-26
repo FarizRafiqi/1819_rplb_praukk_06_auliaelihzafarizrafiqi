@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UsageRequest;
-use App\Models\Bill;
+use App\Http\Requests\Admin\MassDestroyUsageRequest;
 use App\Models\PlnCustomer;
 use App\Models\Usage;
 use Illuminate\Http\Request;
@@ -25,26 +25,28 @@ class ElectricityUsageController extends Controller
      */
     public function index(Request $request)
     {
-        abort_if(Gate::denies('usage_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        abort_if(Gate::denies("usage_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
         if($request->ajax()){
             $usage = Usage::all();
             return DataTables::of($usage)
-                    ->addColumn('action', function($usage){
-                        $button = '<a href='. route("admin.usages.edit", $usage->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.usages.show", $usage->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '
-                            <form action='.route("admin.usages.destroy", $usage->id).' method="POST" class="d-inline-block form-delete">
-                                '. csrf_field() .'
-                                '. method_field("DELETE") .'
-                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
-                            </form>
-                        ';
-                        return $button;
+                    ->addColumn("action", function($row){
+                        $showGate       = "usage_show";
+                        $editGate       = "usage_edit";
+                        $deleteGate     = "usage_delete";
+                        $crudRoutePart  = "usages";
+                        
+                        return view("partials.datatables-action", compact(
+                            "showGate", 
+                            "editGate", 
+                            "deleteGate",
+                            "crudRoutePart",
+                            "row",
+                        ));
                     })
                     ->toJson();
         }
-        return view('pages.admin.electricity-usage.index');
+        return view("pages.admin.electricity-usage.index");
     }
 
     /**
@@ -54,14 +56,14 @@ class ElectricityUsageController extends Controller
      */
     public function create(Request $request)
     {
-        abort_if(Gate::denies('usage_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        abort_if(Gate::denies("usage_create"), Response::HTTP_FORBIDDEN, "Forbidden");
         $customers = PlnCustomer::get();
 
         if($request->ajax()){
-            $usage = Usage::where('id_pelanggan_pln', $request->id_pelanggan)->max('meter_akhir') ?? sprintf("%08d", 0);
+            $usage = Usage::where("id_pelanggan_pln", $request->id_pelanggan)->max("meter_akhir") ?? sprintf("%08d", 0);
             return response()->json(sprintf("%08d", $usage));
         }
-        return view('pages.admin.electricity-usage.create', compact('customers'));
+        return view("pages.admin.electricity-usage.create", compact("customers"));
     }
 
     /**
@@ -73,7 +75,7 @@ class ElectricityUsageController extends Controller
     public function store(UsageRequest $request)
     {
         Usage::create($request->all());
-        return redirect()->route('admin.usages.index')->withSuccess('Data berhasil ditambahkan!');
+        return redirect()->route("admin.usages.index")->withSuccess("Data berhasil ditambahkan!");
     }
 
     /**
@@ -84,8 +86,8 @@ class ElectricityUsageController extends Controller
      */
     public function show(Usage $usage)
     {
-        abort_if(Gate::denies('usage_show'), Response::HTTP_FORBIDDEN, 'Forbidden');
-        return view('pages.admin.electricity-usage.show', compact('usage'));
+        abort_if(Gate::denies("usage_show"), Response::HTTP_FORBIDDEN, "Forbidden");
+        return view("pages.admin.electricity-usage.show", compact("usage"));
     }
 
     /**
@@ -96,9 +98,9 @@ class ElectricityUsageController extends Controller
      */
     public function edit(Usage $usage)
     {
-        abort_if(Gate::denies('usage_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        abort_if(Gate::denies("usage_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
         $customers = PlnCustomer::get();
-        return view('pages.admin.electricity-usage.edit', compact('usage', 'customers'));
+        return view("pages.admin.electricity-usage.edit", compact("usage", "customers"));
     }
 
     /**
@@ -110,9 +112,9 @@ class ElectricityUsageController extends Controller
      */
     public function update(UsageRequest $request, Usage $usage)
     {
-        abort_if(Gate::denies('usage_update'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        abort_if(Gate::denies("usage_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $usage->update($request->all());
-        return redirect()->route('admin.usages.index')->withSuccess('Data penggunaan berhasil diubah!');
+        return redirect()->route("admin.usages.index")->withSuccess("Data penggunaan berhasil diubah!");
     }
 
     /**
@@ -123,7 +125,7 @@ class ElectricityUsageController extends Controller
      */
     public function destroy(Usage $usage)
     {
-        abort_if(Gate::denies('usage_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
+        abort_if(Gate::denies("usage_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
 
         /**
          * jika penggunaan ini memiliki relasi dengan tagihan,
@@ -136,5 +138,22 @@ class ElectricityUsageController extends Controller
         $usage->bill->delete();
         $usage->delete();
         return redirect()->route('admin.usages.index')->withSuccess('Data penggunaan berhasil dihapus!');
+    }
+
+    public function massDestroy(MassDestroyUsageRequest $request)
+    {
+        abort_if(Gate::denies("usage_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
+        $usages = Usage::whereIn('id', request('ids'))->get();
+        foreach ($usages as $usage) {
+            if($usage->bill_count > 0 && $usage->bill->status == "LUNAS"){
+                alert()->error('Data tidak dapat dihapus', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar');
+                return;
+            }
+            
+            $usage->bill->delete();
+            $usage->delete();
+        }
+
+        return redirect()->back()->withSuccess('Data usage(s) berhasil dihapus!');
     }
 }

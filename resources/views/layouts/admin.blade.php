@@ -45,7 +45,9 @@
 
     $(".navbar-toggler").on("click", function(){
       $("#sidebar").css('width', '260px');
-      $("main").css('margin-left', '260px');
+      if(!navigator.userAgent.toLowerCase().match('mobile')){
+        $("main").css('margin-left', '260px');
+      }
     });
 
     $('#collapseManajemenUser').on('show.bs.collapse', function () {

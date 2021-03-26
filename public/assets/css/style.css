@@ -273,7 +273,7 @@ footer .list-item {
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
-    width: 260px; /* 0 width - change this with JavaScript */
+    width: 0px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
@@ -282,6 +282,7 @@ footer .list-item {
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+    z-index: 9999;
 }
 
 /* The navigation menu links */
@@ -334,8 +335,8 @@ footer .list-item {
 }
 
 #main {
-    padding: 20px;
-    margin-left: 260px;
+    padding: 5px;
+    margin-left: 0px;
 }
 
 @media (max-height: 450px) {
@@ -425,6 +426,15 @@ footer .list-item {
     /* User */
     .container-edit-user {
         width: 50%;
+    }
+
+    .sidenav {
+        width: 260px;
+    }
+
+    #main {
+        padding: 20px;
+        margin-left: 260px;
     }
 }
 

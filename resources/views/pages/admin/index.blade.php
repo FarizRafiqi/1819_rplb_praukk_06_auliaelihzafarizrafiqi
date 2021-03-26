@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 @section('content')
   <div class="container-fluid">
-    <div class="row justify-content-center mx-3">
+    <div class="row justify-content-center">
       <!-- Total Revenue Overview -->
       @if (auth()->user()->isAdmin())
-        <div class="col-12 col-md-6 {{(bool) Cookie::get('enable_sidebar') === true ? 'col-lg-6' : 'col-lg-3'}} mb-md-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
@@ -29,7 +29,7 @@
 
       <!-- Total Payment Overview -->
       @if (auth()->user()->isAdmin())
-        <div class="col-12 col-md-6 {{(bool) Cookie::get('enable_sidebar') === true ? 'col-lg-6' : 'col-lg-3'}} mb-3 mb-md-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
@@ -45,7 +45,7 @@
           </div>
         </div>
       @else
-        <div class="col-12 col-md-6 col-lg-4 mb-3 mb-md-3">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
@@ -66,7 +66,7 @@
 
       <!-- Bill Paid Off Overview -->
       @if(auth()->user()->isAdmin())
-        <div class="col-12 col-md-6 {{(bool) Cookie::get('enable_sidebar') === true ? 'col-lg-6' : 'col-lg-3'}} mb-3 mb-md-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">
@@ -86,7 +86,7 @@
 
       <!-- Bill Not Paid Off Overview -->
       @if(auth()->user()->isAdmin())
-        <div class="col-12 col-md-6 {{(bool) Cookie::get('enable_sidebar') === true ? 'col-lg-6' : 'col-lg-3'}} mb-3 mb-md-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-3">
           <div class="card card-overview">
             <div class="card-body">
               <div class="row align-items-center h-100">

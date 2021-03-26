@@ -146,5 +146,15 @@
     </div>
     <hr>
   @endif
-
 </div>
+@push('addon-script')
+	<script>
+		Livewire.on('alertAlreadyPayBill', () => {
+				Swal.fire({
+					'title': 'Tagihan Sudah Terbayar',
+					'icon': 'success',
+					'showConfirmButton': true
+				})
+		});
+	</script>
+@endpush

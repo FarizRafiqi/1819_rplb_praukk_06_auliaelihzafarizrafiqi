@@ -3,7 +3,7 @@
 @section('title', 'Hak Akses')
 
 @section('content')
-<div class="container w-50 mb-3">
+<div class="container mb-3">
   <div class="d-flex justify-content-between mb-4"> 
     <h3>Hak Akses</h3>
     <a href="{{route('admin.permissions.create')}}" class="btn btn-primary-custom">
@@ -51,7 +51,7 @@
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, hapus itu!'
+          confirmButtonText: 'ya!'
         }).then((result) => {
           if (result.isConfirmed) {
             $(e.target).parent().submit();

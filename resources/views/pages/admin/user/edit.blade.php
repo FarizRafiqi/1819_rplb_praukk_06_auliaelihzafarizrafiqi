@@ -11,11 +11,12 @@
         @method("PUT")
         <h4>Detail</h4>
         <div class="form-row">
+          <input type="hidden" name="id" value="{{$user->id}}">
           <div class="form-group col-md-6">
             <label for="inputNama">Nama</label>
             <input type="text" name="nama" class="form-control @error('nama')
               is-invalid  
-            @enderror" id="inputNama" value="{{$user->nama}}" placeholder="Masukkan nama">
+            @enderror" id="inputNama" value="{{old('nama') ? old('nama') : $user->nama}}" placeholder="Masukkan nama">
             @error('nama')
               <span class="text-danger">{{$message}}</span>
             @enderror
@@ -24,7 +25,7 @@
             <label for="username">Username</label>
             <input type="text" name="username" class="form-control @error('username')
               is-invalid  
-            @enderror" id="username" value="{{$user->username}}" placeholder="Masukkan username">
+            @enderror" id="username" value="{{old('username') ? old('username') : $user->username}}" placeholder="Masukkan username">
             @error('username')
               <span class="text-danger">{{$message}}</span>
             @enderror
@@ -36,23 +37,27 @@
             <input type="email" name="email" class="form-control @error('email')
               is-invalid  
             @enderror" id="email" value="{{$user->email}}" placeholder="Masukkan email">
+
             @error('email')
               <span class="text-danger">{{$message}}</span>
             @enderror
           </div>
           <div class="form-group col-md-6">
             <label for="selectLevel">Level</label>
-              <select name="id_level" class="form-control @error('id_level')
-                is-invalid 
-              @enderror" id="selectLevel">
-                <option selected>Pilih Level</option>
-                @foreach($levels as $level)
-                  <option value="{{$level->id}}" {{($level->id == $user->id_level) ? 'selected' : ''}}>{{$level->level}}</option>
-                @endforeach
-              </select>
-              @error('id_level')
-                <span class="text-danger">{{$message}}</span>
-              @enderror
+            <select name="id_level" class="form-control @error('id_level') is-invalid @enderror" id="selectLevel">
+              <option disabled>Pilih Level</option>
+              @foreach($levels as $level)
+                @if (old('id_level'))
+                  <option value="{{$level->id}}" {{(old('id_level') == $level->id) ? 'selected' : ''}}>{{$level->level}}</option>
+                @else
+                  <option value="{{$level->id}}" {{($user->id_level == $level->id) ? 'selected' : ''}}>{{$level->level}}</option>
+                @endif
+              @endforeach
+            </select>
+            
+            @error('id_level')
+              <span class="text-danger">{{$message}}</span>
+            @enderror
           </div>
         </div>
         <h4>Atur Password</h4>

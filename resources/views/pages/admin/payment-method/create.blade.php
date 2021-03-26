@@ -10,14 +10,14 @@
     <h3 class="mb-4">Tambah Metode Pembayaran</h3>
     <div class="card">
       <div class="card-body">
-        @livewire('payment-methods.create')
+        @livewire('admin.payment-method.create')
       </div>
     </div>
   </div>
 @endsection
 @push('addon-script')
   {{-- <script src="{{asset('assets/plugin/filepond-master/dist/filepond.min.js')}}"></script> --}}
-  <script src="{{asset('assets/plugin/filepond-plugin-image-preview-master/dist/filepond-plugin-image-preview.min.js')}}"></script>
+  {{-- <script src="{{asset('assets/plugin/filepond-plugin-image-preview-master/dist/filepond-plugin-image-preview.min.js')}}"></script> --}}
   <script src="{{asset('assets/plugin/ckeditor5-build-classic/ckeditor.js')}}"></script>
   <script>
     Livewire.on('initializeCkEditor', function(e){
