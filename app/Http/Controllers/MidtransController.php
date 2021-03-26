@@ -18,7 +18,7 @@ class MidtransController extends Controller
         Config::$isProduction = config('midtrans.isProduction');
         Config::$isSanitized = config('midtrans.isSanitized');
         Config::$is3ds = config('midtrans.is3ds');
-
+        dd($request->all());
         //Buat instances midtrans notification
         $notification = new Notification();
         // Pecah order id agar bisa diterima oleh database
