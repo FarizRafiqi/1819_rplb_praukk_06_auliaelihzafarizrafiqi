@@ -40,7 +40,7 @@ class MidtransController extends Controller
         }else if($status == 'deny'){
             $payment->status = "failed";
         }else if($status == 'expire'){
-            $payment->status = "expired";
+            $payment->status = "expire";
         }else if($status == 'cancel'){
             $payment->status = "failed";
         }  
@@ -52,14 +52,14 @@ class MidtransController extends Controller
 
         if($payment){
             if($status == 'settlement'){
-                Mail::to($payment->customer)->send(
-                    new TransactionMail($payment)
-                );
+                // Mail::to($payment->customer)->send(
+                //     new TransactionMail($payment)
+                // );
                 
             }else if($status == 'success'){
-                Mail::to($payment->customer)->send(
-                    new TransactionMail($payment)
-                );
+                // Mail::to($payment->customer)->send(
+                //     new TransactionMail($payment)
+                // );
                 
             }else if($status == 'capture' && $fraud == 'challenge'){
                 return response()->json([

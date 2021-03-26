@@ -33,7 +33,7 @@
 			</div>
 		</div>
 	</form>
-	@if($usages && $usages->has('plnCustomer'))
+	@if($usages && $usages->first()->has('plnCustomer'))
 		<div class="table-responsive">
 			<table class="table text-center table-bordered table-stripped table-hover mt-3" id="billTable">
 				<thead>
