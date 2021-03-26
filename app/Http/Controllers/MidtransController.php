@@ -28,63 +28,32 @@ class MidtransController extends Controller
         $type       = $notification->payment_type;
         $fraud      = $notification->fraud_status; 
         $orderId    = $order[1];
-        
+   
         // Cari Transkasi berdasarkan id
         $payment = Payment::findOrFail($orderId);
+
         //Handler notification status midtrans
-        if($status == 'settlement'){
-            $payment->status = "success";
-        }else if($status == 'pending'){
-            $payment->status = "pending";
-        }else if($status == 'deny'){
-            $payment->status = "failed";
-        }else if($status == 'expire'){
-            $payment->status = "expire";
-        }else if($status == 'cancel'){
-            $payment->status = "failed";
-        }  
+        switch ($status) {
+            case "settlement":
+                $payment->status = "success";
+                break;
+            case "pending":
+                $payment->status = "pending";
+                break;
+            case "deny":
+                $payment->status = "failed";
+                break;
+            case "expire":
+                $payment->status = "expire";
+                break;
+            case "cancel":
+                $payment->status = "failed";
+                break;
+        }
 
-        //Simpan transaksi
         $payment->save();
-
-        // Kirim e-ticket ke email user
-
-        if($payment){
-            if($status == 'settlement'){
-                // Mail::to($payment->customer)->send(
-                //     new TransactionMail($payment)
-                // );
-                
-            }else if($status == 'success'){
-                // Mail::to($payment->customer)->send(
-                //     new TransactionMail($payment)
-                // );
-                
-            }else if($status == 'capture' && $fraud == 'challenge'){
-                return response()->json([
-                    'meta' => [
-                        'code' => 200,
-                        'message' => 'Midtrans Payment Challenge'
-                    ]
-                ]);
-            }else{
-                return response()->json([
-                    'meta' => [
-                        'code' => 200,
-                        'message' => 'Midtrans Payment Not Settlement'
-                    ]
-                ]);
-            }
-
-            return response()->json([
-                'meta' => [
-                    'code' => 200,
-                    'message' => 'Midtrans Notification Success'
-                ]
-            ]);
-        } 
-
-        return view('pages.pelanggan.payments.success');
+        
+        return redirect()->route('finish');
     }
 
     public function finish(Request $request)

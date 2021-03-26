@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route,
+    App\Http\Controllers\UploadController,
     App\Http\Controllers\HomeController,
     App\Http\Controllers\Admin\BillController,
     App\Http\Controllers\Admin\DashboardController,
@@ -44,11 +44,13 @@ Route::group(['middleware' => ['auth']], function(){
   });
 });
 
-// Midtrans Transaction Notification 
-Route::post('payments/callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-Route::get('payments/finish', [MidtransController::class, 'finish'])->name('finish');
-Route::get('payments/unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
-Route::get('payments/error', [MidtransController::class, 'error'])->name('error');
+//Transaction Handler
+Route::group(['prefix' => 'payments', 'as' => 'transaction.'], function(){
+  Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
+  Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
+  Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
+  Route::get('error', [MidtransController::class, 'error'])->name('error');
+});
 
 // Auth
 Auth::routes();
