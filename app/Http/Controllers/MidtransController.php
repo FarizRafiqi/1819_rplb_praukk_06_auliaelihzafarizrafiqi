@@ -53,7 +53,7 @@ class MidtransController extends Controller
 
         $payment->save();
         
-        return redirect()->route('transaction.finish');
+        return redirect()->route('transaction.finish')->setStatusCode(307);
     }
 
     public function finish(Request $request)
