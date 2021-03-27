@@ -26,6 +26,14 @@ Route::get('/', [HomeController::class, "index"])->name("home");
 Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about-us");
 Route::get('/faq', [HomeController::class, "faq"])->name('faq');
 
+//Transaction Handler
+Route::group(['prefix' => 'payments', 'as' => 'transaction.'], function(){
+  Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
+  Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
+  Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
+  Route::get('error', [MidtransController::class, 'error'])->name('error');
+});
+
 //Upload File
 Route::post('upload', [UploadController::class, "store"])->name('upload.store');
 Route::delete('upload', [UploadController::class, "destroy"])->name('upload.destroy');
@@ -42,14 +50,6 @@ Route::group(['middleware' => ['auth']], function(){
     
     Route::post('create', [TransactionController::class, "create"])->name('create');
   });
-});
-
-//Transaction Handler
-Route::group(['prefix' => 'payments', 'as' => 'transaction.'], function(){
-  Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-  Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
-  Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
-  Route::get('error', [MidtransController::class, 'error'])->name('error');
 });
 
 // Auth
