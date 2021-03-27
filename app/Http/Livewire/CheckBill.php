@@ -35,9 +35,9 @@ class CheckBill extends Component
 
         $this->reset(['total', 'fines']);
         
-        $this->plnCustomer = PlnCustomer::with('usages')->where("nomor_meter", $this->nomor_meter)->first();
+        $this->plnCustomer = PlnCustomer::with('usages')->firstWhere("nomor_meter", $this->nomor_meter);
         if(!$this->plnCustomer){
-            return $this->reset('usages');
+            return $this->reset('usages');exit;
         }
 
         $usages = $this->plnCustomer
