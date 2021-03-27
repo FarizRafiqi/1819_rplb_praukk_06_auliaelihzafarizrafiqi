@@ -23,6 +23,16 @@ class TransactionController extends Controller
     public function index(Request $request, Payment $payment)
     {
         $paymentMethods = PaymentMethod::all();
+        //Konfigurasi Midtrans
+        Config::$serverKey = config("midtrans.serverKey");
+        Config::$isProduction = config("midtrans.isProduction");
+        Config::$isSanitized = config("midtrans.isSanitized");
+        Config::$is3ds = config("midtrans.is3ds");
+
+        $response = MidtransTransaction::status("PLN-".$payment->id);
+        if($response->transaction_status == "settlement"){
+            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+        }
         return view("pages.pelanggan.payments.index", compact("payment", "paymentMethods"));
     }
 
@@ -185,6 +195,7 @@ class TransactionController extends Controller
         Config::$is3ds = config("midtrans.is3ds");
 
         $response = MidtransTransaction::status("PLN-".$payment->id);
+        
         return $this->checkTransactionStatus($paymentMethod, $payment, $response);
     }
 
@@ -199,9 +210,7 @@ class TransactionController extends Controller
     public function checkTransactionStatus(PaymentMethod $paymentMethod, Payment $payment, $response)
     {
         $totalBill = $payment->details()->sum('total_tagihan');
-        if($response->transaction_status == "settlement"){
-            return redirect()->route('transaction-history');
-        }elseif($response->transaction_status == "pending"){
+        if(in_array($response->transaction_status, ["pending", "settlement"])){
             $totalBill = $payment->details()->sum('total_tagihan');
             return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
         }elseif($response->transaction_status == "expire"){

@@ -55,8 +55,36 @@
           </div>
           <div class="font-weight-bold instruction-heading-title my-3">Cara Pembayaran</div>
           <div class="instruction-payment" id="instructionPayment">
+            @if (strtolower($paymentMethod->nama) == "va mandiri")
+              <ol>
+                <li>Kunjungi website 
+                  <a href="https://simulator.sandbox.midtrans.com/mandiri/bill/index">https://simulator.sandbox.midtrans.com/mandiri/bill/index</a>
+                </li>
+                <li>Masukkan Biller Code Midtrans (70012)</li>
+                <li>Masukkan Bill Key, salin kode pembayaran diatas</li>
+                <li>Tekan tombol <div class="text-primary">Inquire</div></li>
+              </ol>
+            @elseif(strtolower($paymentMethod->nama) == "va bni")
+              <ol>
+                <li>Kunjungi website 
+                  <a href="https://simulator.sandbox.midtrans.com/bni/va/index">https://simulator.sandbox.midtrans.com/bni/va/index</a>
+                </li>
+                <li>Masukkan Virtual Account Number (salin VA Number diatas)</li>
+                <li>Tekan tombol <span class="text-primary">Inquire</span></li>
+                <li>Tekan tombol <span class="text-primary">Pay</span></li>
+              </ol>
+            @else
+              <ol>
+                <li>Kunjungi website 
+                  <a href="https://simulator.sandbox.midtrans.com/bca/va/index">https://simulator.sandbox.midtrans.com/bca/va/index</a>
+                </li>
+                <li>Masukkan Virtual Account Number (salin VA Number diatas)</li>
+                <li>Tekan tombol <span class="text-primary">Inquire</span></li>
+                <li>Tekan tombol <span class="text-primary">Pay</span></li>
+              </ol>
+            @endif
             {{-- Transfer ATM Instruction --}}
-            <div class="card instruction-payment-item">
+            {{-- <div class="card instruction-payment-item">
               <div class="card-header bg-white d-flex align-items-center">
                 <a class="text-decoration-none text-dark" data-toggle="collapse" data-parent="#instructionPayment" href="#transfer">
                   Transfer Melalui ATM
@@ -109,11 +137,11 @@
                   @endif
                 </div>
               </div>
-            </div>
+            </div> --}}
             {{-- End of Transfer Instruction --}}
 
             {{-- Mobile Banking Instruction --}}
-            <div class="card instruction-payment-item mt-3">
+            {{-- <div class="card instruction-payment-item mt-3">
               <div class="card-header bg-white d-flex align-items-center">
                 <a class="text-decoration-none text-dark" data-toggle="collapse" data-parent="#instructionPayment" href="#mobileBanking">
                   Transfer Melalui Mobile Banking
@@ -147,11 +175,11 @@
                 @endif
                 </div>
               </div>
-            </div>
+            </div> --}}
             {{-- End of Mobile Banking Instruction --}}
 
             {{-- Internet Banking Instruction --}}
-            <div class="card instruction-payment-item mt-3">
+            {{-- <div class="card instruction-payment-item mt-3">
               <div class="card-header bg-white d-flex align-items-center">
                 <a class="text-decoration-none text-dark" data-toggle="collapse" data-parent="#instructionPayment" href="#internetBanking">
                   Transfer Melalui Internet Banking
@@ -194,12 +222,12 @@
                 @endif
                 </div>
               </div>
-            </div>
+            </div> --}}
             {{-- End of Internet Banking Instruction --}}
             
-            @if($paymentMethod->nama == 'BNI')
+            {{-- @if($paymentMethod->nama == 'BNI') --}}
               {{-- SMS Banking Instruction --}}
-              <div class="card instruction-payment-item mt-3">
+              {{-- <div class="card instruction-payment-item mt-3">
                 <div class="card-header bg-white d-flex align-items-center">
                   <h5 class="mb-0">
                     <a class="text-decoration-none text-dark" data-toggle="collapse" data-parent="#instructionPayment" href="#smsBanking">
@@ -225,9 +253,9 @@
                     </ol>
                   </div>
                 </div>
-              </div>
+              </div> --}}
               {{-- End of SMS Banking Instruction --}}
-            @endif
+            {{-- @endif --}}
           </div>
           <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" type="button" id="btnChangePaymentMethod">UBAH METODE PEMBAYARAN</button>
         </div>
@@ -280,19 +308,9 @@
                 </div>
               </div>
               {{-- Payment Button --}}
-              @if (strtolower($paymentMethod->nama) == "va mandiri")
-                <form action="https://simulator.sandbox.midtrans.com/mandiri/bill/index" target="_blank">
-                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
+                <form action="{{ route('transaction.finish') }}">
+                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Saya sudah bayar</button>
                 </form>
-              @elseif(strtolower($paymentMethod->nama) == "va bni")
-                <form action="https://simulator.sandbox.midtrans.com/bni/va/index" target="_blank">
-                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
-                </form>
-              @else
-                <form action="https://simulator.sandbox.midtrans.com/bca/va/index" target="_blank">
-                  <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Bayar Sekarang</button>
-                </form>
-              @endif
               {{-- End of Payment Button --}}
             </div>
           </div>
@@ -320,7 +338,7 @@
         })
       });
 
-      $("#btnChangePaymentMethod").on("click", function(){
+      $("#btnChangePaymentMethod").on("click", function(e){
         Swal.fire({
           title: "Peringatan",
           icon: "warning",
@@ -336,21 +354,27 @@
         });
       });
 
-      $("#btnPayment").on("click", function(e){
-        e.preventDefault();
-        Swal.fire({
-          title: "Peringatan",
-          icon: "warning",
-          text: "Karena web ini merupakan web tugas akhir saya, maka kamu hanya bisa melakukan simulasi pembayaran. Kamu akan diarahkan ke halaman simulasi Midtrans. Jangan lupa salin kode pembayarannya untuk melakukan pembayaran!",
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $(e.target).parent().submit();
-          }
+      let transactionStatus = @json($response->transaction_status);
+      if (transactionStatus != "settlement") {
+        $("#btnPayment").on("click", function(e){
+          e.preventDefault();
+          Swal.fire({
+            title: "Peringatan",
+            icon: "warning",
+            text: "Karena web ini merupakan web tugas akhir saya, maka kamu hanya bisa melakukan simulasi pembayaran. Kamu akan diarahkan ke halaman simulasi Midtrans. Jangan lupa salin kode pembayarannya untuk melakukan pembayaran!",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $(e.target).parent().submit();
+              $(e.target).parent().removeAttr("target");
+              $(e.target).parent().attr("action", "{{ route('transaction.finish') }}");
+              $(e.target).html("Saya sudah bayar");
+            }
+          });
         });
-      });
+      }
     </script>
 @endpush
