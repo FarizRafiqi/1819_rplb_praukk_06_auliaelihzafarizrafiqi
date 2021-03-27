@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth']], function(){
 //Transaction Handler
 Route::group(['prefix' => 'payments', 'as' => 'transaction.'], function(){
   Route::post('callback', [MidtransController::class, 'notificationHandler'])->name('callback');
-  Route::match(['get', 'post'],'finish', [MidtransController::class, 'finish'])->name('finish');
+  Route::get('finish', [MidtransController::class, 'finish'])->name('finish');
   Route::get('unfinish', [MidtransController::class, 'unfinish'])->name('unfinish');
   Route::get('error', [MidtransController::class, 'error'])->name('error');
 });

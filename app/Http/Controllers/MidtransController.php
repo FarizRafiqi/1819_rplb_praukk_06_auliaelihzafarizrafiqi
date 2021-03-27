@@ -53,7 +53,7 @@ class MidtransController extends Controller
 
         $payment->save();
         
-        return redirect()->route('transaction.finish')->setStatusCode(307);
+        return view('pages.pelanggan.payments.success');
     }
 
     public function finish(Request $request)
