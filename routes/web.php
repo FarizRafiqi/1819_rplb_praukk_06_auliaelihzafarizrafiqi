@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "confirm"])->name('confirm');
     Route::post('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "process"])->name('process');
     Route::get('/{payment}', [TransactionController::class, "index"])->name('index');
+    Route::post('/change/{payment}', [TransactionController::class, "changePaymentMethod"])->name('change-method');
     
     Route::post('create', [TransactionController::class, "create"])->name('create');
   });

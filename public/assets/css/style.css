@@ -21,6 +21,10 @@ body {
     color: #28b7ca; /*Pacific Blue*/
 }
 
+.usafa-blue {
+    color: #125684;
+}
+
 .btn-secondary-custom {
     background: #125684; /*USAFA Blue*/
     color: #fff;

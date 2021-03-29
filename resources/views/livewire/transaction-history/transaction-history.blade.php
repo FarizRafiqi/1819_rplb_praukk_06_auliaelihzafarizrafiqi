@@ -89,37 +89,48 @@
 						<div class="card-header">Detail Pembayaran</div>
 						<div class="card-body">
 							<dl class="row">
-								<dt class="col-md-4">Virtual Account</dt>
-								<dd class="col-md-8">
+								<dt class="col-md-5">Virtual Account</dt>
+								<dd class="col-md-7">
 									{{$transactionDetail->va_numbers[0]->va_number ?? $transactionDetail->bill_key}}
 								</dd>
 				
-								<dt class="col-md-4">Nama Customer</dt>
-								<dd class="col-md-8">{{$this->payment->customer->nama}}</dd>
+								<dt class="col-md-5">Nama Customer</dt>
+								<dd class="col-md-7">{{$this->payment->customer->nama}}</dd>
 				
-								<dt class="col-md-4">Nama Pelanggan PLN</dt>
-								<dd class="col-md-8">{{$this->payment->plnCustomer->nama_pelanggan}}</dd>
+								<dt class="col-md-5">Nama Pelanggan PLN</dt>
+								<dd class="col-md-7">{{$this->payment->plnCustomer->nama_pelanggan}}</dd>
 				
-								<dt class="col-md-4">ID Pelanggan</dt>
-								<dd class="col-md-8">{{$this->payment->plnCustomer->nomor_meter}}</dd>
+								<dt class="col-md-5">ID Pelanggan</dt>
+								<dd class="col-md-7">{{$this->payment->plnCustomer->nomor_meter}}</dd>
 				
-								<dt class="col-md-4">Tanggal Bayar</dt>
-								<dd class="col-md-8">{{$this->payment->tanggal_bayar}}</dd>
+								<dt class="col-md-5">Tanggal Bayar</dt>
+								<dd class="col-md-7">{{$this->payment->tanggal_bayar}}</dd>
 				
-								<dt class="col-md-4">Tarif / Daya</dt>
-								<dd class="col-md-8">{{$this->payment->plnCustomer->tariff->golongan_tarif . " / " . $this->payment->plnCustomer->tariff->daya . " VA"}}</dd>
+								<dt class="col-md-5">Tarif / Daya</dt>
+								<dd class="col-md-7">{{$this->payment->plnCustomer->tariff->golongan_tarif . " / " . $this->payment->plnCustomer->tariff->daya . " VA"}}</dd>
 				
-								<dt class="col-md-4">Biaya Admin</dt>
-								<dd class="col-md-8">@rupiah($this->payment->biaya_admin)</dd>
+								<dt class="col-md-5">Biaya Admin</dt>
+								<dd class="col-md-7">@rupiah($this->payment->biaya_admin)</dd>
 				
-								<dt class="col-md-4">Total Bayar</dt>
-								<dd class="col-md-8">@rupiah($this->payment->total_bayar)</dd>
+								<dt class="col-md-5">Total Bayar</dt>
+								<dd class="col-md-7">@rupiah($this->payment->total_bayar)</dd>
 				
-								<dt class="col-md-4">Metode Pembayaran</dt>
-								<dd class="col-md-8">{{$this->payment->paymentMethod->nama ?? "-"}}</dd>
+								<dt class="col-md-5">Metode Pembayaran</dt>
+								<dd class="col-md-7">
+									<div class="row justify-content-between align-items-center">
+										<div class="col">
+											{{$this->payment->paymentMethod->nama ?? "-"}}
+										</div>
+										@if ($this->payment->status == 'success')
+											<div class="col text-right">
+												<button class="btn usafa-blue" id="btnChangePaymentMethod" wire:click.prevent="$emit('changePaymentMethod')"><strong>ubah</strong></button>
+											</div>
+										@endif
+									</div>
+								</dd>
 				
-								<dt class="col-md-4">Status</dt>
-								<dd class="col-md-8">
+								<dt class="col-md-5">Status</dt>
+								<dd class="col-md-7">
 									@switch($this->payment->status)
 											@case('success')
 													<span class="badge pill-badge badge-success p-1">{{$payment->status}}</span>
@@ -162,6 +173,31 @@
 						window.location.href = url;
 					}
 				});
+		});
+
+		Livewire.on("changePaymentMethod", function() {
+			let payment = @json($payment);
+			Swal.fire({
+				'title': 'Ubah metode pembayaran?',
+				'text' : 'Pembayaranmu yang sebelumnya akan dibatalkan.',
+				'icon': 'warning',
+				'showConfirmButton': true,
+				'showCancelButton': true,
+			}).then((result) => {
+				if(result.isConfirmed){
+					let url = "{{ route('payment.change-method', ':payment') }}";
+					url = url.replace(':payment', payment.id);
+					$.ajax({
+						headers: {'X-CSRF-TOKEN': "{{ csrf_token() }}"},
+						url: url,
+						method: "POST",
+						data: {payment: payment},
+						success: function(data){
+
+						}
+					});
+				}
+			});
 		});
 	</script>
 @endpush

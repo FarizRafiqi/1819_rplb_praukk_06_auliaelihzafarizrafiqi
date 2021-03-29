@@ -199,6 +199,17 @@ class TransactionController extends Controller
         return $this->checkTransactionStatus($paymentMethod, $payment, $response);
     }
 
+    public function changePaymentMethod(Payment $payment)
+    {
+        //Konfigurasi Midtrans
+        Config::$serverKey = config("midtrans.serverKey");
+        Config::$isProduction = config("midtrans.isProduction");
+        Config::$isSanitized = config("midtrans.isSanitized");
+        Config::$is3ds = config("midtrans.is3ds");
+
+        $response = MidtransTransaction::cancel('PLN-'.$payment->id);
+    }
+    
     /**
      * Untuk menampilkan halaman riwayat transaksi pelanggan.
      */
