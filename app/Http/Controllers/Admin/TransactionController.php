@@ -24,15 +24,17 @@ class TransactionController extends Controller
     {
         $paymentMethods = PaymentMethod::all();
         //Konfigurasi Midtrans
-        Config::$serverKey = config("midtrans.serverKey");
-        Config::$isProduction = config("midtrans.isProduction");
-        Config::$isSanitized = config("midtrans.isSanitized");
-        Config::$is3ds = config("midtrans.is3ds");
+        // Config::$serverKey = config("midtrans.serverKey");
+        // Config::$isProduction = config("midtrans.isProduction");
+        // Config::$isSanitized = config("midtrans.isSanitized");
+        // Config::$is3ds = config("midtrans.is3ds");
 
-        $response = MidtransTransaction::status("PLN-".$payment->id);
-        if($response->transaction_status == "settlement"){
-            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
-        }
+        // try{
+        //     $response = MidtransTransaction::status("PLN-".$payment->id);
+        // }catch(Exception $ex){
+
+        // }
+        
         return view("pages.pelanggan.payments.index", compact("payment", "paymentMethods"));
     }
 
