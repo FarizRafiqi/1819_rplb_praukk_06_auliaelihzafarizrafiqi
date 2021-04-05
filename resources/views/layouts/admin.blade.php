@@ -30,33 +30,5 @@
   @include('sweetalert::alert')
   @livewireScripts
   @stack('addon-script')
-  <script>
-    // let statusEnableSidebar = @json(Cookie::get('enable_sidebar'));
-    $("#switchNavbar").on("click", function(){
-        $(this).parent().parent().submit();
-    });
-    
-    //tutup sidebar, ketika user mengklik tombol silang
-    $(".closebtn").on("click", function(){
-      $("#sidebar").css('width', '0');
-      $("main").css('margin-left', '0px');
-      $(".navbar-toggler").css('display', 'inline-block');
-    });
-
-    $(".navbar-toggler").on("click", function(){
-      $("#sidebar").css('width', '260px');
-      if(!navigator.userAgent.toLowerCase().match('mobile')){
-        $("main").css('margin-left', '260px');
-      }
-    });
-
-    $('#collapseManajemenUser').on('show.bs.collapse', function () {
-      $(".bi-chevron-right").css('transform', 'rotate(90deg)');
-    })
-
-    $('#collapseManajemenUser').on('hide.bs.collapse', function () {
-      $(".bi-chevron-right").css('transform', 'rotate(0deg)');
-    })
-  </script>
 </body>
 </html>

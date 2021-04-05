@@ -19,7 +19,7 @@ class CreateBillsTable extends Migration
                     ->nullable()
                     ->constrained('usages')
                     ->onUpdate('cascade');
-            $table->string('bulan', 10);
+            $table->unsignedTinyInteger('bulan');
             $table->year('tahun', 4);
             $table->integer('jumlah_kwh');
             $table->enum('status', ['BELUM LUNAS', 'LUNAS']);

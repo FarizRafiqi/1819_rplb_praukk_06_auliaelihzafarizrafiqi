@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,5 +24,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(PaymentSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(PermissionLevelSeeder::class);
+        Artisan::call("laravolt:indonesia:seed");
+        $this->call(TaxTypeSeeder::class);
+        $this->call(TaxRateSeeder::class);
     }
 }

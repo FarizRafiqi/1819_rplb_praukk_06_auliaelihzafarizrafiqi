@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\Usage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,6 +26,9 @@ class BillController extends Controller
             return DataTables::of($bills)
                     ->editColumn('id_penggunaan', function($bill){
                         return '<a href='. route("admin.usages.show", $bill->usage->id).' class="text-decoration-none">'.$bill->usage->id.'</a>';
+                    })
+                    ->editColumn('bulan', function($bill) {
+                        return Carbon::create(0, $bill->bulan)->monthName;
                     })
                     ->rawColumns(['id_penggunaan'])
                     ->toJson();

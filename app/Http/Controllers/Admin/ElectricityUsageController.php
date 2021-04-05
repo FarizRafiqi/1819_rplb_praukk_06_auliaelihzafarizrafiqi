@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UsageRequest;
 use App\Http\Requests\Admin\MassDestroyUsageRequest;
 use App\Models\PlnCustomer;
 use App\Models\Usage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
@@ -28,8 +29,8 @@ class ElectricityUsageController extends Controller
         abort_if(Gate::denies("usage_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
         if($request->ajax()){
-            $usage = Usage::all();
-            return DataTables::of($usage)
+            $usages = Usage::all();
+            return DataTables::of($usages)
                     ->addColumn("action", function($row){
                         $showGate       = "usage_show";
                         $editGate       = "usage_edit";
@@ -43,6 +44,9 @@ class ElectricityUsageController extends Controller
                             "crudRoutePart",
                             "row",
                         ));
+                    })
+                    ->editColumn('bulan', function($usage) {
+                        return Carbon::create(0, $usage->bulan)->monthName;
                     })
                     ->toJson();
         }

@@ -121,7 +121,7 @@
 										<div class="col">
 											{{$this->payment->paymentMethod->nama ?? "-"}}
 										</div>
-										@if ($this->payment->status == 'success')
+										@if ($this->payment->status == 'pending')
 											<div class="col text-right">
 												<button class="btn usafa-blue" id="btnChangePaymentMethod" wire:click.prevent="$emit('changePaymentMethod')"><strong>ubah</strong></button>
 											</div>

@@ -16,63 +16,42 @@ use Livewire\Component;
 class CheckBill extends Component
 {
     public $nomor_meter;
-    public $usages = [], 
-           $total, $fines = 0,
-           $plnCustomer, $data = [];
+    public $usages = [], $data = [],
+           $total, $plnCustomer;
 
-    public function updated($propertyName)
+    public function updated($input)
     {
-        $this->validateOnly($propertyName, 
+        $this->reset(['total', 'usages', 'plnCustomer', 'data']);
+        $this->validateOnly($input, 
             [
                 'nomor_meter' => 'nullable|numeric|exists:pln_customers|min:12'
             ],
             [
                 'nomor_meter.numeric' => 'ID Pelanggan harus berupa angka',
-                'nomor_meter.digits' => 'ID Pelanggan harus terdiri dari 12 angka',
+                'nomor_meter.min' => 'ID Pelanggan harus terdiri dari 12 angka',
                 'nomor_meter.exists' => 'ID Pelanggan tidak terdaftar',
             ]
         );
-
-        $this->reset(['total', 'fines']);
         
+        if(empty($this->nomor_meter)) return;
+
         $this->plnCustomer = PlnCustomer::with('usages')->firstWhere("nomor_meter", $this->nomor_meter);
-        if(!$this->plnCustomer){
-            return $this->reset('usages');exit;
+        if($this->plnCustomer->has('usages')){
+            $this->usages = $this->plnCustomer
+                                 ->usages()
+                                 ->where("tahun", now()->year)
+                                 ->where("bulan", "<=", now()->month)
+                                 ->whereHas('bill')
+                                 ->get();
         }
 
-        $usages = $this->plnCustomer
-                       ->usages()
-                       ->where("tahun", now()->year)
-                       ->where("bulan", now()->monthName)
-                       ->get();
-       
-        $this->usages = $usages;
         //Cek PPJ berdasarkan daerah pelanggan
         $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
                         ->where('indonesia_city_id', $this->plnCustomer->city->id)
                         ->first()->rate;
 
-        foreach ($usages as $index => $usage) { 
-            if($usage->bill->status == "BELUM LUNAS"){
-                $this->data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
-                $this->data[$index]['ppj']  = ($ppj/100 * $this->data[$index]['biaya_listrik']);
-                $this->data[$index]['total_tagihan'] = $this->data[$index]['biaya_listrik'] + $this->data[$index]['ppj'];
-
-                //Kalau batas daya listrik pelanggan lebih dari 2200 watt maka kenakan pajak 10%
-                $this->data[$index]['ppn'] = 0.0;
-                if($this->plnCustomer->tariff->daya > 2200){
-                    $this->data[$index]['ppn'] = (10/100 * $this->data[$index]['biaya_listrik']);
-                    $this->data[$index]['total_tagihan'] += $this->data[$index]['ppn'];
-                }
-
-                //Cek denda
-                $this->data[$index]['denda'] = $this->checkFine($usage, $this->plnCustomer, $this->data[$index]['biaya_listrik']);
-                $this->data[$index]['total_tagihan'] += $this->data[$index]['denda'];
-            } else  {
-                $this->emit('alertAlreadyPayBill');
-                $this->reset('usages');
-                return;
-            }
+        foreach ($this->usages as $index => $usage) {
+            $this->checkBill($index, $usage, $ppj);
         }
     
         $this->total = collect($this->data)->sum('total_tagihan') + config('const.biaya_admin');
@@ -86,7 +65,6 @@ class CheckBill extends Component
                 'nomor_meter' => $this->nomor_meter,
                 'totals' => $this->total,
                 'plnCustomer' => $this->plnCustomer,
-                'fines' => $this->fines,
             ]);
         }
 
@@ -94,8 +72,31 @@ class CheckBill extends Component
             'usages' => $this->usages,
             'nomor_meter' => $this->nomor_meter,
             'totals' => $this->total,
-            'fines' => $this->fines,
         ]);
+    }
+
+    public function checkBill($index, $usage, $ppj)
+    {
+        if($usage->bill->status === "LUNAS"){
+            $this->emit('alertAlreadyPayBill');
+            $this->reset('usages');
+            return;
+        }
+        
+        $this->data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
+        $this->data[$index]['ppj']  = ($ppj/100 * $this->data[$index]['biaya_listrik']);
+        $this->data[$index]['total_tagihan'] = $this->data[$index]['biaya_listrik'] + $this->data[$index]['ppj'];
+
+        //Kalau batas daya listrik pelanggan lebih dari 2200 watt maka kenakan pajak 10%
+        $this->data[$index]['ppn'] = 0.0;
+        if($this->plnCustomer->tariff->daya > 2200){
+            $this->data[$index]['ppn'] = (10/100 * $this->data[$index]['biaya_listrik']);
+            $this->data[$index]['total_tagihan'] += $this->data[$index]['ppn'];
+        }
+
+        //Cek denda
+        $this->data[$index]['denda'] = $this->checkFine($usage, $this->plnCustomer, $this->data[$index]['biaya_listrik']);
+        $this->data[$index]['total_tagihan'] += $this->data[$index]['denda'];
     }
 
     public function checkFine(Usage $usage, PlnCustomer $customer, $bill)

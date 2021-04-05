@@ -27,6 +27,7 @@
         "midtrans/midtrans-php": "^2.3",
         "realrashid/sweet-alert": "^3.2",
         "snapappointments/bootstrap-select": "^1.13",
+        "yajra/laravel-datatables": "1.5",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

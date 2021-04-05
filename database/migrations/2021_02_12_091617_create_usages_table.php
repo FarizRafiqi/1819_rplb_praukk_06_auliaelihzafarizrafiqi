@@ -17,7 +17,7 @@ class CreateUsagesTable extends Migration
         Schema::create('usages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_pelanggan_pln')->nullable()->constrained('pln_customers');
-            $table->string('bulan', 10);
+            $table->unsignedTinyInteger('bulan');
             $table->year('tahun', 4);
             $table->integer('meter_awal')->from(00000000);
             $table->integer('meter_akhir')->from(00000000);

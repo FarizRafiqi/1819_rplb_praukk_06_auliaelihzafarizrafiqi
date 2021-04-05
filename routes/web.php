@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\Admin\PermissionController,
     App\Http\Controllers\Admin\TransactionController,
     App\Http\Controllers\Admin\PaymentMethodController,
+    App\Http\Controllers\Admin\TaxTypeController,
+    App\Http\Controllers\Admin\TaxRateController,
     App\Http\Controllers\MidtransController,
     App\Http\Controllers\SocialiteController,
     Illuminate\Support\Facades\Auth;
@@ -79,6 +81,8 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
   Route::delete('pln-customers/destroy', [PlnCustomerController::class, "massDestroy"])->name('pln-customers.massDestroy');
   Route::delete('permissions/destroy', [PermissionController::class, "massDestroy"])->name('permissions.massDestroy');
   Route::delete('users/destroy', [UserController::class, "massDestroy"])->name('users.massDestroy');
+  Route::delete('tax-types/destroy', [TaxTypeController::class, "massDestroy"])->name('tax-types.massDestroy');
+  Route::delete('tax-rates/destroy', [TaxRateController::class, "massDestroy"])->name('tax-rates.massDestroy');
   
   Route::resource('activity-logs', ActivityLogController::class)->except('create', 'store', 'edit', 'update', 'destroy');
   Route::resources([
@@ -91,5 +95,7 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
     'users' => UserController::class,
     'permissions' => PermissionController::class,
     'payment-methods' => PaymentMethodController::class,
+    'tax-rates' => TaxRateController::class,
+    'tax-types' => TaxTypeController::class
   ]);
 });

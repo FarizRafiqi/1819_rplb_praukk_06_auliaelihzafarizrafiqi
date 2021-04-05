@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,5 +37,10 @@ class Usage extends Model
     {
         $standMeter = sprintf("%08d", $this->meter_akhir) . '-' . sprintf("%08d", $this->meter_akhir);
         return $standMeter; 
+    }
+
+    public function getMonthNameAttribute()
+    {
+        return Carbon::create(0, $this->bulan)->monthName;
     }
 }

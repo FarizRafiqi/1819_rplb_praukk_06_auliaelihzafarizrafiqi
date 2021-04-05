@@ -130,25 +130,23 @@
         ]
     });
 
-    $("#users").on("click.dt", function(e){
+    $("#users").on("click.dt", ".btn-delete", function(e){
       /*cek apakah yang diklik adalah tombol delete, 
       jika true maka tampilkan alert konfirmasi*/
-      if($(e.target).hasClass('btn-delete')){
-        e.preventDefault();
-        Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: "Data user ini akan dihapus!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $(e.target).parent().submit();
-          }
-        })
-      }
+      e.preventDefault();
+      Swal.fire({
+        title: 'Apakah kamu yakin?',
+        text: "Data user ini akan dihapus!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $(e.target).parent().submit();
+        }
+      })
     });
   </script>
 @endpush

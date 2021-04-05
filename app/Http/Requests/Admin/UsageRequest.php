@@ -24,21 +24,15 @@ class UsageRequest extends FormRequest
      */
     public function rules()
     {
-        $daftarBulan = [
-            'Januari', 'Februari', 'Maret', 'April', 
-            'Mei', 'Juni', 'Juli', 'Agustus', 
-            'September', 'Oktober', 'November', 'Desember'
-        ];
-
         $bulan = $this->bulan;
         $tahun = $this->tahun;
         $idPelanggan = $this->id_pelanggan_pln;
-
+   
         return [
             'id_pelanggan_pln' => 'required|numeric|exists:pln_customers,id',
             'bulan' => [
                     'required', 
-                    Rule::in($daftarBulan),
+                    'date_format:m',
                     Rule::unique('usages')->where(function($query) use ($bulan, $tahun, $idPelanggan){
                         return $query->where('id_pelanggan_pln', $idPelanggan)
                                     ->where('bulan', $bulan)
@@ -80,6 +74,8 @@ class UsageRequest extends FormRequest
             'meter_akhir.gt' => 'Meter akhir harus lebih besar dari meter awal',
             'bulan.date_equals' => 'Bulan harus sama dengan bulan ini', 
             'tahun.date_equals' => 'Tahun harus sama dengan tahun ini', 
+            'bulan.date_format' => 'Format bulan salah',
+            'tahun.date_format' => 'Format tahun salah',
         ];
     }
 }

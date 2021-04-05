@@ -1,7 +1,7 @@
-<div class="{{!empty($usages) ? 'mb-5' : 'mb-0'}}">
+<div class="{{ !empty($usages) ? 'mb-5' : 'mb-0' }}">
   <!-- Input ID Pelanggan -->
   <div class="card card-input-no-meteran p-1">
-    <form action="{{route('payment.create')}}" method="POST" id="formTagihan">
+    <form action="{{ route('payment.create') }}" method="POST" id="formTagihan">
       @csrf
       <div class="form-row">
         <div class="col-9">
@@ -23,7 +23,7 @@
             class="btn btn-secondary-custom w-100" 
             type="submit" 
             id="btnBayar" 
-            {{$usages ? '' : 'disabled'}}
+            {{ $usages ? '' : 'disabled' }}
           >Bayar</button>
         </div>
       </div>
@@ -47,25 +47,25 @@
         <div class="row">
           <div class="form-group col-12">
             <label class="mb-0">Nama Lengkap</label>
-            <div class="font-weight-bold">{{$plnCustomer->nama_pelanggan}}</div>
+            <div class="font-weight-bold">{{ $plnCustomer->nama_pelanggan }}</div>
           </div>
 
           <div class="form-group col-12">
-            <label class="mb-0">No Meter</label>
-            <div class="font-weight-bold">{{$plnCustomer->nomor_meter}}</div>
+            <label class="mb-0">No. Meter</label>
+            <div class="font-weight-bold">{{ $plnCustomer->nomor_meter }}</div>
           </div>
 
           <div class="form-group col-12">
             <label class="mb-0">Tarif/Daya</label>
             <div class="font-weight-bold">
-              {{$plnCustomer->tariff->golongan_tarif . '/' . $plnCustomer->tariff->daya . ' VA'}}
+              {{ optional($plnCustomer->tariff)->golongan_tarif . '/' . optional($plnCustomer->tariff)->daya . ' VA' }}
             </div>
           </div>
 
           <div class="form-group col-12">
             <label class="mb-0">Jumlah Tagihan</label> 
             <div class="font-weight-bold">
-              {{$usages->count()}}
+              {{ $usages->count() }}
             </div>
           </div>
         </div>
@@ -83,21 +83,21 @@
             <label class="mb-0">Periode</label>
             <div class="font-weight-bold">
               @if ($usages->count() > 1)
-                {{$usages->first()->bulan . '-' . $usages->last()->bulan. ' ' . $usages->first()->tahun}}
+                {{ optional($usages->first())->month_name . '-' . optional($usages->last())->month_name. ' ' . optional($usages->first())->tahun }}
               @else
-                {{$usages->first()->bulan . ' ' . $usages->first()->tahun}}
+                {{ optional($usages->first())->month_name . ' ' . optional($usages->first())->tahun }}
               @endif
             </div>
           </div>
 
           <div class="form-group col-12">
             <label class="mb-0">Total Denda</label>
-            <div class="font-weight-bold">@rupiah(collect($data)->sum('denda'))</div>
+            <div class="font-weight-bold">@rupiah( collect($data)->sum('denda') )</div>
           </div>
 
           <div class="form-group col-12">
             <label class="mb-0">Biaya Admin</label>
-            <div class="font-weight-bold">@rupiah(config('const.biaya_admin'))</div>
+            <div class="font-weight-bold">@rupiah( config('const.biaya_admin') )</div>
           </div>
 
           <div class="form-group col-12">
@@ -110,11 +110,11 @@
             <div class="card">
               <div class="card-body">
                 @foreach ($usages as $index => $usage)
-                  <h5>Tagihan {{$usage->bill->bulan . ' ' . $usage->bill->tahun}}</h5>
+                  <h5>Tagihan {{ optional($usage->bill)->month_name . ' ' .  optional($usage->bill)->tahun }}</h5>
                   <div class="row">
                     <dt class="col-md-4">Jumlah KwH</dt>
                     <dd class="col-md-8">
-                        {{$usage->bill->jumlah_kwh}}
+                        {{ optional($usage->bill)->jumlah_kwh}}
                     </dd>
                     <dt class="col-md-4">PPJ</dt>
                     <dd class="col-md-8">
@@ -134,7 +134,7 @@
                         @rupiah($data[$index]['total_tagihan'])
                     </dd>
                   </div>
-                  @if($loop->odd)
+                  @if($loop->odd && $loop->iteration > 1)
                       <hr>
                   @endif
                 @endforeach

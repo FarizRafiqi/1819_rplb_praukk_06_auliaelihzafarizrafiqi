@@ -1,5 +1,5 @@
 <div>
-	<form action="{{route('payment.create')}}" method="POST" id="formTagihan">
+	<form action="{{ route('payment.create') }}" method="POST" id="formTagihan">
 		@csrf
 		<div class="form-row">
 				<div class="col-9 col-lg-10">
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 	</form>
-	@if($usages)
+	@if(!empty($usages) && !empty($plnCustomer))
 		<div class="table-responsive">
 			<table class="table text-center table-bordered table-stripped table-hover mt-3" id="billTable">
 				<thead>
@@ -49,18 +49,18 @@
 				</thead>
 				<tbody>
 						<tr scope="row">
-							<td>{{$usages->first()->plnCustomer->nama_pelanggan}}</td>
-							<td>{{$usages->count()}}</td>
+							<td>{{ $plnCustomer->nama_pelanggan }}</td>
+							<td>{{ $usages->count() }}</td>
 							<td>
 								@if ($usages->count() > 1)
-									{{$usages->first()->bulan . '-' . $usages->last()->bulan. ' ' . $usages->first()->tahun}}
+									{{ optional($usages->first())->month_name . '-' . optional($usages->last())->month_name. ' ' . optional($usages->first())->tahun}}
 								@else
-									{{$usages->first()->bulan . ' ' . $usages->first()->tahun}}
+									{{ optional($usages->first())->month_name . ' ' . optional($usages->first())->tahun }}
 								@endif
 							</td>
-							<td>@rupiah(config('const.biaya_admin'))</td>
-							<td>@rupiah(collect($data)->sum('denda'))</td>
-							<td>@rupiah(collect($data)->sum('total_tagihan'))</td>
+							<td>@rupiah( config('const.biaya_admin') )</td>
+							<td>@rupiah( collect($data)->sum('denda') )</td>
+							<td>@rupiah( collect($data)->sum('total_tagihan') )</td>
 							<td class="font-weight-bold">@rupiah($total)</td>
 						</tr>
 				</tbody>

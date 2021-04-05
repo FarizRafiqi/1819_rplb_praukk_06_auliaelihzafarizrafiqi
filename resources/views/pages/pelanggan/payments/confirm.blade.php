@@ -12,9 +12,9 @@
               <div class="bank-wrapper border-bottom">
                 <p class="title">Virtual Account</p>
                 <div class="d-flex align-items-center justify-content-between">
-                  <span class="font-weight-bold va-{{strtolower($paymentMethod->nama)}}">{{$paymentMethod->nama}}</span>
+                  <span class="font-weight-bold va-{{ strtolower($paymentMethod->nama) }}">{{ $paymentMethod->nama }}</span>
                   <span>
-                    <img src="{{Storage::url($paymentMethod->gambar)}}" alt="{{$paymentMethod->gambar}}" class="img-fluid" width="80">
+                    <img src="{{Storage::url($paymentMethod->gambar)}}" alt="{{ $paymentMethod->gambar }}" class="img-fluid" width="80">
                   </span>
                 </div>
               </div>
@@ -30,21 +30,9 @@
                 </p>
                 <div class="va-number-number d-flex align-items-center justify-content-between">
                   <p class="font-weight-bold m-0">
-                    @if ($paymentMethod->nama == 'VA Mandiri')
-                      {{$response->bill_key}}
-                    @elseif($paymentMethod->nama == 'VA BCA')
-                      {{$response->va_numbers[0]->va_number}}
-                    @else
-                      {{$response->va_numbers[0]->va_number}}
-                    @endif
+                    {{ $vaNumber }}
                   </p>
-                  @if ($paymentMethod->nama == 'VA Mandiri')
-                    <span class="clipboard-copy" data-clipboard-text="{{$response->bill_key}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
-                  @elseif($paymentMethod->nama == 'VA BCA')
-                    <span class="clipboard-copy" data-clipboard-text="{{$response->va_numbers[0]->va_number}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
-                  @else
-                    <span class="clipboard-copy" data-clipboard-text="{{$response->va_numbers[0]->va_number}}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
-                  @endif
+                  <span class="clipboard-copy" data-clipboard-text="{{ $vaNumber }}" data-copy-message="Nomor Virtual Account sudah tersalin." >SALIN</span>
                 </div>
               </div>
               <div class="total-payment font-weight-bold">
@@ -257,7 +245,10 @@
               {{-- End of SMS Banking Instruction --}}
             {{-- @endif --}}
           </div>
-          <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" type="button" id="btnChangePaymentMethod">UBAH METODE PEMBAYARAN</button>
+          <form action="{{ route('payment.change-method', $payment->id) }}" method="POST">
+            @csrf
+            <button class="btn btn-outline-secondary btn-block rounded-pill mt-4" type="submit" id="btnChangePaymentMethod">UBAH METODE PEMBAYARAN</button>
+          </form>
         </div>
         <div class="col-md-4 mb-3 col-order-detail ml-auto">
           <div class="accordion" id="billDetail">
@@ -349,32 +340,9 @@
           cancelButtonColor: '#d33',
         }).then((result) => {
           if (result.isConfirmed) {
-            
+            $(e.target).parent().submit();
           }
         });
       });
-
-      let transactionStatus = @json($response->transaction_status);
-      if (transactionStatus != "settlement") {
-        $("#btnPayment").on("click", function(e){
-          e.preventDefault();
-          Swal.fire({
-            title: "Peringatan",
-            icon: "warning",
-            text: "Karena web ini merupakan web tugas akhir saya, maka kamu hanya bisa melakukan simulasi pembayaran. Kamu akan diarahkan ke halaman simulasi Midtrans. Jangan lupa salin kode pembayarannya untuk melakukan pembayaran!",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              $(e.target).parent().submit();
-              $(e.target).parent().removeAttr("target");
-              $(e.target).parent().attr("action", "{{ route('transaction.finish') }}");
-              $(e.target).html("Saya sudah bayar");
-            }
-          });
-        });
-      }
     </script>
 @endpush

@@ -96,7 +96,13 @@ class PermissionSeeder extends Seeder
             ['title' => 'payment_method_edit'],
             ['title' => 'payment_method_show'],
 
-            // Tax Rate Management
+            // Tax Management
+            ['title' => 'tax_access'],
+            ['title' => 'tax_type_access'],
+            ['title' => 'tax_type_create'],
+            ['title' => 'tax_type_update'],
+            ['title' => 'tax_type_delete'],
+            ['title' => 'tax_type_edit'],
             ['title' => 'tax_rate_access'],
             ['title' => 'tax_rate_create'],
             ['title' => 'tax_rate_update'],

@@ -17,24 +17,25 @@ use Midtrans\Transaction as MidtransTransaction;
 
 class TransactionController extends Controller
 {
+
+    public function __construct()
+    {
+        //Konfigurasi Midtrans
+        Config::$serverKey = config("midtrans.serverKey");
+        Config::$isProduction = config("midtrans.isProduction");
+        Config::$isSanitized = config("midtrans.isSanitized");
+        Config::$is3ds = config("midtrans.is3ds");
+    }
     /**
      * Method untuk menampilkan halaman pembayaran
      */
     public function index(Request $request, Payment $payment)
     {
         $paymentMethods = PaymentMethod::all();
-        //Konfigurasi Midtrans
-        // Config::$serverKey = config("midtrans.serverKey");
-        // Config::$isProduction = config("midtrans.isProduction");
-        // Config::$isSanitized = config("midtrans.isSanitized");
-        // Config::$is3ds = config("midtrans.is3ds");
+        if($payment->status === "success"){
+            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+        }
 
-        // try{
-        //     $response = MidtransTransaction::status("PLN-".$payment->id);
-        // }catch(Exception $ex){
-
-        // }
-        
         return view("pages.pelanggan.payments.index", compact("payment", "paymentMethods"));
     }
 
@@ -42,14 +43,15 @@ class TransactionController extends Controller
      * Method untuk menghitung total pembayaran suatu tagihan,
      * dan untuk membuat pembayaran
      */
-    public function create(Request $request)
+    public function create(Request $request, $nomorMeter = null)
     {
-        $plnCustomer = PlnCustomer::where("nomor_meter", $request->nomor_meter)->firstOrFail();
+        $nomorMeter = $request->nomor_meter ?? $nomorMeter;
+        $plnCustomer = PlnCustomer::where("nomor_meter", $nomorMeter)->firstOrFail();
         
         //ambil penggunaan listrik tahun ini
         $usages = $plnCustomer->usages()
-                              ->whereYear("created_at", now())
-                              ->whereMonth("created_at", '<=', now())
+                              ->whereYear("tahun", now()->year)
+                              ->whereMonth("bulan", "<=", now()->monthName)
                               ->get();
         //Cek PPJ berdasarkan daerah pelanggan
         $totalPayment = 0;
@@ -78,10 +80,9 @@ class TransactionController extends Controller
         
         $totalPayment = collect($data)->sum('total_tagihan') + config('const.biaya_admin');
         /**
-         * Cek apakah tagihan pelanggan sudah pernah dibayar dan memiliki status sukses. 
-         * Kalau tagihannya sudah pernah dibayar maka berikan pesan notifikasi. 
-         * Jika belum maka create or update pembayaran. Hal ini dilakukan, untuk menjamin 
-         * tidak ada data pembayaran success yang duplikat.
+         * Cek apakah ada tagihan bulan ini yang sudah terbayar. Jika tagihan bulan ini sudah terbayar,
+         * maka berikan notifikasi ke pelanggan. Jika belum maka create or update pembayaran. 
+         * Hal ini dilakukan, untuk menjamin tidak ada data pembayaran tagihan yang duplikat.
          */
         $paymentSuccess = Payment::where("id_pelanggan_pln", $plnCustomer->id)
                           ->where("status", "success")
@@ -120,7 +121,30 @@ class TransactionController extends Controller
                 throw $e;
             }
             
-            return redirect()->route("payment.index", $payment->id);
+            try {
+                $response = MidtransTransaction::status("PLN-".$payment->id);
+
+                if($response->transaction_status == "pending") :
+                    $paymentMethod = null;
+
+                    if($response->payment_type == "echannel"){
+                        $paymentMethod = PaymentMethod::firstWhere("nama", "like", "VA Mandiri");
+                    } else {
+                        $paymentMethod = PaymentMethod::firstWhere("nama", "like", "%".$response->va_numbers[0]->bank."%");
+                    }
+
+                    return redirect()->route("payment.confirm", [
+                        "payment_method" => $paymentMethod->slug, 
+                        "payment" => $payment->id
+                    ]);
+                endif;
+
+            } catch (Exception $ex) {
+                if($ex->getCode() === 404){
+                    return redirect()->route("payment.index", $payment->id);
+                }
+                echo $ex->getMessage();exit;
+            }
         }
 
         return redirect()->back()->withSuccess("Tagihan sudah terbayar");
@@ -129,13 +153,6 @@ class TransactionController extends Controller
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
         $payment->paymentMethod()->associate($paymentMethod->id);
-        $payment->save();
-        
-        //Konfigurasi Midtrans
-        Config::$serverKey = config("midtrans.serverKey");
-        Config::$isProduction = config("midtrans.isProduction");
-        Config::$isSanitized = config("midtrans.isSanitized");
-        Config::$is3ds = config("midtrans.is3ds");
     
         $midtransParams = [
             "payment_type" => "bank_transfer",
@@ -149,12 +166,13 @@ class TransactionController extends Controller
             ],
         ];
 
+        $methodName = strtolower($paymentMethod->nama);
         //Atur metode pembayarannya
-        switch ($paymentMethod) {
-            case $paymentMethod->nama == "VA BCA":
+        switch ($methodName) {
+            case $methodName == "va bca":
                 $midtransParams["bank_transfer"]["bank"] = "bca";
                 break;
-            case $paymentMethod->nama == "VA Mandiri":
+            case $methodName == "va mandiri":
                 $midtransParams["payment_type"] = "echannel";
                 $midtransParams["echannel"]["bill_info1"] = "Pembayaran untuk:";
                 $midtransParams["echannel"]["bill_info2"] = "listrik pascabayar";
@@ -165,7 +183,7 @@ class TransactionController extends Controller
                 $midtransParams["echannel"]["bill_info7"] = "ID:";
                 $midtransParams["echannel"]["bill_info8"] = $payment->id;
                 break;
-            case $paymentMethod->nama == "VA BNI":
+            case $methodName == "va bni":
                 $midtransParams["bank_transfer"]["bank"] = "bni";
                 break;
         }
@@ -175,41 +193,52 @@ class TransactionController extends Controller
             
             return redirect()->route("payment.confirm", [
                 "payment_method" => $paymentMethod->slug, 
-                "payment" => $payment->id,
-                "transaction_id" => $response->transaction_id
+                "payment" => $payment->id
             ]);
         } catch (Exception $ex) {
-            //Kalau statusnya 406, itu berarti sudah ada pembayaran dengan id yang sama.
-            if($ex->getCode() === 406){
-                $response = MidtransTransaction::status("PLN-".$payment->id);
-                return $this->checkTransactionStatus($paymentMethod, $payment, $response);
-            }
             echo $ex->getMessage();
             exit;
         }
     }
 
     public function confirm(Request $request, PaymentMethod $paymentMethod, Payment $payment){
-        //Konfigurasi Midtrans
-        Config::$serverKey = config("midtrans.serverKey");
-        Config::$isProduction = config("midtrans.isProduction");
-        Config::$isSanitized = config("midtrans.isSanitized");
-        Config::$is3ds = config("midtrans.is3ds");
-
         $response = MidtransTransaction::status("PLN-".$payment->id);
-        
-        return $this->checkTransactionStatus($paymentMethod, $payment, $response);
+        $totalBill = $payment->details()->sum('total_tagihan');
+
+        if($response->transaction_status == "pending") {
+            $vaNumber = isset($response->va_numbers) ? 
+                        $response->va_numbers[0]->va_number : 
+                        $response->bill_key;
+
+            return view(
+                "pages.pelanggan.payments.confirm", 
+                compact(
+                    "paymentMethod", 
+                    "response", 
+                    "payment", 
+                    "totalBill", 
+                    "vaNumber",
+                )
+            );
+        } elseif ($response->transaction_status == "expire") {
+            return view('pages.pelanggan.payments.expire');
+        } else {
+            return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
+        }
     }
 
     public function changePaymentMethod(Payment $payment)
     {
-        //Konfigurasi Midtrans
-        Config::$serverKey = config("midtrans.serverKey");
-        Config::$isProduction = config("midtrans.isProduction");
-        Config::$isSanitized = config("midtrans.isSanitized");
-        Config::$is3ds = config("midtrans.is3ds");
+        $payment->status = "cancel";
+        $payment->save();
 
-        $response = MidtransTransaction::cancel('PLN-'.$payment->id);
+        try {
+            MidtransTransaction::cancel('PLN-'.$payment->id);
+        } catch (Exception $ex) {
+            echo $ex->getMessage();exit;
+        }
+
+        return $this->create($payment->plnCustomer()->nomor_meter);
     }
     
     /**
@@ -222,12 +251,6 @@ class TransactionController extends Controller
 
     public function checkTransactionStatus(PaymentMethod $paymentMethod, Payment $payment, $response)
     {
-        $totalBill = $payment->details()->sum('total_tagihan');
-        if(in_array($response->transaction_status, ["pending", "settlement"])){
-            $totalBill = $payment->details()->sum('total_tagihan');
-            return view("pages.pelanggan.payments.confirm", compact("paymentMethod", "response", "payment", "totalBill"));
-        }elseif($response->transaction_status == "expire"){
-            return view('pages.pelanggan.payments.expire');
-        }
+        
     }
 }

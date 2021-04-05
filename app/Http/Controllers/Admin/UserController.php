@@ -144,12 +144,12 @@ class UserController extends Controller
     {
         $users = User::whereIn('id', request('ids'))->get();
         foreach($users as $user){
-            if(count($user->payments) > 0){
+            if(count($user->payments) > 0) {
                 alert()->error('User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
                 return;
-            }elseif($user->id_level !== 1){
+            } elseif ($user->id_level !== 1) {
                 $user->delete();
-            }else{
+            } else {
                 alert()->error('User Admin tidak dapat dihapus');
                 return;
             }

@@ -39,25 +39,23 @@
         ]
     });
 
-    $("#permissions").on("click.dt", function(e){
+    $("#permissions").on("click.dt", ".btn-delete", function(e){
       /*cek apakah yang diklik adalah tombol delete, 
       jika true maka tampilkan alert konfirmasi*/
-      if($(e.target).hasClass('btn-delete')){
-        e.preventDefault();
-        Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: "Data hak akses ini akan dihapus beserta dengan relasinya!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'ya!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $(e.target).parent().submit();
-          }
-        })
-      }
+      e.preventDefault();
+      Swal.fire({
+        title: 'Apakah kamu yakin?',
+        text: "Data hak akses ini akan dihapus beserta dengan relasinya!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ya!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $(e.target).parent().submit();
+        }
+      })
     });
   </script>
 @endpush
