@@ -50,8 +50,8 @@ class TransactionController extends Controller
         
         //ambil penggunaan listrik tahun ini
         $usages = $plnCustomer->usages()
-                              ->whereYear("tahun", now()->year)
-                              ->whereMonth("bulan", "<=", now()->monthName)
+                              ->where("tahun", now()->year)
+                              ->where("bulan", "<=", now()->monthName)
                               ->get();
         //Cek PPJ berdasarkan daerah pelanggan
         $totalPayment = 0;
