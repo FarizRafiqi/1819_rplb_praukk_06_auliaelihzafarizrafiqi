@@ -9,6 +9,8 @@ use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Charts\YearlyEarnings;
+use Carbon\Carbon;
 
 /**
  * Controller ini digunakan untuk menampilkan histori pembayaran terbaru,
@@ -40,9 +42,23 @@ class DashboardController extends Controller
         if($request->ajax()){
             $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])->limit(10)->get();
             return DataTables::of($paymentHistories)
-                    ->toJson();
+                               ->toJson();
         }
-        return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments'));
+
+        $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $data = [];
+        foreach ($months as $index => $month) {
+            $data[$index] = Payment::whereYear('created_at', now()->year)
+                                   ->whereMonth('created_at', $index)
+                                   ->get()
+                                   ->sum('total_bayar');
+        }
+
+        $chart = new YearlyEarnings;
+        $chart->labels($months);
+        $chart->dataset('Pendapatan Tahun '. now()->year, 'line', $data);
+        return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments', 'chart'));
     }
 
     /**

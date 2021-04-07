@@ -6,6 +6,8 @@ use App\DataTables\TaxRateDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MassDestroyTaxRateRequest;
 use App\Models\TaxRate;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaxRateController extends Controller
 {
@@ -16,6 +18,7 @@ class TaxRateController extends Controller
      */
     public function index(TaxRateDataTable $dataTable)
     {
+        abort_if(Gate::denies("tax_access"), Response::HTTP_FORBIDDEN, "Forbidden");
         return $dataTable->render('pages.admin.tax.tax-rate.index');
     }
 

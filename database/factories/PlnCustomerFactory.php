@@ -25,8 +25,6 @@ class PlnCustomerFactory extends Factory
             'nama_pelanggan' => $this->faker->name,
             'nomor_meter' => rand(000000000000, 999999999999),
             'alamat' => $this->faker->address,
-            'kota' => $this->faker->city,
-            'id_tarif' => 1,
         ];
     }
 }

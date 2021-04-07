@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
+
+@push('addon-style')
+<script src="{{ asset('assets/plugin/Chart.js-3.0.2/chart.min.js') }}" charset="utf-8"></script>
+@endpush
+
 @section('content')
   <div class="container-fluid">
     <div class="row justify-content-center">
@@ -102,6 +107,13 @@
           </div>
         </div>
       @endif
+
+      {{-- Grafik pendapatan tahunan --}}
+      @if (auth()->user()->isAdmin())
+        <div class="col-12">
+          {!! $chart->container() !!}
+        </div>
+      @endif
       <!-- End of Bill Not Paid Off Overview -->
       <div class="col-12">
         <h2 class="text-center mt-5">Histori Pembayaran</h2>
@@ -130,6 +142,7 @@
   </div>
 @endsection
 @push('addon-script')
+  {!! $chart->script() !!}
   <script>
     $('#paymentHistories').DataTable({
         responsive: true,

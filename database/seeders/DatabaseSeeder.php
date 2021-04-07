@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
+use Laravolt\Indonesia\Seeds\CitiesSeeder;
+use Laravolt\Indonesia\Seeds\ProvincesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(TariffSeeder::class);
         $this->call(LevelSeeder::class);
+        $this->call(ProvincesSeeder::class);
+        $this->call(CitiesSeeder::class);
         // $this->call(PlnCustomerSeeder::class);
         $this->call(UserSeeder::class);
         // $this->call(UsageSeeder::class);
@@ -24,7 +27,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(PaymentSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(PermissionLevelSeeder::class);
-        Artisan::call("laravolt:indonesia:seed");
         $this->call(TaxTypeSeeder::class);
         $this->call(TaxRateSeeder::class);
     }

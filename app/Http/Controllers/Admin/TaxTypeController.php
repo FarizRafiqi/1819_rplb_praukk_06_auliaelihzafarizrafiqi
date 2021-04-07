@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MassDestroyTaxTypeRequest;
 use App\Models\TaxType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaxTypeController extends Controller
 {
@@ -17,6 +19,7 @@ class TaxTypeController extends Controller
      */
     public function index(TaxTypeDataTable $dataTable)
     {
+        abort_if(Gate::denies("tax_access"), Response::HTTP_FORBIDDEN, "Forbidden");
         return $dataTable->render('pages.admin.tax.tax-type.index');
     }
 

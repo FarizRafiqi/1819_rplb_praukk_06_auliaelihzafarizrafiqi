@@ -30,6 +30,7 @@ class PermissionLevelSeeder extends Seeder
                    substr($permission->title, 0, 11) != 'permission_'       && 
                    substr($permission->title, 0, 7) != 'tariff_'            &&        
                    substr($permission->title, 0, 15) != 'payment_method_'   &&      
+                   substr($permission->title, 0, 4) != 'tax_'               &&      
                    substr($permission->title, 0, 13) != 'activity_log_';          
         });
         Level::findOrFail(3)->permissions()->sync($bankPermissions);

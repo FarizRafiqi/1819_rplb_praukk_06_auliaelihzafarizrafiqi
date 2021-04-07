@@ -14,6 +14,7 @@ class CreatePaymentHistoriesView extends Migration
      */
     public function up()
     {
+        DB::statement("DROP VIEW IF EXISTS payment_histories");
         DB::statement("
             CREATE VIEW payment_histories AS  
                 SELECT  

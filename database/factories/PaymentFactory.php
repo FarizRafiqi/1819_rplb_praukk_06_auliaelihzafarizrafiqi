@@ -21,7 +21,7 @@ class PaymentFactory extends Factory
      */
     public function definition()
     {
-        $status = ['success', 'failed', 'pending'];
+        $status = ['success', 'failed', 'pending', 'expire'];
         return [
             'id_customer' => rand(1,10),
             'id_pelanggan_pln' => rand(1,10),
@@ -29,7 +29,7 @@ class PaymentFactory extends Factory
             'biaya_admin' => config('const.biaya_admin'),
             'total_bayar' => rand(10000, 10000000),
             'id_metode_pembayaran' => 1,
-            'status' => $status[rand(0,2)]
+            'status' => $status[rand(0,3)]
         ];
     }
 }

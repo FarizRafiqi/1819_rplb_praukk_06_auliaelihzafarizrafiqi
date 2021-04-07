@@ -121,6 +121,9 @@
     <script>
       $(function(){
         $("#modalLoginCredentials").modal('show');
+        $("#modalLoginCredentials").on("hide.bs.modal", function(){
+          $("input[type='email']").focus();
+        })
       })
     </script>
 @endpush
