@@ -299,7 +299,7 @@
                 </div>
               </div>
               {{-- Payment Button --}}
-                <form action="{{ route('transaction.finish') }}">
+                <form action="{{ route('transaction.finish') }}" target="_blank">
                   <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Saya sudah bayar</button>
                 </form>
               {{-- End of Payment Button --}}

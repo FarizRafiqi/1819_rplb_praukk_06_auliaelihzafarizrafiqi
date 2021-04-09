@@ -13,7 +13,7 @@
               <h5>Virtual Account</h5>
               @foreach ($paymentMethods as $paymentMethod)
                 <li class="list-group-item">
-                  <form action="{{route('payment.process', ['payment_method' => $paymentMethod->slug,'payment' => $payment->id])}}" method="POST" class="d-flex align-items-center text-dark">
+                  <form action="{{ route('payment.process', ['payment_method' => $paymentMethod->slug,'payment' => $payment->id]) }}" method="POST" class="d-flex align-items-center text-dark">
                     @csrf
                     {{$paymentMethod->nama}}
                     <img src="{{Storage::url($paymentMethod->gambar)}}" class="img-fluid ml-auto" alt="logo-bank" width="40px">

@@ -51,7 +51,8 @@ class TransactionController extends Controller
                                   ->where("nomor_meter", $nomorMeter)
                                   ->firstOrFail();
         
-        //ambil penggunaan listrik tahun ini
+        //ambil penggunaan listrik tahun ini yang memiliki tagihan yang belum lunas 
+        //dan belum pernah dibayar
         $usages = $plnCustomer->usages()
                               ->whereHas('bill', function(Builder $query){
                                 $query->where('status', 'BELUM LUNAS')
@@ -62,7 +63,9 @@ class TransactionController extends Controller
                               ->where("tahun", now()->year)
                               ->where("bulan", "<=", now()->month)
                               ->get();
-   
+        
+        //jika tidak ada penggunaan yang dimaksud di atas, itu berarti tagihan 
+        //dari penggunaan listrik tersebut sudah dibayar
         if($usages->isEmpty()) {
             return redirect()->back()->withSuccess("Tagihan sudah terbayar");
         }
@@ -107,14 +110,19 @@ class TransactionController extends Controller
         try {
             //Jika ada pembayaran tagihan yang sama maka update tanggal bayarnya saja.
             //Jika tidak ada maka buat pembayaran baru.
-            $payment = Payment::updateOrCreate([
-                "id_customer" => auth()->user()->id,
-                "id_pelanggan_pln" => $plnCustomer->id,
-                "biaya_admin" => config('const.biaya_admin'),
-                "total_bayar" => $totalPayment,
-                "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
-                "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
-            ], ["tanggal_bayar" => $waktuSaatIni]);
+            $payment = Payment::updateOrCreate(
+                [
+                    "id_pelanggan_pln" => $plnCustomer->id,
+                    "biaya_admin" => config('const.biaya_admin'),
+                    "total_bayar" => $totalPayment,
+                    "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
+                    "status" => "pending"  //Pending = menunggu pembayaran
+                ], 
+                [
+                    "id_customer" => auth()->id(),
+                    "tanggal_bayar" => $waktuSaatIni
+                ]
+            );
 
             foreach($usages as $index => $usage){
                 $payment->details()->updateOrCreate([
@@ -179,6 +187,7 @@ class TransactionController extends Controller
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
         $payment->paymentMethod()->associate($paymentMethod->id);
+        $payment->save();
     
         $midtransParams = [
             "payment_type" => "bank_transfer",
@@ -193,6 +202,7 @@ class TransactionController extends Controller
         ];
 
         $methodName = strtolower($paymentMethod->nama);
+
         //buat metode pembayarannya
         switch ($methodName) {
             case $methodName == "va bca":
@@ -222,19 +232,23 @@ class TransactionController extends Controller
                 "payment" => $payment->id
             ]);
         } catch (Exception $ex) {
+            //kode 406, berarti transaksi sudah tercatat di midtrans atau transaksi duplikat.
+            //oleh karena itu perlu dikonfirmasi terlebih dahulu
+            if($ex->getCode() === 406){
+                return $this->confirm(request(), $paymentMethod, $payment);
+            }
             echo $ex->getMessage();
             exit;
         }
     }
 
     /**
-     * Method ini digunakan untuk menampilkan halaman konfirmasi pembayaran 
-     * setelah transaksi di charge
+     * menampilkan halaman konfirmasi pembayaran setelah transaksi di charge
      */
     public function confirm(Request $request, PaymentMethod $paymentMethod, Payment $payment){
         $response = MidtransTransaction::status("PLN-".$payment->id);
         $totalBill = $payment->details()->sum('total_tagihan');
-    
+
         if($response->transaction_status == "pending") {
             $vaNumber = isset($response->va_numbers) ? 
                         $response->va_numbers[0]->va_number : 
@@ -258,23 +272,29 @@ class TransactionController extends Controller
     }
 
     /**
-     * Method ini digunakan untuk mengubah metode pembayaran
+     * mengubah metode pembayaran
      */
     public function changePaymentMethod(Payment $payment)
     {
-        $payment->status = "cancel";
+        $payment->update(['status' => 'cancel']);
 
         try {
             MidtransTransaction::cancel('PLN-'.$payment->id);
         } catch (Exception $ex) {
+            //Kode 412, terjadi ketika transaksi yang sebelumnya sudah pernah di cancel, kemudian di cancel lagi.
+            //ini bisa terjadi ketika user mencoba untuk merefresh halaman web, sehingga request terkirim ulang.
+            //Sebenarnya kasus ini sangat jarang terjadi, tapi hanya untuk antisipasi.
+            if($ex->getCode() === 412) {
+                return $this->create(request(), $payment->plnCustomer->nomor_meter);
+            }
             echo $ex->getMessage();exit;
         }
 
-        return $this->create($payment->plnCustomer()->nomor_meter);
+        return $this->create(request(), $payment->plnCustomer->nomor_meter);
     }
     
     /**
-     * Untuk menampilkan halaman riwayat transaksi pelanggan.
+     * menampilkan halaman riwayat transaksi pelanggan.
      */
     public function transactionHistory(Request $request)
     {

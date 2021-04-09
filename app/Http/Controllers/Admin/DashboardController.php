@@ -40,7 +40,7 @@ class DashboardController extends Controller
         $bills = Bill::get();
 
         if($request->ajax()){
-            $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])->limit(10)->get();
+            $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])->get();
             return DataTables::of($paymentHistories)
                                ->toJson();
         }

@@ -22,7 +22,7 @@ class CreatePaymentsTable extends Migration
             $table->decimal('total_bayar', 10, 2);
             $table->foreignId('id_bank')->nullable()->constrained('users')->onUpdate('cascade');
             $table->foreignId('id_metode_pembayaran')->nullable()->constrained('payment_methods')->onUpdate('cascade');
-            $table->enum('status', ['success', 'failed', 'pending', 'expire'])->default(null);
+            $table->enum('status', ['success', 'failed', 'pending', 'expire', 'cancel'])->default(null);
             $table->timestamps();
             $table->softDeletes();
         });
