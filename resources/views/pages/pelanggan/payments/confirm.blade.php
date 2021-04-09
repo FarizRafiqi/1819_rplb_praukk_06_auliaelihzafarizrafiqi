@@ -330,6 +330,7 @@
       });
 
       $("#btnChangePaymentMethod").on("click", function(e){
+        e.preventDefault();
         Swal.fire({
           title: "Peringatan",
           icon: "warning",

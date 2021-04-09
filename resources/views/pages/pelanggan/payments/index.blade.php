@@ -60,9 +60,9 @@
               <dt class="col-12">Periode</dt>
               <dd class="col-12">
                 @if ($payment->details->count() > 1)
-                  {{$payment->details->first()->bill->bulan . '-' . $payment->details->last()->bill->bulan . ' ' .$payment->details->first()->bill->tahun}}
+                  {{$payment->details->first()->bill->month_name . '-' . $payment->details->last()->bill->month_name . ' ' .$payment->details->first()->bill->tahun}}
                 @else
-                  {{$payment->details->first()->bill->bulan . ' ' .$payment->details->first()->bill->tahun}}
+                  {{$payment->details->first()->bill->month_name . ' ' .$payment->details->first()->bill->tahun}}
                 @endif
               </dd>
 
@@ -86,7 +86,7 @@
             <div class="card collapse mt-2" id="detail">
               <div class="card-body">
                 @foreach ($payment->details as $index => $detail)
-                  <h5>Tagihan {{$detail->bill->bulan . ' ' . $detail->bill->tahun}}</h5>
+                  <h5>Tagihan {{$detail->bill->month_name . ' ' . $detail->bill->tahun}}</h5>
                   <div class="row">
                     <dt class="col-md-5">Jumlah KwH</dt>
                     <dd class="col-md-7">

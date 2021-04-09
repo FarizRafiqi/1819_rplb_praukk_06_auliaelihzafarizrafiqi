@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PlnCustomer;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\CoreApi;
@@ -40,116 +41,141 @@ class TransactionController extends Controller
     }
 
     /**
-     * Method untuk menghitung total pembayaran suatu tagihan,
-     * dan untuk membuat pembayaran
+     * Method untuk mengecek tagihan dan menghitung total pembayaran suatu tagihan
      */
     public function create(Request $request, $nomorMeter = null)
     {
         $nomorMeter = $request->nomor_meter ?? $nomorMeter;
-        $plnCustomer = PlnCustomer::where("nomor_meter", $nomorMeter)->firstOrFail();
+        $plnCustomer = PlnCustomer::with('usages')
+                                  ->has('usages')
+                                  ->where("nomor_meter", $nomorMeter)
+                                  ->firstOrFail();
         
         //ambil penggunaan listrik tahun ini
         $usages = $plnCustomer->usages()
+                              ->whereHas('bill', function(Builder $query){
+                                $query->where('status', 'BELUM LUNAS')
+                                      ->whereDoesntHave('paymentDetail.payment', function(Builder $query){
+                                        $query->where('status', 'success');
+                                      });
+                              })
                               ->where("tahun", now()->year)
                               ->where("bulan", "<=", now()->month)
                               ->get();
+   
+        if($usages->isEmpty()) {
+            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+        }
         //Cek PPJ berdasarkan daerah pelanggan
         $totalPayment = 0;
         $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
                       ->where('indonesia_city_id', $plnCustomer->city->id)
                       ->first()->rate;
-        
+        $data = [];
         foreach ($usages as $index => $usage) {
-            if($usage->bill->status == "BELUM LUNAS"){
-                $data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
-                $data[$index]['ppj']  = ($ppj/100 * $data[$index]['biaya_listrik']);
-                $data[$index]['total_tagihan'] = $data[$index]['biaya_listrik'] + $data[$index]['ppj'];
+            $data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
+            $data[$index]['ppj']  = ($ppj/100 * $data[$index]['biaya_listrik']);
+            $data[$index]['total_tagihan'] = $data[$index]['biaya_listrik'] + $data[$index]['ppj'];
 
-                //Kalau batas daya listrik pelanggan lebih dari 2200 watt maka kenakan pajak 10%
-                $data[$index]['ppn'] = 0.0;
-                if($plnCustomer->tariff->daya > 2200){
-                    $data[$index]['ppn'] = (10/100 * $data[$index]['biaya_listrik']);
-                    $data[$index]['total_tagihan'] += $data[$index]['ppn'];
-                }
-                //Cek denda
-                $checkbill = new CheckBill;
-                $data[$index]['denda'] = $checkbill->checkFine($usage, $plnCustomer, $data[$index]['biaya_listrik']);
-                $data[$index]['total_tagihan'] += $data[$index]['denda'];
+            //Kalau batas daya listrik pelanggan lebih dari 2200 watt maka kenakan pajak 10%
+            $data[$index]['ppn'] = 0.0;
+            if($plnCustomer->tariff->daya > 2200){
+                $data[$index]['ppn'] = (10/100 * $data[$index]['biaya_listrik']);
+                $data[$index]['total_tagihan'] += $data[$index]['ppn'];
             }
+
+            //Cek denda
+            $checkbill = new CheckBill;
+            $data[$index]['denda'] = $checkbill->checkFine($usage, $plnCustomer, $data[$index]['biaya_listrik']);
+            $data[$index]['total_tagihan'] += $data[$index]['denda'];
         }
         
         $totalPayment = collect($data)->sum('total_tagihan') + config('const.biaya_admin');
-        /**
-         * Cek apakah ada tagihan bulan ini yang sudah terbayar. Jika tagihan bulan ini sudah terbayar,
-         * maka berikan notifikasi ke pelanggan. Jika belum maka create or update pembayaran. 
-         * Hal ini dilakukan, untuk menjamin tidak ada data pembayaran tagihan yang duplikat.
-         */
-        $paymentSuccess = Payment::where("id_pelanggan_pln", $plnCustomer->id)
-                          ->where("status", "success")
-                          ->get();
 
-        if($paymentSuccess->count() === 0){
-            $waktuSaatIni = now()->format("Y-m-d H:i:s");
-        
-            DB::beginTransaction();
-
-            try {
-                //Jika ada pembayaran tagihan yang sama maka update tanggal bayarnya saja.
-                //Jika tidak ada maka buat pembayaran baru.
-                $payment = Payment::updateOrCreate([
-                    "id_customer" => auth()->user()->id,
-                    "id_pelanggan_pln" => $plnCustomer->id,
-                    "biaya_admin" => config('const.biaya_admin'),
-                    "total_bayar" => $totalPayment,
-                    "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
-                    "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
-                ], ["tanggal_bayar" => $waktuSaatIni]);
-
-                foreach($usages as $index => $usage){
-                    $payment->details()->updateOrCreate([
-                        "id_tagihan" => $usage->bill->id,
-                        "denda" => $data[$index]['denda'],
-                        "ppn" => $data[$index]['ppn'],
-                        "ppj" => $data[$index]['ppj'],
-                        "total_tagihan" => $data[$index]['total_tagihan']
-                    ], ["updated_at" => $waktuSaatIni]);
-                }
-
-                DB::commit();
-            } catch (\Exception $e) {
-                DB::rollBack();
-                throw $e;
-            }
-            
-            try {
-                $response = MidtransTransaction::status("PLN-".$payment->id);
-
-                if($response->transaction_status == "pending") :
-                    $paymentMethod = null;
-
-                    if($response->payment_type == "echannel"){
-                        $paymentMethod = PaymentMethod::firstWhere("nama", "like", "VA Mandiri");
-                    } else {
-                        $paymentMethod = PaymentMethod::firstWhere("nama", "like", "%".$response->va_numbers[0]->bank."%");
-                    }
-
-                    return redirect()->route("payment.confirm", [
-                        "payment_method" => $paymentMethod->slug, 
-                        "payment" => $payment->id
-                    ]);
-                endif;
-
-            } catch (Exception $ex) {
-                if($ex->getCode() === 404){
-                    return redirect()->route("payment.index", $payment->id);
-                }
-                echo $ex->getMessage();exit;
-            }
-        }
-
-        return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+        $payment = $this->createPayment($usages, $totalPayment, $plnCustomer, $data);
+        return $this->checkPayment($payment);
     }
 
+    /**
+     * Method ini digunakan untuk membuat data pembayaran
+     */
+    public function createPayment($usages, $totalPayment, $plnCustomer, $data)
+    {
+        $waktuSaatIni = now()->format("Y-m-d H:i:s");
+
+        DB::beginTransaction();
+        try {
+            //Jika ada pembayaran tagihan yang sama maka update tanggal bayarnya saja.
+            //Jika tidak ada maka buat pembayaran baru.
+            $payment = Payment::updateOrCreate([
+                "id_customer" => auth()->user()->id,
+                "id_pelanggan_pln" => $plnCustomer->id,
+                "biaya_admin" => config('const.biaya_admin'),
+                "total_bayar" => $totalPayment,
+                "id_bank" => null,     //id bank diisi pada saat bank memverifikasi dan validasi
+                "status" => "pending"  //Pending itu sama dengan menunggu pembayaran
+            ], ["tanggal_bayar" => $waktuSaatIni]);
+
+            foreach($usages as $index => $usage){
+                $payment->details()->updateOrCreate([
+                    "id_tagihan" => $usage->bill->id,
+                    "denda" => $data[$index]['denda'],
+                    "ppn" => $data[$index]['ppn'],
+                    "ppj" => $data[$index]['ppj'],
+                    "total_tagihan" => $data[$index]['total_tagihan']
+                ], ["updated_at" => $waktuSaatIni]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        
+        return $payment;
+    }
+
+    /**
+     * Method ini digunakan untuk mengecek pembayaran tertentu melalui Midtrans,
+     * apabila data transaksi tertentu telah tercatat di Midtrans dan memiliki
+     * status pending, maka arahkan pelanggan ke halaman konfirmasi pembayaran
+     * untuk melanjutkan transaksinya. Tetapi apabila data transaksi tertentu
+     * belum tercatat di Midtrans, maka asumsinya adalah data transaksi tersebut
+     * belum ada, maka arahkan pelanggan ke halaman konfirmasi pembayaran
+     * untuk melakukan pembayaran.
+     */
+    public function checkPayment($payment)
+    {
+        try {
+            $response = MidtransTransaction::status("PLN-".$payment->id);
+
+            if($response->transaction_status == "pending") :
+                $paymentMethod = null;
+
+                if($response->payment_type == "echannel"){
+                    $paymentMethod = PaymentMethod::firstWhere("nama", "like", "VA Mandiri");
+                } else {
+                    $paymentMethod = PaymentMethod::firstWhere("nama", "like", "%".$response->va_numbers[0]->bank."%");
+                }
+
+                return redirect()->route("payment.confirm", [
+                    "payment_method" => $paymentMethod->slug, 
+                    "payment" => $payment->id
+                ]);
+            endif;
+
+        } catch (Exception $ex) {
+            if($ex->getCode() === 404){
+                return redirect()->route("payment.index", $payment->id);
+            }
+            echo $ex->getMessage();exit;
+        }
+    }
+
+    /**
+     * Method ini digunakan untuk mengenakan suatu tagihan (charge) transaksi, 
+     * apabila pelanggan telah memilih metode pembayaran.
+     */
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
         $payment->paymentMethod()->associate($paymentMethod->id);
@@ -167,7 +193,7 @@ class TransactionController extends Controller
         ];
 
         $methodName = strtolower($paymentMethod->nama);
-        //Atur metode pembayarannya
+        //buat metode pembayarannya
         switch ($methodName) {
             case $methodName == "va bca":
                 $midtransParams["bank_transfer"]["bank"] = "bca";
@@ -201,10 +227,14 @@ class TransactionController extends Controller
         }
     }
 
+    /**
+     * Method ini digunakan untuk menampilkan halaman konfirmasi pembayaran 
+     * setelah transaksi di charge
+     */
     public function confirm(Request $request, PaymentMethod $paymentMethod, Payment $payment){
         $response = MidtransTransaction::status("PLN-".$payment->id);
         $totalBill = $payment->details()->sum('total_tagihan');
-
+    
         if($response->transaction_status == "pending") {
             $vaNumber = isset($response->va_numbers) ? 
                         $response->va_numbers[0]->va_number : 
@@ -227,10 +257,12 @@ class TransactionController extends Controller
         }
     }
 
+    /**
+     * Method ini digunakan untuk mengubah metode pembayaran
+     */
     public function changePaymentMethod(Payment $payment)
     {
         $payment->status = "cancel";
-        $payment->save();
 
         try {
             MidtransTransaction::cancel('PLN-'.$payment->id);
@@ -247,10 +279,5 @@ class TransactionController extends Controller
     public function transactionHistory(Request $request)
     {
         return view("pages.pelanggan.transaction-history");
-    }
-
-    public function checkTransactionStatus(PaymentMethod $paymentMethod, Payment $payment, $response)
-    {
-        
     }
 }

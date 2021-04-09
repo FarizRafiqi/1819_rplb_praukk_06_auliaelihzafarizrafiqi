@@ -2,7 +2,7 @@
     <div class="accordion mt-4" id="accordionDetailTagihan">
         <div class="card my-3">
             <div class="card-header" data-toggle="collapse" data-target="#detail-{{$detail->id}}" style="cursor: pointer">
-                Detail Tagihan {{$detail->bill->bulan . ' ' . $detail->bill->tahun}}
+                Detail Tagihan {{$detail->bill->month_name . ' ' . $detail->bill->tahun}}
             </div>
 
             <div class="collapse" id="detail-{{$detail->id}}" data-parent="#accordionDetailTagihan">

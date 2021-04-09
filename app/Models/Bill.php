@@ -16,6 +16,11 @@ class Bill extends Model
         return $this->belongsTo(Usage::class, 'id_penggunaan');
     }
 
+    public function paymentDetail()
+    {
+        return $this->hasOne(PaymentDetail::class, 'id_tagihan');
+    }
+
     public function getMonthNameAttribute()
     {
         return Carbon::create(0, $this->bulan)->monthName;

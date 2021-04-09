@@ -33,14 +33,11 @@ class PlnCustomer extends Model
 
     public function city()
     {
-        return $this->belongsTo(IndonesiaCity::class, "id_kota");
+        return $this->belongsTo(IndonesiaCity::class, 'id_kota');
     }
 
-    public function getBillWhere($month, $year)
+    public function payments()
     {
-        $usage = $this->usages()->where('bulan', $month)->where('tahun', $year)->firstOrFail();
-        $bill = $usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh;
-        $totalBill = $bill + config("const.biaya_admin");
-        return $totalBill;        
+        return $this->hasMany(Payment::class, 'id_pelanggan_pln');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\PlnCustomer;
 use App\Models\Usage;
 use App\Models\TaxRate;
+use Illuminate\Database\Eloquent\Builder;
 use Jenssegers\Agent\Facades\Agent;
 use Livewire\Component;
 
@@ -16,7 +17,7 @@ use Livewire\Component;
 class CheckBill extends Component
 {
     public $nomor_meter;
-    public $usages = [], $data = [],
+    public $usages, $data = [],
            $total, $plnCustomer;
 
     public function updated($input)
@@ -35,26 +36,38 @@ class CheckBill extends Component
         
         if(empty($this->nomor_meter)) return;
 
-        $this->plnCustomer = PlnCustomer::with('usages')->firstWhere("nomor_meter", $this->nomor_meter);
-        if($this->plnCustomer->has('usages')){
+        $this->plnCustomer = PlnCustomer::with('usages')
+                                        ->has('usages')
+                                        ->firstWhere("nomor_meter", $this->nomor_meter);
+        if(!empty($this->plnCustomer)){
             $this->usages = $this->plnCustomer
                                  ->usages()
+                                 ->whereHas('bill', function(Builder $query){
+                                    $query->where('status', 'BELUM LUNAS')
+                                          ->whereDoesntHave('paymentDetail.payment', function(Builder $query){
+                                            $query->where('status', 'success');
+                                          });
+                                  })
                                  ->where("tahun", now()->year)
                                  ->where("bulan", "<=", now()->month)
-                                 ->whereHas('bill')
                                  ->get();
-        }
 
-        //Cek PPJ berdasarkan daerah pelanggan
-        $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
-                        ->where('indonesia_city_id', $this->plnCustomer->city->id)
-                        ->first()->rate;
+            if($this->usages->isEmpty()){
+                $this->emit('alertAlreadyPayBill');
+                $this->reset('usages');
+                return;
+            }                     
+            //Cek PPJ berdasarkan daerah pelanggan
+            $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
+                          ->where('indonesia_city_id', $this->plnCustomer->city->id)
+                          ->first()->rate;
 
-        foreach ($this->usages as $index => $usage) {
-            $this->checkBill($index, $usage, $ppj);
+            foreach ($this->usages as $index => $usage) {
+                $this->checkBill($index, $usage, $ppj);
+            }
+
+            $this->total = collect($this->data)->sum('total_tagihan') + config('const.biaya_admin');
         }
-    
-        $this->total = collect($this->data)->sum('total_tagihan') + config('const.biaya_admin');
     }
 
     public function render()
@@ -76,13 +89,7 @@ class CheckBill extends Component
     }
 
     public function checkBill($index, $usage, $ppj)
-    {
-        if($usage->bill->status === "LUNAS"){
-            $this->emit('alertAlreadyPayBill');
-            $this->reset('usages');
-            return;
-        }
-        
+    {   
         $this->data[$index]['biaya_listrik'] = ($usage->bill->jumlah_kwh * $usage->plnCustomer->tariff->tarif_per_kwh);
         $this->data[$index]['ppj']  = ($ppj/100 * $this->data[$index]['biaya_listrik']);
         $this->data[$index]['total_tagihan'] = $this->data[$index]['biaya_listrik'] + $this->data[$index]['ppj'];
