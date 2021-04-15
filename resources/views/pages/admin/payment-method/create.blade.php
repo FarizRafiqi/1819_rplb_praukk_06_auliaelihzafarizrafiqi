@@ -20,14 +20,6 @@
   {{-- <script src="{{asset('assets/plugin/filepond-plugin-image-preview-master/dist/filepond-plugin-image-preview.min.js')}}"></script> --}}
   <script src="{{asset('assets/plugin/ckeditor5-build-classic/ckeditor.js')}}"></script>
   <script>
-    Livewire.on('initializeCkEditor', function(e){
-        ClassicEditor
-        .create( document.querySelector( '#deskripsi' ) ).then(editor => { thisEditor = editor }) 
-        .catch( error => {
-            console.error( error );
-        } );
-    });
-
     Livewire.on('alertSuccess', () => {
       Swal.fire({
         title: 'Metode pembayaran berhasil ditambahkan',

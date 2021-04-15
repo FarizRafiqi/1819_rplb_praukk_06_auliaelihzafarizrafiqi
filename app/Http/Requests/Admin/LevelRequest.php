@@ -24,7 +24,7 @@ class LevelRequest extends FormRequest
     public function rules()
     {
         return [
-            'level' => 'required|string',
+            'level' => 'required|string|unique:levels',
             'permissions.*' => 'integer',
             'permissions' => 'required|array'
         ];
@@ -34,7 +34,8 @@ class LevelRequest extends FormRequest
     {
         return [
             'level.required' => 'Level tidak boleh kosong',
-            'level.string' => 'Level harus berupa string', 
+            'level.string' => 'Level harus berupa string',
+            'level.unique' => 'Level '.$this->request->get('level').' sudah ada', 
             'permissions.*.integer' => 'ID permission harus berupa angka', 
             'permissions.required' => 'Permission tidak boleh kosong', 
             'permissions.array' => 'Permission harus berupa array', 

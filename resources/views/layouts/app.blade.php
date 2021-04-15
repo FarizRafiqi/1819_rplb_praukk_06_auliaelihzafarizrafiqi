@@ -9,6 +9,7 @@
     @include('includes.style')
     @stack('addon-style')
     @livewireStyles
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
   </head>
   <body>
     @include('includes.navbar')

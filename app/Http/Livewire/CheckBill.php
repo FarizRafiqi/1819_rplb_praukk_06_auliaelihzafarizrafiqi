@@ -16,9 +16,9 @@ use Livewire\Component;
  */
 class CheckBill extends Component
 {
-    public $nomor_meter;
     public $usages, $data = [],
-           $total, $plnCustomer;
+           $total, $plnCustomer,
+           $nomor_meter, $isDisabled = true;
 
     public function updated($input)
     {
@@ -39,7 +39,8 @@ class CheckBill extends Component
         $this->plnCustomer = PlnCustomer::with('usages')
                                         ->has('usages')
                                         ->firstWhere("nomor_meter", $this->nomor_meter);
-        if(!empty($this->plnCustomer)){
+                                        
+        if(!empty($this->plnCustomer)) {
             $this->usages = $this->plnCustomer
                                  ->usages()
                                  ->whereHas('bill', function(Builder $query){
@@ -56,7 +57,9 @@ class CheckBill extends Component
                 $this->emit('alertAlreadyPayBill');
                 $this->reset('usages');
                 return;
-            }                     
+            }
+
+            $this->isDisabled = false;                     
             //Cek PPJ berdasarkan daerah pelanggan
             $ppj = TaxRate::where('tax_type_id', 1)                             //tipe tax dengan id 1 adalah ppj
                           ->where('indonesia_city_id', $this->plnCustomer->city->id)
@@ -80,7 +83,7 @@ class CheckBill extends Component
                 'plnCustomer' => $this->plnCustomer,
             ]);
         }
-
+        
         return view('livewire.check-bill', [
             'usages' => $this->usages,
             'nomor_meter' => $this->nomor_meter,

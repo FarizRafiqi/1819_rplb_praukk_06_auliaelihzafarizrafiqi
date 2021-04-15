@@ -51,24 +51,24 @@
 			<ul class="list-group list-group-flush">
 				@forelse ($userPayments as $payment)
 					<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor:pointer;" wire:click="transactionDetail({{json_encode($payment->id)}})">
-						<i class="bi bi-lightning-fill mr-1 pacific-blue" style="font-size: 20px"></i> Pembayaran Tagihan {{\Str::limit($payment->tanggal_bayar->monthName,3,'')}} {{$payment->tanggal_bayar->year}}
+						<i class="bi bi-lightning-fill mr-1 pacific-blue" style="font-size: 20px"></i> Pembayaran Tagihan {{\Str::limit($payment->tanggal_bayar->monthName,3,'')}} {{ $payment->tanggal_bayar->year }}
 							<span class="badge
 							@switch($payment->status)
 									@case('success')
-											badge-success
-											@break
-									@case('failed')
-											badge-danger
-											@break
-									@case('pending')
-											badge-warning
+										badge-success
 										@break
 									@case('pending')
+										badge-warning
+										@break
+									@case('failed' || 'cancel')
+										badge-danger
+										@break
+									@case('expire')
 										badge-dark
 										@break
 									@default
 							@endswitch badge-pill ml-auto"
-							>{{$payment->status}}</span>
+							>{{ $payment->status }}</span>
 					</li>
 				@empty
 					<li class="list-group-item">Tidak ada riwayat tagihan</li>
@@ -123,7 +123,7 @@
 										</div>
 										@if ($this->payment->status == 'pending')
 											<div class="col text-right">
-												<button class="btn usafa-blue" id="btnChangePaymentMethod" wire:click.prevent="$emit('changePaymentMethod')"><strong>ubah</strong></button>
+												<button class="btn usafa-blue" id="btnChangePaymentMethod" wire:click.prevent="$emit('changePaymentMethodRequest')"><strong>ubah</strong></button>
 											</div>
 										@endif
 									</div>
@@ -133,16 +133,18 @@
 								<dd class="col-md-7">
 									@switch($this->payment->status)
 											@case('success')
-													<span class="badge pill-badge badge-success p-1">{{$payment->status}}</span>
+													<span class="badge pill-badge badge-success p-1">{{ $payment->status }}</span>
 													@break
 											@case('pending')
 													<span class="badge pill-badge badge-warning p-1">Menunggu Pembayaran</span>
+													<div class="mt-1">
+														<a href="{{ route('payment.confirm', ['payment_method' => $payment->paymentMethod->slug, 'payment' => $payment->id]) }}">Lanjutkan pembayaran</a>
+													</div>
 													@break
-											@case('failed')
-													<span class="badge pill-badge badge-danger p-1">{{$this->payment->status}}</span>
+											@case('failed' || 'cancel')
+													<span class="badge pill-badge badge-danger p-1">{{ $this->payment->status }}</span>
 													@break
 											@default
-													
 									@endswitch
 								</dd>
 							</dl>
@@ -162,10 +164,11 @@
 	<script>
 		Livewire.on('paymentNotCompleteYet', (paymentId) => {
 				Swal.fire({
-					'title': 'Pembayaranmu belum selesai, lanjutkan pembayaran?',
-					'icon': 'info',
-					'showConfirmButton': true,
-					'showCancelButton': true,
+					title: 'Metode pembayaran belum dipilih',
+					text: 'lanjutkan memilih metode pembayaran?',
+					icon: 'info',
+					showConfirmButton: true,
+					showCancelButton: true,
 				}).then((result) => {
 					if(result.isConfirmed){
 						let url = "{{route('payment.index', ':id')}}";
@@ -175,27 +178,17 @@
 				});
 		});
 
-		Livewire.on("changePaymentMethod", function() {
+		Livewire.on("changePaymentMethodRequest", function() {
 			let payment = @json($payment);
 			Swal.fire({
-				'title': 'Ubah metode pembayaran?',
-				'text' : 'Pembayaranmu yang sebelumnya akan dibatalkan.',
-				'icon': 'warning',
-				'showConfirmButton': true,
-				'showCancelButton': true,
-			}).then((result) => {
+				title: 'Ubah metode pembayaran?',
+				text : 'Pembayaranmu yang sebelumnya akan dibatalkan.',
+				icon: 'warning',
+				showConfirmButton: true,
+				showCancelButton: true,
+			}).then( (result) => {
 				if(result.isConfirmed){
-					let url = "{{ route('payment.change-method', ':payment') }}";
-					url = url.replace(':payment', payment.id);
-					$.ajax({
-						headers: {'X-CSRF-TOKEN': "{{ csrf_token() }}"},
-						url: url,
-						method: "POST",
-						data: {payment: payment},
-						success: function(data){
-
-						}
-					});
+					Livewire.emit('changePaymentMethod', payment);
 				}
 			});
 		});

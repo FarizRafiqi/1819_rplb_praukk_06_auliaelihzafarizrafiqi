@@ -31,9 +31,16 @@ class HomeController extends Controller
     /**
      * Halaman Frequently Ask Question
      */
-
     public function faq()
     {
         return view('pages.pelanggan.faq');
+    }
+
+    /**
+     * Halaman How To Pay
+     */
+    public function howToPay()
+    {
+        return view('pages.pelanggan.how-to-pay');
     }
 }

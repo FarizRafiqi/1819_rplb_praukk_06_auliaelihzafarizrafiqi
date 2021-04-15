@@ -89,7 +89,7 @@
 
     dtButtons.push([selectAllButton, deselectButton, deleteButton ]);
 
-    $('#levels').DataTable({
+    let table = $('#levels').DataTable({
         select: {
           style: 'multi',
           selector: 'td:first-child',

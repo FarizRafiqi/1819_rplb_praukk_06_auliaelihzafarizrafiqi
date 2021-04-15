@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<header class="bg-white {{Route::is(['about-us', 'transaction-history']) ? 'border-bottom' : ''}}">
+<header class="bg-white {{Route::is(['about_us', 'transaction-history']) ? 'border-bottom' : ''}}">
 	<nav class="navbar navbar-expand-lg navbar-light bg-white">
 		<a class="navbar-brand" href="{{route('home')}}">
 			<img src="{{asset('assets/img/megamendung-logo.png')}}" width="120" height="63" class="d-inline-block align-top" alt="Mega Mendung Logo">
@@ -19,8 +19,8 @@
 					<a class="nav-link" href="{{route('home')}}">Home <span class="sr-only">(current)</span></a
 					>
 				</li>
-				<li class="nav-item {{Route::is('about-us') ? 'active' : ''}}">
-						<a class="nav-link" href="{{route('about-us')}}">Tentang Kami</a>
+				<li class="nav-item {{Route::is('about_us') ? 'active' : ''}}">
+						<a class="nav-link" href="{{route('about_us')}}">Tentang Kami</a>
 				</li>
 				<li class="nav-item {{Route::is(['transaction-history', 'transaction-history.*']) ? 'active' : ''}}">
 						<a class="nav-link" href="{{route('transaction-history')}}">Riwayat Transaksi</a>

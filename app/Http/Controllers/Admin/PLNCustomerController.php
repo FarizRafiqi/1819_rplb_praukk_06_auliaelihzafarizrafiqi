@@ -102,7 +102,7 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $plnCustomer->update($request->all());
-        return redirect()->route('admin.pln-customers.index')->withSuccess("Pelanggan Berhasil Diubah!");
+        return redirect()->route('admin.pln-customers.index')->withSuccess("Data Pelanggan Berhasil Diperbarui!");
     }
 
     /**
@@ -115,8 +115,8 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($plnCustomer->usages()->count() > 0){
-            alert("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan", "", "error");
-            return redirect()->back();
+            alert()->error("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan");
+            return back();
         }
         
         $plnCustomer->delete();
@@ -129,8 +129,8 @@ class PLNCustomerController extends Controller
         $customers = PlnCustomer::whereIn('id', request('ids'))->get();
         foreach($customers as $customer){
             if($customer->usages()->count() > 0){
-                alert("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan", "", "error");
-                return;
+                alert()->error("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan");
+                return back();
             }
             $customer->delete();
         }

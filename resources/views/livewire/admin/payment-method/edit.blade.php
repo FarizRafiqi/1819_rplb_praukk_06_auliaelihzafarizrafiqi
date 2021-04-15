@@ -28,19 +28,28 @@
                     @error('gambar') <span class="invalid-feedback"> {{ $message }} </span> @enderror
                 </div>
             </div>
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-12" wire:ignore>
                 <label for="deskripsi">Deskripsi</label>
                 <textarea 
                     name="deskripsi" 
                     class="form-control" 
                     id="deskripsi" 
                     placeholder="Masukkan deskripsi. Contohnya Anda bisa memasukkan cara pembayaran" 
-                    x-data="editorApp()" 
-                    x-init="init($dispatch)" 
-                    wire:ignore 
+                    x-data 
+                    x-init="
+                        ClassicEditor
+                        .create($refs.ckEditor).then(editor => {
+                            editor.model.document.on('change:data', function(e){
+                                $dispatch('input', editor.getData());
+                            });
+                        }) 
+                        .catch( error => {
+                            console.error( error );
+                        } );
+                    " 
                     wire:key="ckEditor" 
                     x-ref="ckEditor" 
-                    wire:model.debounce.9999999ms="deskripsi"
+                    wire:model.debounce.9999ms="deskripsi"
                 >
                 {!!$deskripsi!!}
                 </textarea>
@@ -53,7 +62,6 @@
 @push('addon-script')
     {{-- <script src="{{asset('assets/plugin/filepond-master/dist/filepond.min.js')}}"></script> --}}
     <script>
-
         Livewire.on('alertSuccess', () => {
             Swal.fire({
                 title: 'Metode pembayaran berhasil diubah',
@@ -62,28 +70,5 @@
                 window.location.href = "{{route('admin.payment-methods.index')}}";
             });
         });
-
-        function editorApp() {
-            return {
-                create: async function($dispatch) {
-                    const editor = await ClassicEditor.create(this.$refs.ckEditor);
-                    editor.model.document.on('change:data', function(e){
-                        $dispatch('input', editor.getData());
-                    });
-                    return editor;
-                },
-                init: async function($disptach) {
-                    const editor  = await this.create($disptach);
-                    editor.setData('{!! $deskripsi !!}')
-
-                    const $this = this;
-
-                    Livewire.on('reinit', async function(e){
-                        editor.destroy();
-                        await $this.create($disptach);
-                    });
-                }
-            }
-        }
     </script>
 @endpush

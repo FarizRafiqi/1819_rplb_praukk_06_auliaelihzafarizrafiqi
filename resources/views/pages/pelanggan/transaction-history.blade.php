@@ -13,7 +13,7 @@
 </head>
 <body>
   @include('includes.navbar')
-  <div class="container pt-5">
+  <div class="container py-5">
     <h3 class="mb-4">Riwayat Transaksi</h3>
     @livewire('transaction-history.transaction-history')
   </div>

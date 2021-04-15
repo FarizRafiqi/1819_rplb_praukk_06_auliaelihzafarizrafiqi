@@ -25,8 +25,9 @@ use Illuminate\Support\Facades\Route,
 
 //Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
-Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about-us");
+Route::get('/about-us', [HomeController::class, "aboutUs"])->name("about_us");
 Route::get('/faq', [HomeController::class, "faq"])->name('faq');
+Route::get('/how-to-pay', [HomeController::class, "howToPay"])->name('how_to_pay');
 
 //Transaction Handler
 Route::group(['prefix' => 'payments', 'as' => 'transaction.'], function(){

@@ -111,15 +111,19 @@
       {{-- Grafik pendapatan tahunan --}}
       @if (auth()->user()->isAdmin())
         <div class="col-12">
-          {!! $chart->container() !!}
+          <div class="card">
+            <div class="card-body">
+              {!! $chart->container() !!}
+            </div>
+          </div>
         </div>
       @endif
       <!-- End of Bill Not Paid Off Overview -->
       <div class="col-12">
         <h2 class="text-center mt-5">Histori Pembayaran</h2>
         <div class="card my-5 ">
-          <div class="card-body">
-            <table class="table table-striped table-responsive table-bordered w-100" id="paymentHistories">
+          <div class="card-body table-responsive">
+            <table class="table table-striped table-bordered w-100" id="paymentHistories">
               <thead>
                 <tr>
                   <th>ID</th>

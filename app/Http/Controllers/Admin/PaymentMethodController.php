@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentMethod;
-use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -105,7 +104,8 @@ class PaymentMethodController extends Controller
     {
         abort_if(Gate::denies("payment_method_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($paymentMethod->payments()->count() > 0){
-            return redirect()->back()->with("error", "Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
+            alert()->error("Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
+            return redirect()->back();
         }
         $paymentMethod->delete();
         return redirect()->route('admin.payment-methods.index')->withSuccess("Data berhasil dihapus!");

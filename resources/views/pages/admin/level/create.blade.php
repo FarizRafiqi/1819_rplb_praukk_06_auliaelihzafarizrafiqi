@@ -6,7 +6,7 @@
     <h3 class="mb-4">Tambah Level</h3>
     <div class="card">
       <div class="card-body">
-      <form action="{{route('admin.levels.store')}}" method="POST" class="form-row">
+      <form action="{{ route('admin.levels.store') }}" method="POST" class="form-row">
         @csrf
         <div class="col-12">
           <div class="form-group">
@@ -42,7 +42,7 @@
             @enderror
           </div>
         </div>
-        <a href="{{route('admin.levels.index')}}" class="btn btn-danger">Batal</a>
+        <a href="{{ route('admin.levels.index') }}" class="btn btn-danger">Batal</a>
         <button type="submit" class="btn btn-primary ml-2">Submit</button>
       </form>
       </div>

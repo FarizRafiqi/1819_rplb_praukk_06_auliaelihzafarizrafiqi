@@ -46,7 +46,7 @@
             @if (strtolower($paymentMethod->nama) == "va mandiri")
               <ol>
                 <li>Kunjungi website 
-                  <a href="https://simulator.sandbox.midtrans.com/mandiri/bill/index">https://simulator.sandbox.midtrans.com/mandiri/bill/index</a>
+                  <a href="https://simulator.sandbox.midtrans.com/mandiri/bill/index" target="_blank">https://simulator.sandbox.midtrans.com/mandiri/bill/index</a>
                 </li>
                 <li>Masukkan Biller Code Midtrans (70012)</li>
                 <li>Masukkan Bill Key, salin kode pembayaran diatas</li>
@@ -55,7 +55,7 @@
             @elseif(strtolower($paymentMethod->nama) == "va bni")
               <ol>
                 <li>Kunjungi website 
-                  <a href="https://simulator.sandbox.midtrans.com/bni/va/index">https://simulator.sandbox.midtrans.com/bni/va/index</a>
+                  <a href="https://simulator.sandbox.midtrans.com/bni/va/index" target="_blank">https://simulator.sandbox.midtrans.com/bni/va/index</a>
                 </li>
                 <li>Masukkan Virtual Account Number (salin VA Number diatas)</li>
                 <li>Tekan tombol <span class="text-primary">Inquire</span></li>
@@ -64,7 +64,7 @@
             @else
               <ol>
                 <li>Kunjungi website 
-                  <a href="https://simulator.sandbox.midtrans.com/bca/va/index">https://simulator.sandbox.midtrans.com/bca/va/index</a>
+                  <a href="https://simulator.sandbox.midtrans.com/bca/va/index" target="_blank">https://simulator.sandbox.midtrans.com/bca/va/index</a>
                 </li>
                 <li>Masukkan Virtual Account Number (salin VA Number diatas)</li>
                 <li>Tekan tombol <span class="text-primary">Inquire</span></li>
@@ -273,7 +273,7 @@
                     <dd class="col-12">{{$payment->plnCustomer->tariff->golongan_tarif . ' / ' . $payment->plnCustomer->tariff->daya . ' VA'}}</dd>
                   
                     <dt class="col-12">Bulan/Tahun</dt>
-                    <dd class="col-12">{{$payment->details->first()->bill->bulan . ' / ' . $payment->details->first()->bill->tahun}}</dd>
+                    <dd class="col-12">{{$payment->details->first()->bill->month_name . ' / ' . $payment->details->first()->bill->tahun}}</dd>
                   
                     <dt class="col-12">Stand Meter</dt>
                     <dd class="col-12">
@@ -299,7 +299,7 @@
                 </div>
               </div>
               {{-- Payment Button --}}
-                <form action="{{ route('transaction.finish') }}" target="_blank">
+                <form action="{{ route('transaction.finish') }}">
                   <button class="btn btn-secondary-custom btn-block btn-payment" id="btnPayment">Saya sudah bayar</button>
                 </form>
               {{-- End of Payment Button --}}

@@ -9,6 +9,7 @@
           <li class="list-item font-weight-bold">Bantuan</li>
           <li class="list-item">Kebijakan Privasi</li>
           <li class="list-item"><a href="{{route('faq')}}" class="text-decoration-none text-dark">FAQ</a></li>
+          <li class="list-item"><a href="{{route('how_to_pay')}}" class="text-decoration-none text-dark">Cara Bayar</a></li>
           <li class="list-item"><a href="/docs" class="text-decoration-none text-dark">Developer Docs</a></li>
         </ul>
       </div>

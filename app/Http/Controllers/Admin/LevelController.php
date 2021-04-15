@@ -66,10 +66,10 @@ class LevelController extends Controller
      */
     public function store(LevelRequest $request)
     {
-        $level = Level::create($request->all());
+        $level = Level::create(['level'=>strtolower($request->level)]);
         $level->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.level.index')->withSuccess('Level berhasil ditambahkan!');
+        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil ditambahkan!');
     }
 
     /**
@@ -105,10 +105,10 @@ class LevelController extends Controller
      */
     public function update(LevelRequest $request, Level $level)
     {
-        $level->update($request->all());
+        $level->update(['level' => strtolower($request->level)]);
         $level->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.level.index')->withSuccess('Level berhasil diubah!');
+        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil diubah!');
     }
 
     /**
@@ -121,7 +121,7 @@ class LevelController extends Controller
     {
         abort_if(Gate::denies('level_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $level->delete();
-        return redirect()->route('admin.level.index')->withSuccess('Level berhasil dihapus!');
+        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil dihapus!');
     }
 
     public function massDestroy(MassDestroyLevelRequest $request)

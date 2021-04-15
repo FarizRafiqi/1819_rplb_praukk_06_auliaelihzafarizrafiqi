@@ -25,7 +25,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         //Hitung total pendapatan
-        $payments = Payment::get();
+        $payments = Payment::where('status', 'success')->get();
         $totalPendapatan = $payments->sum('total_bayar');
         $totalPendapatan = 'Rp '. number_format($totalPendapatan, 2, ',', '.');
 
@@ -49,7 +49,8 @@ class DashboardController extends Controller
 
         $data = [];
         foreach ($months as $index => $month) {
-            $data[$index] = Payment::whereYear('created_at', now()->year)
+            $data[$index] = Payment::where('status', 'success')
+                                   ->whereYear('created_at', now()->year)
                                    ->whereMonth('created_at', $index)
                                    ->get()
                                    ->sum('total_bayar');

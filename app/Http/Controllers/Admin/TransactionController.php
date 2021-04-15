@@ -266,9 +266,9 @@ class TransactionController extends Controller
             );
         } elseif ($response->transaction_status == "expire") {
             return view('pages.pelanggan.payments.expire');
-        } else {
-            return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
         }
+        
+        return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
     }
 
     /**

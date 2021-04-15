@@ -9,7 +9,7 @@
 					@enderror
 				</div>
 				<div class="col-3 col-lg-2 col-btn">
-				<button class="btn btn-lg w-100 btn-secondary-custom" type="submit" id="btnPay" {{$usages ? '' : 'disabled'}}>
+				<button class="btn btn-lg w-100 btn-secondary-custom" type="submit" id="btnPay" {{ $usages ? '' : 'disabled' }}>
 						<span class="spinner-border spinner-border-sm mb-1" wire:loading wire:target="nomor_meter"></span>
 						Bayar
 				</button>

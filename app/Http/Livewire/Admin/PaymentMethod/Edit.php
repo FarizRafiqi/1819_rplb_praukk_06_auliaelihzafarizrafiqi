@@ -66,19 +66,14 @@ class Edit extends Component
 
     public function update()
     {
-        $this->paymentMethod->nama = $this->nama;
-        $this->paymentMethod->slug = Str::slug($this->nama);
-        $this->paymentMethod->deskripsi = $this->deskripsi;
+        $this->paymentMethod->update([
+            'nama' => $this->nama,
+            'slug' => Str::slug($this->nama),
+            'deskripsi' => $this->deskripsi,
+        ]);
         if($this->gambarTmp){
             $this->paymentMethod->gambar = $this->gambarTmp->storeAs('img/payment-method', $this->gambarTmp->getClientOriginalName(), 'public');
         }
-        $this->paymentMethod->save();
         $this->emit('alertSuccess');
-        $this->emit('reinit');
-    }
-
-    public function dehydrate()
-    {
-        $this->emit('initializeCkEditor');
     }
 }

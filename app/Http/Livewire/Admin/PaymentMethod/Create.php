@@ -29,33 +29,35 @@ class Create extends Component
         return view('livewire.admin.payment-method.create');
     }
 
-    public function updatedGambar($value)
+    public function updatedGambar($field)
     {
-        $extension = pathinfo($value->getFilename(), PATHINFO_EXTENSION);
+        $extension = pathinfo($field->getFilename(), PATHINFO_EXTENSION);
         if (!in_array($extension, ['png', 'jpeg', 'bmp', 'gif'])) {
             $this->reset('gambar');
         }
 
-        $this->validate();
+        $this->validateOnly($field);
     }
 
-    public function updated($propertyName)
+    public function updated($field)
     {
-        $this->validateOnly($propertyName);
+        if($field !== "gambar") {
+            $this->validateOnly($field);
+        }
     }
 
     public function create()
     {   
-        $validatedData = $this->validate();
-        $validatedData["slug"] = Str::slug($validatedData["nama"]);
-        $validatedData["gambar"] = $this->gambar->storeAs('img/payment-method', $this->gambar->getClientOriginalName(), 'public');
+        $this->validate();
+        $filename = $this->gambar->storeAs('img/payment-method', $this->gambar->getClientOriginalName(), 'public');
 
-        PaymentMethod::create($validatedData+["deskripsi" => $this->deskripsi]);
+        PaymentMethod::create([
+            'nama' => $this->nama,
+            'slug' => Str::slug($this->nama),
+            'gambar' => $filename,
+            'deskripsi' => $this->deskripsi
+        ]);
+
         $this->emit('alertSuccess');
-    }
-
-    public function dehydrate()
-    {
-        $this->emit('initializeCkEditor');
     }
 }
