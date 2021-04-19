@@ -7,10 +7,10 @@ use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Charts\YearlyEarnings;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Controller ini digunakan untuk menampilkan histori pembayaran terbaru,
@@ -40,7 +40,14 @@ class DashboardController extends Controller
         $bills = Bill::get();
 
         if($request->ajax()){
-            $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])->get();
+            $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])
+                                                ->when(auth()->user()->isBank(), function($query) {
+                                                    return 
+                                                    $query->whereHas('payment.paymentMethod', function(Builder $query) {
+                                                        $bankName = explode(" ", auth()->user()->username);
+                                                        $query->where('nama', 'like' ,'%'.$bankName[1].'%');
+                                                    });
+                                                })->get();
             return DataTables::of($paymentHistories)
                                ->toJson();
         }

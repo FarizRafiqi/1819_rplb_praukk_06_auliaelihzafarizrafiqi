@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Laporan Pembayaran</title>
-  <link rel="stylesheet" href="{{public_path('css/app.css')}}">
+  <link rel="stylesheet" href="{{ public_path('css/app.css') }}">
   <style>
     .page-break {
         page-break-after: always;
@@ -18,7 +18,7 @@
 <body class="bg-white">
   <nav class="navbar navbar-light">
     <span class="navbar-brand">
-      <img src="{{public_path('assets/img/megamendung-logo.png')}}" height="80px" alt="" srcset="">
+      <img src="{{ public_path('assets/img/megamendung-logo.png') }}" height="80px" alt="" srcset="">
     </span>
     <ul class="navbar-nav text-center">
       <li class="nav-item">
@@ -31,19 +31,19 @@
   <h1 class="text-center mb-3 title">Laporan Pembayaran Listrik Pascabayar</h1>
   <p class="mb-0">
     @if ($request->action == 'print_per_date')
-      Periode : {{$request->print_per_date['tanggal_awal'] . ' sampai ' . $request->print_per_date['tanggal_akhir']}}
+      Periode : {{ $request->print_per_date['tanggal_awal'] . ' sampai ' . $request->print_per_date['tanggal_akhir'] }}
     @elseif($request->action == 'today_report')
-      Periode : {{now()->format('d-m-Y')}}
+      Periode : {{ now()->format('d-m-Y') }}
     @elseif($request->action == 'this_month_report')
-      Periode : {{now()->locale('id')->monthName . ' ' . now()->year}}
+      Periode : {{ now()->locale('id')->monthName . ' ' . now()->year }}
     @elseif($request->action == 'last_month_report')
-      Periode : {{now()->subMonth()->locale('id')->monthName . ' ' . now()->year}}
+      Periode : {{ now()->subMonth()->locale('id')->monthName . ' ' . now()->year }}
     @endif
   </p>
   <table class="w-100 mb-3">
     <tr>
-      <td>Dibuat Pada : {{now()->format('d-m-Y')}}</td>
-      <td class="text-right">Total Transaksi : {{$payments->count()}}</td>
+      <td>Dibuat Pada : {{ now()->format('d-m-Y') }}</td>
+      <td class="text-right">Total Transaksi : {{ $payments->count() }}</td>
     </tr>
   </table>
 
@@ -63,14 +63,14 @@
     <tbody>
       @foreach($payments as $payment)
         <tr>
-          <td>{{$loop->iteration}}</td>
-          <td>{{$payment->customer->nama}}</td>
-          <td>{{$payment->plnCustomer->nama_pelanggan}}</td>
-          <td>{{$payment->tanggal_bayar}}</td>
+          <td>{{ $loop->iteration }}</td>
+          <td>{{ $payment->customer->nama }}</td>
+          <td>{{ $payment->plnCustomer->nama_pelanggan }}</td>
+          <td>{{ $payment->tanggal_bayar }}</td>
           <td>@rupiah($payment->biaya_admin)</td>
           <td>@rupiah($payment->total_bayar)</td>
-          <td>{{$payment->bank->nama ?? '-'}}</td>
-          <td>{{strtoupper($payment->status)}}</td>
+          <td>{{ $payment->bank->nama ?? '-' }}</td>
+          <td>{{ strtoupper($payment->status) }}</td>
         </tr>
       @endforeach
     </tbody>

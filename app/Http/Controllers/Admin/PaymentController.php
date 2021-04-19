@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -23,9 +24,16 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies("payment_access"), Response::HTTP_FORBIDDEN, "Forbidden");
-
         if($request->ajax()){
-            $payments = Payment::with(["plnCustomer", "customer", "details", "paymentMethod"])->get();
+            $payments = Payment::with(["plnCustomer", "customer", "details", "paymentMethod"])
+                                ->when(auth()->user()->isBank(), function($query) {
+                                    return 
+                                    $query->whereHas('paymentMethod', function(Builder $query){
+                                        $bankName = explode(" ", auth()->user()->username);
+                                        $query->where('nama', 'like' ,'%'.$bankName[1].'%');
+                                    });
+                                })->get();
+                                
             return Datatables::of($payments)
                     ->addColumn("action", function($row){
                         $showGate       = 'payment_show';

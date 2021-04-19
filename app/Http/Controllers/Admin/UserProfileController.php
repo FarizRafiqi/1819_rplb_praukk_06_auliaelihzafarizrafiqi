@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UserProfileRequest;
 use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserProfileController extends Controller
 {
@@ -39,7 +40,7 @@ class UserProfileController extends Controller
      */
     public function update(UserProfileRequest $request)
     {
-        User::find(auth()->id())->update($request->all()+['password' => bcrypt($request->password)]);
+        User::find(auth()->id())->update($request->except('password')+['password' => Hash::make($request->password)]);
         return redirect()->back()->withSuccess('Profil berhasil diperbarui!');
     }
 }
