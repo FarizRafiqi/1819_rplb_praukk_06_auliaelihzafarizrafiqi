@@ -119,7 +119,7 @@
 								<dd class="col-md-7">
 									<div class="row justify-content-between align-items-center">
 										<div class="col">
-											{{$this->payment->paymentMethod->nama ?? "-"}}
+											{{ $this->payment->paymentMethod->nama ?? "-" }}
 										</div>
 										@if ($this->payment->status == 'pending')
 											<div class="col text-right">
@@ -138,7 +138,11 @@
 											@case('pending')
 													<span class="badge pill-badge badge-warning p-1">Menunggu Pembayaran</span>
 													<div class="mt-1">
-														<a href="{{ route('payment.confirm', ['payment_method' => $payment->paymentMethod->slug, 'payment' => $payment->id]) }}">Lanjutkan pembayaran</a>
+														@if ($transactionDetail->transaction_status == "pending")
+															<a href="{{ route('payment.confirm', ['payment_method' => $payment->paymentMethod->slug, 'payment' => $payment->id]) }}">Lanjutkan pembayaran</a>
+														@else
+															<a href="{{ route('upload-proof-of-payment', $this->payment->id) }}" class="btn btn-light">Upload Bukti Pembayaran</a>
+														@endif
 													</div>
 													@break
 											@case('failed' || 'cancel')
@@ -171,7 +175,7 @@
 					showCancelButton: true,
 				}).then((result) => {
 					if(result.isConfirmed){
-						let url = "{{route('payment.index', ':id')}}";
+						let url = "{{ route('payment.index', ':id') }}";
 						url = url.replace(':id', paymentId);
 						window.location.href = url;
 					}

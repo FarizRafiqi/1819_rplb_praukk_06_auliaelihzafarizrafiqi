@@ -40,7 +40,19 @@ class UserProfileController extends Controller
      */
     public function update(UserProfileRequest $request)
     {
-        User::find(auth()->id())->update($request->except('password')+['password' => Hash::make($request->password)]);
-        return redirect()->back()->withSuccess('Profil berhasil diperbarui!');
+        $idUser = auth()->id();
+        $data = $request->except('password');
+
+        if($gambar = $request->file('gambar')) { 
+            $data['gambar'] = str_replace(" ", "", trim($gambar->getClientOriginalName()));
+            $gambar->storeAs('img/avatar/'.$idUser, $data['gambar'], 'public');
+        }
+
+        if(!empty($request->password)) {
+            $data['password'] = Hash::make($request->password);
+        }
+      
+        User::find($idUser)->update($data);
+        return back()->withSuccess('Profil berhasil diperbarui!');
     }
 }

@@ -37,8 +37,9 @@ class UserProfileRequest extends FormRequest
                             return $query->where('id_level', 1);
                         })->ignore(auth()->id())
                     ],
-            'current_password' => ['required', new MatchOldPassword],
-            'password' => 'required|min:6|confirmed',
+            'gambar' => 'mimes:jpg,png|max:2048',
+            'current_password' => ['nullable', new MatchOldPassword],
+            'password' => 'nullable|required_with:current_password|min:6|confirmed',
         ];
     }
 
@@ -57,7 +58,8 @@ class UserProfileRequest extends FormRequest
             'id_level.required' => 'Level tidak boleh kosong!',
             'id_level.exist' => 'Level tidak ada di database!',
             'id_level.unique' => 'Level admin sudah ada',
-            'password.required' => 'Password tidak boleh kosong!',
+            'gambar.max' => ['file' => 'Ukuran gambar maksimal :max KB'],
+            'password.required_with' => 'Password tidak boleh kosong!',
             'password.min' => 'Password tidak boleh kurang dari 6 karakter!',
             'password.confirmed' => 'Password dan konfirmasi password harus sama!',
         ];

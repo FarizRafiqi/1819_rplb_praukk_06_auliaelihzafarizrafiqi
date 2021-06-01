@@ -148,6 +148,7 @@
 @push('addon-script')
   {!! $chart->script() !!}
   <script>
+    console.log(window);
     $('#paymentHistories').DataTable({
         responsive: true,
         serverSide: true,

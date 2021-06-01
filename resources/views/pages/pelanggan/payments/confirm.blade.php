@@ -50,7 +50,7 @@
                 </li>
                 <li>Masukkan Biller Code Midtrans (70012)</li>
                 <li>Masukkan Bill Key, salin kode pembayaran diatas</li>
-                <li>Tekan tombol <div class="text-primary">Inquire</div></li>
+                <li>Tekan tombol <span class="text-primary">Inquire</span></li>
               </ol>
             @elseif(strtolower($paymentMethod->nama) == "va bni")
               <ol>

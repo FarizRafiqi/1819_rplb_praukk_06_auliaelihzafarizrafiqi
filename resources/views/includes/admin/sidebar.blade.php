@@ -7,7 +7,7 @@
     <a href="#" class="closebtn text-decoration-none">&times;</a>
   </div>
 
-  <a href="{{route('admin.dashboard')}}" class="sidebar-item d-flex align-items-center {{Route::is('admin.dashboard') ? 'active' : ''}}">
+  <a href="{{route('admin.dashboard')}}" class="sidebar-item d-flex align-items-center {{ Route::is('admin.dashboard') ? 'active' : '' }}">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill mr-1" viewBox="0 0 16 16">
       <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
     </svg>
@@ -15,7 +15,7 @@
   </a>
 
   @can('payment_method_access')
-    <a href="{{route('admin.payment-methods.index')}}" class="sidebar-item {{Route::is('admin.payment-methods.*') ? 'active' : ''}}">
+    <a href="{{route('admin.payment-methods.index')}}" class="sidebar-item {{ Route::is('admin.payment-methods.*') ? 'active' : '' }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
         <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
@@ -25,7 +25,7 @@
   @endcan
 
   @can('payment_access')
-    <a href="{{route('admin.payments.index')}}" class="sidebar-item {{Route::is('admin.payments.*') ? 'active' : ''}}">
+    <a href="{{route('admin.payments.index')}}" class="sidebar-item {{ Route::is('admin.payments.*') ? 'active' : '' }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
         <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
         <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
@@ -44,7 +44,7 @@
   @endcan
 
   @can('usage_access')
-    <a href="{{route('admin.usages.index')}}" class="sidebar-item {{Route::is('admin.usages.*') ? 'active' : ''}}">
+    <a href="{{route('admin.usages.index')}}" class="sidebar-item {{ Route::is('admin.usages.*') ? 'active' : '' }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge-fill" viewBox="0 0 16 16">
         <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
       </svg>
@@ -72,7 +72,7 @@
     </a>
   @endcan
 
-  @can('tax_access')
+  {{-- @can('tax_access')
     <a href="#collapseTax" data-toggle="collapse" class="sidebar-item {{ Route::is(['admin.tax-types.*', 'admin.tax-rates.*']) ? 'active' : '' }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-percent" viewBox="0 0 16 16">
         <path d="M13.442 2.558a.625.625 0 0 1 0 .884l-10 10a.625.625 0 1 1-.884-.884l10-10a.625.625 0 0 1 .884 0zM4.5 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm7 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
@@ -92,10 +92,10 @@
        @endcan
       </div>
     </div>
-  @endcan
+  @endcan --}}
 
   @can('user_management_access')
-    <a href="#collapseManajemenUser" data-toggle="collapse" class="sidebar-item {{Route::is('admin.users.*') || Route::is('admin.levels.*') || Route::is('admin.activity-logs.*') || Route::is('admin.permissions.*') ? 'active' : ''}}">
+    <a href="#collapseManajemenUser" data-toggle="collapse" class="sidebar-item {{ Route::is('admin.users.*') || Route::is('admin.levels.*') || Route::is('admin.activity-logs.*') || Route::is('admin.permissions.*') ? 'active' : '' }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
         <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
         <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>

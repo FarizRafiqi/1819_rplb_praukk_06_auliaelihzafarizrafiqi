@@ -3,7 +3,7 @@
 @section('title', 'Tagihan')
 
 @section('content')
-<div class="{{Cookie::get('enable_sidebar') ? 'container-fluid' : 'container'}} mb-3">
+<div class="container-fluid mb-3">
   <div class="alert alert-info alert-dismissible fade show" role="alert">
     <strong>Fitur Tagihan Listrik:</strong>
     <ol>
@@ -16,7 +16,7 @@
   </div>
   <h3 class="mb-4">Tagihan Listrik</h3>
   <div class="card">
-    <div class="card-body">
+    <div class="card-body table-responsive">
       <table class="table table-striped table-bordered w-100"  id="bills">
       <thead>
         <tr>

@@ -64,28 +64,28 @@
 					</li>
 				@endcan
 				@can('tariff_access')
-					<li class="nav-item {{Route::is('admin.tariffs.*') ? 'active' : ''}}">
-						<a class="nav-link" href="{{route('admin.tariffs.index')}}">Tarif</a>
+					<li class="nav-item {{ Route::is('admin.tariffs.*') ? 'active' : ''}} ">
+						<a class="nav-link" href="{{ route('admin.tariffs.index') }}">Tarif</a>
 					</li>
 				@endcan
 				<li class="nav-item {{Route::is('admin.reports') ? 'active' : ''}}">
 					<a class="nav-link" href="{{route('admin.reports')}}">Laporan</a>
 				</li>
 			</ul>
-
 			<div class="dropdown">
 				<a class="dropdown-toggle text-decoration-none text-dark ml-1" href="#" id="navbarScrollingDropdown" data-toggle="dropdown">
-					{{ucwords(\Auth::user()->username)}}
+					{{ ucwords(auth()->user()->username) }}
 				</a>
 				<ul class="dropdown-menu">
 					<li><a class="dropdown-item" href="{{route('admin.profile.index')}}">Profile</a></li>
 					<li><a class="dropdown-item" href="{{route('admin.settings')}}">Setting</a></li>
 					<li><hr class="dropdown-divider"></li>
 					<li>
-						<a href="{{route('logout')}}" class="dropdown-item">Logout</a>
+						<a href="{{ route('logout') }}" class="dropdown-item">Logout</a>
 					</li>
 				</ul>
-				<img src="{{asset('assets/img/avatar-frame.png')}}" class="rounded-circle d-lg-inline-block d-none ml-3" alt="Avatar">
+				
+				<img src="{{ auth()->user()->gambar ? asset('assets/img/avatar/'.auth()->id.'/'.auth()->user()->gambar) : "https://ui-avatars.com/api/?name=".auth()->user()->username }}" class="rounded-circle d-lg-inline-block d-none ml-3" alt="Avatar">
 			</div>
 		</div>
 	</nav>

@@ -64,8 +64,18 @@ class DashboardController extends Controller
         }
 
         $chart = new YearlyEarnings;
+        $chart->title('Pendapatan Tahun '.now()->year);
         $chart->labels($months);
         $chart->dataset('Pendapatan Tahun '. now()->year, 'line', $data);
+        $chart->options([
+                            'maintainAspectRatio' => false,
+                            'borderColor'=>'rgb(75, 192, 192)',
+                            'scales' => ['y' => 
+                                [
+                                    'min' => 0,
+                                ]
+                            ]
+                        ], true);
         return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments', 'chart'));
     }
 
