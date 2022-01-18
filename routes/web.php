@@ -71,7 +71,7 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
   // User Profile
   Route::get('profile', [UserProfileController::class, "index"])->name('profile.index');
   Route::get('profile/edit', [UserProfileController::class, "edit"])->name('profile.edit');
-  Route::put('profile/update', [UserProfileController::class, "update"])->name('profile.update');
+  Route::put('profile/update/{id}', [UserProfileController::class, "update"])->name('profile.update');
 
   // Dashboard setting
   Route::get('settings', [DashboardController::class, "settings"])->name('settings');

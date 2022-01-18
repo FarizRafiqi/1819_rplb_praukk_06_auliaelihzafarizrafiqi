@@ -311,7 +311,8 @@ class TransactionController extends Controller
      */
     public function uploadProofOfPayment(Request $request, Payment $payment)
     {
-        return view('pages.pelanggan.payment-confirmation', compact('payment'));
+        $transaction = MidtransTransaction::status("PLN-".$payment->id);
+        return view('pages.pelanggan.payment-confirmation', compact('payment', 'transaction'));
     }
     
     /**

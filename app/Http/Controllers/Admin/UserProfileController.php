@@ -41,8 +41,8 @@ class UserProfileController extends Controller
     public function update(UserProfileRequest $request)
     {
         $idUser = auth()->id();
-        $data = $request->except('password');
-
+        $data = $request->except(['password']);
+        
         if($gambar = $request->file('gambar')) { 
             $data['gambar'] = str_replace(" ", "", trim($gambar->getClientOriginalName()));
             $gambar->storeAs('img/avatar/'.$idUser, $data['gambar'], 'public');
