@@ -17,7 +17,7 @@
         <ul class="list-unstyled">
           <li class="list-item font-weight-bold">Sosial</li>
           <li class="list-item"><a href="https://www.instagram.com/rafiqi_fariz0703/" class="text-dark text-decoration-none">Instagram</a></li>
-          <li class="list-item"><a href="https://wa.me/+6288290051993?text=Halo Admin" class="text-dark text-decoration-none">Whatsapp</a></li>
+          <li class="list-item"><a href="#" class="text-dark text-decoration-none">Whatsapp</a></li>
         </ul>
       </div>
     </div>
