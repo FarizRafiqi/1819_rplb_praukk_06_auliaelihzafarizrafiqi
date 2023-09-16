@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
                     ->constrained('levels')
                     ->onUpdate('cascade')
                     ->nullOnDelete();
+            $table->string('gambar')->nullable()->default(NULL);
             $table->timestamps();
             $table->softDeletes();
         });

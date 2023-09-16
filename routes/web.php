@@ -45,6 +45,7 @@ Route::delete('upload', [UploadController::class, "destroy"])->name('upload.dest
 Route::group(['middleware' => ['auth']], function(){
   Route::get('/transaction-history', [TransactionController::class, "transactionHistory"])->name("transaction-history");
   Route::get('/transaction-history/details/{payment?}', [TransactionController::class, "transactionHistory"])->name("transaction-history.details");
+  Route::get('/payment-confirmation/{payment}', [TransactionController::class, "uploadProofOfPayment"])->name('upload-proof-of-payment');
 
   Route::group(['prefix' => 'payments', 'as' => 'payment.'], function(){
     Route::get('/{payment_method:slug}/confirm/{payment}', [TransactionController::class, "confirm"])->name('confirm');
@@ -70,7 +71,7 @@ Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'a
   // User Profile
   Route::get('profile', [UserProfileController::class, "index"])->name('profile.index');
   Route::get('profile/edit', [UserProfileController::class, "edit"])->name('profile.edit');
-  Route::put('profile/update', [UserProfileController::class, "update"])->name('profile.update');
+  Route::put('profile/update/{id}', [UserProfileController::class, "update"])->name('profile.update');
 
   // Dashboard setting
   Route::get('settings', [DashboardController::class, "settings"])->name('settings');

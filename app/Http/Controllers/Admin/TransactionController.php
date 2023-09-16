@@ -146,18 +146,17 @@ class TransactionController extends Controller
     /**
      * Method ini digunakan untuk mengecek pembayaran tertentu melalui Midtrans,
      * apabila data transaksi tertentu telah tercatat di Midtrans dan memiliki
-     * status pending, maka arahkan pelanggan ke halaman konfirmasi pembayaran
+     * status pending, maka pelanggan akan diarahkan ke halaman konfirmasi pembayaran
      * untuk melanjutkan transaksinya. Tetapi apabila data transaksi tertentu
-     * belum tercatat di Midtrans, maka asumsinya adalah data transaksi tersebut
-     * belum ada, maka arahkan pelanggan ke halaman konfirmasi pembayaran
-     * untuk melakukan pembayaran.
+     * belum tercatat di Midtrans, maka asumsinya data transaksi tersebut belum ada, 
+     * maka pelanggan akan diarahkan ke halaman konfirmasi pembayaran untuk melakukan pembayaran.
      */
     public function checkPayment($payment)
     {
         try {
             $response = MidtransTransaction::status("PLN-".$payment->id);
 
-            if($response->transaction_status == "pending") :
+            if($response->transaction_status == "pending") {
                 $paymentMethod = null;
 
                 if($response->payment_type == "echannel"){
@@ -170,7 +169,21 @@ class TransactionController extends Controller
                     "payment_method" => $paymentMethod->slug, 
                     "payment" => $payment->id
                 ]);
-            endif;
+            } elseif($response->transaction_status == "settlement" && $payment->status == "success") {
+                return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
+            } elseif($response->transaction_status == "settlement" && $payment->status == "pending") {
+
+                alert()
+                ->warning(
+                'Tagihan Anda Belum Terkonfirmasi', 
+                "<p>Anda harus melakukan konfirmasi pembayaran dengan melakukan upload bukti pembayaran</p> 
+                Terdapat 2 kondisi yang menyebabkan pembayar harus melakukan upload bukti pembayaran, yaitu:
+                <ol><li>Sudah melakukan pembayaran, namun status transaksi tertahan di <strong>Menunggu Pembayaran</strong>.</li><li>Sudah melakukan pembayaran, namun tidak terverifikasi oleh sistem sehingga status transaksi menjadi <strong>Kedaluwarsa</strong>.</li></ol>")
+                ->toHtml()
+                ->persistent(true,false);
+
+                return redirect()->route('transaction-history');
+            }
 
         } catch (Exception $ex) {
             if($ex->getCode() === 404){
@@ -181,13 +194,12 @@ class TransactionController extends Controller
     }
 
     /**
-     * Method ini digunakan untuk mengenakan suatu tagihan (charge) transaksi, 
-     * apabila pelanggan telah memilih metode pembayaran.
+     * Method ini digunakan untuk membuat data transaksi di Midtrans, 
+     * setelah pelanggan memilih metode pembayaran.
      */
     public function process(Request $request, PaymentMethod $paymentMethod, Payment $payment)
     {
-        $payment->paymentMethod()->associate($paymentMethod->id);
-        $payment->save();
+        $payment->paymentMethod()->associate($paymentMethod->id)->save();
     
         $midtransParams = [
             "payment_type" => "bank_transfer",
@@ -277,6 +289,7 @@ class TransactionController extends Controller
     public function changePaymentMethod(Payment $payment)
     {
         $payment->update(['status' => 'cancel']);
+        $nomorMeter = $payment->plnCustomer->nomor_meter;
 
         try {
             MidtransTransaction::cancel('PLN-'.$payment->id);
@@ -285,12 +298,21 @@ class TransactionController extends Controller
             //ini bisa terjadi ketika user mencoba untuk merefresh halaman web, sehingga request terkirim ulang.
             //Sebenarnya kasus ini sangat jarang terjadi, tapi hanya untuk antisipasi.
             if($ex->getCode() === 412) {
-                return $this->create(request(), $payment->plnCustomer->nomor_meter);
+                return $this->create(request(), $nomorMeter);
             }
             echo $ex->getMessage();exit;
         }
 
-        return $this->create(request(), $payment->plnCustomer->nomor_meter);
+        return $this->create(request(), $nomorMeter);
+    }
+    
+    /**
+     * Untuk menangani upload bukti pembayaran, untuk konfirmasi pembayaran.
+     */
+    public function uploadProofOfPayment(Request $request, Payment $payment)
+    {
+        $transaction = MidtransTransaction::status("PLN-".$payment->id);
+        return view('pages.pelanggan.payment-confirmation', compact('payment', 'transaction'));
     }
     
     /**

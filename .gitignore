@@ -1,5 +1,8 @@
 /node_modules
 /public/hot
+/public/storage/img/avatar
+/public/storage/img/bukti-bayar
+/public/assets/img/payment-instruction/*.psd
 /storage/*.key
 /vendor
 .env

@@ -16,7 +16,7 @@ class Create extends Component
 
     protected $rules = [
         'nama' => 'required|string',
-        'gambar' => 'image|max:2048'
+        'gambar' => 'required|image|mimes:jpg,jpeg,png,svg,gif|max:2048'
     ];
 
     protected $messages = [
@@ -32,22 +32,22 @@ class Create extends Component
     public function updatedGambar($field)
     {
         $extension = pathinfo($field->getFilename(), PATHINFO_EXTENSION);
-        if (!in_array($extension, ['png', 'jpeg', 'bmp', 'gif'])) {
+        if (!in_array($extension, ['png', 'jpeg', 'bmp', 'gif', 'jpg'])) {
             $this->reset('gambar');
         }
 
-        $this->validateOnly($field);
+        $this->validate(["gambar" => "required|image|mimes:jpg,jpeg,png,svg,gif|max:2048"]);
     }
 
     public function updated($field)
     {
-        if($field !== "gambar") {
+        if ($field !== "gambar") {
             $this->validateOnly($field);
         }
     }
 
     public function create()
-    {   
+    {
         $this->validate();
         $filename = $this->gambar->storeAs('img/payment-method', $this->gambar->getClientOriginalName(), 'public');
 

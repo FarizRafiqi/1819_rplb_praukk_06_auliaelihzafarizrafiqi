@@ -17,6 +17,11 @@ body {
     color: #fff !important;
 }
 
+.bg-primary-custom {
+    background: #03a9f4;
+    color: #fff;
+}
+
 .pacific-blue {
     color: #28b7ca; /*Pacific Blue*/
 }

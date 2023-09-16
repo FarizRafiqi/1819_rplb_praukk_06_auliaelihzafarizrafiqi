@@ -3,7 +3,7 @@
 @section('title', 'Pelanggan PLN')
 
 @section('content')
-<div class="container mb-3">
+<div class="container-fluid mb-3">
   <div class="alert alert-info alert-dismissible fade show" role="alert">
     <strong>Fitur Pelanggan PLN:</strong>
     <ol>

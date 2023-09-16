@@ -26,17 +26,19 @@ class PLNCustomerController extends Controller
         if($request->ajax()){   
             $customers = PlnCustomer::with("tariff", "usages")->get();
             return DataTables::of($customers)
-                    ->addColumn("action", function($customers){
-                        $button = '<a href='. route("admin.pln-customers.edit", $customers->id).' class="btn btn-success btn-sm">edit</a>';
-                        $button .= '<a href='. route("admin.pln-customers.show", $customers->id).' class="btn btn-primary btn-sm mx-2">detail</a>';
-                        $button .= '
-                            <form action='.route("admin.pln-customers.destroy", $customers->id).' method="POST" class="d-inline-block form-delete">
-                                '. csrf_field() .'
-                                '. method_field("DELETE") .'
-                                <button type="submit" class="btn btn-danger btn-sm btn-delete">delete</button>
-                            </form>
-                        ';
-                        return $button;
+                    ->addColumn("action", function($row){
+                        $showGate       = 'pln_customer_show';
+                        $editGate       = 'pln_customer_edit';
+                        $deleteGate     = 'pln_customer_delete';
+                        $crudRoutePart  = 'pln-customers';
+                        
+                        return view('partials.datatables-action', compact(
+                            'showGate', 
+                            'editGate', 
+                            'deleteGate',
+                            'crudRoutePart',
+                            'row',
+                        ));
                     })
                     ->toJson();
         }
@@ -135,6 +137,6 @@ class PLNCustomerController extends Controller
             $customer->delete();
         }
 
-        return redirect()->route('admin.pln-customers.index')->withSuccess('Data PLN customer(s) berhasil dihapus!');
+        return redirect()->route('admin.pln-customers.index')->withSuccess('Data pelanggan PLN berhasil dihapus!');
     }
 }

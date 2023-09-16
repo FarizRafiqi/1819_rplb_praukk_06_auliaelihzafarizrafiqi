@@ -3,7 +3,7 @@
 @section('title', 'Penggunaan')
 
 @section('content')
-<div class="container mb-3">
+<div class="container-fluid mb-3">
   <div class="alert alert-info alert-dismissible fade show" role="alert">
     <strong>Fitur Penggunaan Listrik:</strong>
     <ol>
@@ -14,15 +14,17 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="d-flex justify-content-between mb-4">
-    <h3>Penggunaan Listrik</h3>
-    <a href="{{route('admin.usages.create')}}" class="btn btn-primary-custom">
-      <i class="fas fa-plus"></i>
-      Tambah
-    </a>
+  <div class="row mb-4">
+    <h3 class="col-md-9 col-lg-10">Penggunaan Listrik</h3>
+    <div class="col-md-3 col-lg-2 text-right">
+      <a href="{{ route('admin.usages.create') }}" class="btn btn-primary-custom">
+        <i class="fas fa-plus"></i>
+        Tambah
+      </a>
+    </div>
   </div>
   <div class="card">
-    <div class="card-body">
+    <div class="card-body table-responsive">
       <table class="table table-striped table-bordered w-100" id="usages">
         <thead>
           <tr>

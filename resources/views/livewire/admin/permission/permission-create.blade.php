@@ -3,7 +3,7 @@
         @csrf
 
         @if($counter > 1)
-            <h5 class="ml-auto">{{ 'Jumlah permission : '. $counter }}</h5>
+            <h5 class="ml-auto">{{ 'Jumlah hak akses : '. $counter }}</h5>
         @endif
 
         <div class="form-group col-11">
